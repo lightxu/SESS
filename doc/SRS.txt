@@ -1,11 +1,14 @@
+ 
 Software Requirements Specification
 Security Account System
+
+
+
 Document Version: 0.1
 2014/4/12
 https://github.com/lightxu/SESS
 Zhejiang University, College of Computer Science and Technology
-
-
+ 
 Revision Page
 Overview
 Target Audience
@@ -20,6 +23,7 @@ Version Control History
 Version	Primary Author(s)	Description of Version	Date Compted
 Draft 0.1	Shicheng Xu	Initial template	2014/4/12
 
+ 
 
 Table of Contents
 
@@ -33,19 +37,21 @@ Author : Shicheng
 Author: Lin Zhang
 2.1.2 Communications Protocols
 Author: Chenwei Xie
-2.2 Software Product Features
-Author: Shicheng Xu
-2.3 Database Requirements
+2.2 Database Requirements
 Author: Min Wei
-User Scenario
+3. User Scenario
 Author: Lin Zhang
 3.1 Purpose of User Scenario
 3.2 User Scenarios
-Data Flow Diagram
+4. Data Flow Diagram
 Author: Chenwei Xie
-5. ADDITIONAL MATERIAL
-5.1 ADDITIONAL ISSUES
-5.2 DFINITIONS, ACRONYMS, AND ABBREVIATIONS
-5.3 REFERENCES
+5. State Diagram
+6. Class Diagram
+7. CRC Cards
+8. ADDITIONAL MATERIAL
+8.1 ADDITIONAL ISSUES
+8.2 DFINITIONS, ACRONYMS, AND ABBREVIATIONS
+8.3 REFERENCES
 http://www.utdallas.edu/~chung/ieee-templates.pdf
 5.4 APPENDICES
+
