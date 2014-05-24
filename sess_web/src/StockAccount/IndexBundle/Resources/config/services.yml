@@ -1,0 +1,7 @@
+parameters:
+#    stock_account_index.example.class: StockAccount\IndexBundle\Example
+
+services:
+#    stock_account_index.example:
+#        class: %stock_account_index.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]
