@@ -45,7 +45,7 @@
         <h1 style="font-size:62px">Stock Security System</h1>
         <br /> <br />
         <p class="font1">The system is designed for our faculty. If you are not authenticated, please do not use it. 
-        	<br />If you are authenticated, please use your account and password to login in.</p>
+        	If you are authenticated, please use your account and password to login in.</p>
       </div>
 
     </div><!-- /.container -->
