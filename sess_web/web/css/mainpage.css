@@ -1,0 +1,12 @@
+body {
+  background-color: #eee;
+}
+
+.navbar-static-top {
+  margin-bottom: 19px;
+}
+
+.bigtitle {
+  padding: 40px 15px;
+  text-align: center;
+}

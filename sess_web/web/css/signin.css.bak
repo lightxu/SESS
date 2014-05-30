@@ -6,7 +6,6 @@ body {
 .signin {
   padding: 40px 15px;
   text-align: center;
-  background-color: #f5f5f5;
 }
 .font1{font-size:22px;} 
 

@@ -4,11 +4,11 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bootstrap 101 Template</title>
+    <title>Login</title>
 
     <!-- Bootstrap -->
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/signin.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/mainpage.css') }}" rel="stylesheet">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -18,22 +18,22 @@
     <![endif]-->
   </head>
   <body>
-  	<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+  	<div class="navbar navbar-inverse navbar-static-top" role="navigation">
       <div class="container">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
             <span class="sr-only">Toggle navigation</span>
             <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <!--<span class="icon-bar"></span> -->
+
           </button>
           <a class="navbar-brand" href="#">Welcome</a>
         </div>
-        <div class="collapse navbar-collapse">
+        <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <!--<li class="active"><a href="#">Home</a></li> -->
-            <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li>
+            <li class="active"><a href="#">Lake</a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="../navbar-fixed-top/">Log out</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -41,28 +41,46 @@
 
     <div class="container">
 
-      <div class="signin">
+      <div class="bigtitle">
         <h1 style="font-size:62px">Stock Security System</h1>
         <br /> <br />
-        <p class="font1">The system is designed for our faculty. If you are not authenticated, please do not use it. 
-        	<br />If you are authenticated, please use your account and password to login in.</p>
       </div>
 
     </div><!-- /.container -->
     
     <div class="container">
+      <!-- Example row of columns -->
+      <div class="row">
+        <div class="col-md-6">
+          <h2>Account Opining</h2>
+          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+          <p><a class="btn btn-default" href="#" role="button">Go &raquo;</a></p>
+        </div>
+        <div class="col-md-6">
+          <h2>Account Cancellation</h2>
+          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+          <p><a class="btn btn-default" href="#" role="button">Go &raquo;</a></p>
+        </div>
+        <div class="col-md-6">
+          <h2>Loss Register</h2>
+          <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
+          <p><a class="btn btn-default" href="#" role="button">Go &raquo;</a></p>
+        </div>
+        <div class="col-md-6">
+          <h2>Post Register</h2>
+          <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
+          <p><a class="btn btn-default" href="#" role="button">Go &raquo;</a></p>
+        </div>
+      </div>
 
-      <form class="form-signin" role="form">
-        <h2 class="form-signin-heading">Please sign in</h2>
-        <input type="text" class="form-control" placeholder="Email address" required autofocus>
-        <input type="password" class="form-control" placeholder="Password" required>
-        <label class="checkbox">
-          <input type="checkbox" value="remember-me"> Remember me
-        </label>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-      </form>
+			<hr>
 
+      <footer>
+        <p>&copy; SESS GROUP 2014</p>
+      </footer>
     </div> <!-- /container -->
+
+    
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
