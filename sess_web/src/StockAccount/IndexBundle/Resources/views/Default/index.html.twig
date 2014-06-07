@@ -4,10 +4,11 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bootstrap 101 Template</title>
+    <title>AccountOpening</title>
 
     <!-- Bootstrap -->
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/openingaccount.css') }}" rel="stylesheet">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -17,7 +18,140 @@
     <![endif]-->
   </head>
   <body>
-    <h1>Hello, world!</h1>
+  	<div class="navbar navbar-inverse navbar-static-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+
+          </button>
+          <a class="navbar-brand" href="#">Welcome</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Lake</a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="../navbar-fixed-top/">Log out</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+
+    <div class="container">
+
+      <div class="bigtitle">
+        <h1 style="font-size:62px">Stock Security System</h1>
+        <br /> <br />
+      </div>
+
+    
+    
+	    <ol class="breadcrumb">
+	  		<li><a href="#">MainPage</a></li>
+	  		<li class="active">AccountOpening(Individual)</li>
+			</ol>
+			
+
+      <div class="panel panel-default">
+			  <!-- Default panel contents -->
+			  <div class="panel-heading" style="font-size:22px">Application Form
+				  <div class="panel-body" style="font-size:16px">
+	    			<p>Please ask the customer to provide the necessary information for the application.</p>	
+					</div>
+
+				  <!-- Table -->
+				  	
+				  <table class="table">
+				  	
+				  	<div class="col-md-6">
+					    <div class="input-group">
+							  <span class="input-group-addon">Stcok Account NO.</span>
+							  <input type="text" class="form-control" >
+							</div>
+						</div>
+						<div class="col-md-6">
+					    <div class="input-group">
+							  <span class="input-group-addon">Register Date</span>
+							  <input type="text" class="form-control" >
+							</div>
+						</div>
+						<br /> <br />
+				  	<div class="col-md-6">
+					    <div class="input-group">
+							  <span class="input-group-addon">Name</span>
+							  <input type="text" class="form-control" >
+							</div>
+						</div>
+						<div class="col-md-6">
+					    <div class="input-group">
+							  <span class="input-group-addon">Gender</span>
+							  <input type="text" class="form-control" >
+							</div>
+						</div>
+						<br /> <br />
+				  	<div class="col-md-6">
+					    <div class="input-group">
+							  <span class="input-group-addon">Degree</span>
+							  <input type="text" class="form-control" >
+							</div>
+						</div>
+						<div class="col-md-6">
+					    <div class="input-group">
+							  <span class="input-group-addon">ID NO.</span>
+							  <input type="text" class="form-control" >
+							</div>
+						</div>
+						<br /> <br />
+				  	<div class="col-md-12">
+					    <div class="input-group">
+							  <span class="input-group-addon">Address</span>
+							  <input type="text" class="form-control" >
+							</div>
+						</div>
+						<br /> <br />
+						<div class="col-md-6">
+					    <div class="input-group">
+							  <span class="input-group-addon">Occupation</span>
+							  <input type="text" class="form-control" >
+							</div>
+						</div>
+						<div class="col-md-6">
+					    <div class="input-group">
+							  <span class="input-group-addon">Company</span>
+							  <input type="text" class="form-control" >
+							</div>
+						</div>
+						<br /> <br />
+						<div class="col-md-6">
+					    <div class="input-group">
+							  <span class="input-group-addon">Tel.</span>
+							  <input type="text" class="form-control" >
+							</div>
+						</div>
+						
+						<br /> <br />
+
+						<div class="col-md-6" align="center">
+						  <button type="button" class="btn btn-success btn-lg btn-block">Submit</button>
+						</div>
+						<div class="col-md-6" align="center">
+						  <button type="button" class="btn btn-danger btn-lg btn-block">Cancel</button>
+						</div>
+					</table>
+				</div>
+      </div>  
+     
+
+			<hr>
+		<div class="container">
+      <footer>
+        <p>&copy; SESS GROUP 2014</p>
+      </footer>
+    </div> <!-- /container -->
+
+    
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
@@ -25,3 +159,4 @@
     <script src="{{ asset('js/bootstrap.min.js') }}"></script>
   </body>
 </html>
+	
