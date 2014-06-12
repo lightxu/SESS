@@ -3,7 +3,7 @@ parameters:
     database_driver: pdo_mysql
     database_host: 127.0.0.1
     database_port: null
-    database_name: stock_account
+    database_name: symfony
     database_user: root
     database_password: null
     mailer_transport: smtp
@@ -11,4 +11,7 @@ parameters:
     mailer_user: null
     mailer_password: null
     locale: en
-    secret: SoftWareEngineering2014
+    secret: ThisTokenIsNotSoSecretChangeIt
+    debug_toolbar: true
+    debug_redirects: false
+    use_assetic_controller: true

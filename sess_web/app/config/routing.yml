@@ -1,4 +1,0 @@
-stock_account_index:
-    path: /
-    defaults: { _controller: StockAccountIndexBundle:Default:index }
-
