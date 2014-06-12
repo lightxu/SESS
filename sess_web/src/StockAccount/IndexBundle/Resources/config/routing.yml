@@ -1,3 +1,0 @@
-stock_account_index_homepage:
-    pattern:  /hello/{name}
-    defaults: { _controller: StockAccountIndexBundle:Default:index }

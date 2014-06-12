@@ -3,11 +3,12 @@ index:
     defaults: { _controller: StockAdministrationBundle:Index:index }
     
 login:
-    path: /
-    defaults: { _controller: StockAdministrationBundle:Security:index }
+    path: /login
+    defaults: { _controller: StockAdministrationBundle:Security:login }
 
 login_check:
     path: /login_check
+    defaults: { _controller: StockAdministrationBundle:Security:loginCheck }
 
 stock_trade:
     resource: "@StockTradeBundle/Resources/config/routing.yml"

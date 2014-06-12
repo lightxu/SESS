@@ -1,9 +1,9 @@
 <?php
 namespace Stock\AdministrationBundle\Controller;
 
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
-class IndexController
+class IndexController extends Controller
 {
     public function indexAction()
     {
