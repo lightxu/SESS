@@ -1,0 +1,23 @@
+Development log:
+2014/6/12 10:00 按照symfony cookbook重新创建了工程，嗯。。据说.gitignore要这么写：
+/sess_web/web/bundles/
+/sess_web/app/bootstrap*
+/sess_web/app/cache/*
+/sess_web/app/logs/*
+/sess_web/vendor/
+/sess_web/app/config/parameters.yml
+
+然后我们根据symfony book更新了vendor:
+curl -s http://getcomposer.org/installer | php
+嗯然后要用得到的那个composer.phar更新一下：
+php composer.phar install
+
+2014/6/12 13:39 那么，从哪里开始做起呢。。（BTW 睡的好爽，现在身边还有一只西瓜
+开始建立Bundle！
+php app\console generate:bundle --namespace=Stock/AdministrationBundle --format=yml
+php app\console generate:bundle --namespace=Stock/AccountBundle --format=yml
+php app\console generate:bundle --namespace=Stock/TradeBundle --format=yml
+
+然后我们删掉了AcmeDemoBundle
+
+2014/6/12 14:18 让我们开始做登陆注销功能吧

@@ -1,0 +1,7 @@
+parameters:
+#    stock_administration.example.class: Stock\AdministrationBundle\Example
+
+services:
+#    stock_administration.example:
+#        class: %stock_administration.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

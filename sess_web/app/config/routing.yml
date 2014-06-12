@@ -1,0 +1,18 @@
+index:
+    path: /
+    defaults: { _controller: StockAdministrationBundle:Index:index }
+    
+login:
+    path: /
+    defaults: { _controller: StockAdministrationBundle:Security:index }
+
+login_check:
+    path: /login_check
+
+stock_trade:
+    resource: "@StockTradeBundle/Resources/config/routing.yml"
+    prefix:   /
+
+stock_account:
+    resource: "@StockAccountBundle/Resources/config/routing.yml"
+    prefix:   /

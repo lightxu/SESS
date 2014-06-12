@@ -1,0 +1,3 @@
+stock_trade_homepage:
+    pattern:  /hello/{name}
+    defaults: { _controller: StockTradeBundle:Default:index }
