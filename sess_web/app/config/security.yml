@@ -5,13 +5,13 @@ security:
             anonymous: ~
         secured_area:
             pattern: ^/
+            anonymous: ~
             form_login:
                 login_path: login
                 check_path: login_check
     
     access_control:
-        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/, roles: ROLE_ADMIN }
+        - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
     
     providers:
         default_provider:
