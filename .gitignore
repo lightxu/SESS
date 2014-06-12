@@ -1,0 +1,5 @@
+sess_web/web/bundles/
+sess_web/app/bootstrap*
+sess_web/app/cache/
+sess_web/app/logs/
+sess_web/vendor/
