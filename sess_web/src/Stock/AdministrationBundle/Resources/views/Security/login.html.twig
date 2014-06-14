@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>首页</title>
+    <title>登录</title>
 
     <!-- Bootstrap -->
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
@@ -55,13 +55,14 @@
     
     <div class="container">
 
-      <form class="form-signin" role="form">
+      <form class="form-signin" role="form" action="{{ path('login_check') }}" method="post">
         <h2 class="form-signin-heading">请登录</h2>
-        <input type="text" class="form-control" placeholder="帐号名称" required autofocus>
-        <input type="password" class="form-control" placeholder="密码" required>
-        <label class="checkbox">
-          <input type="checkbox" value="remember-me"> 记住我
-        </label>
+        {% if error %}
+            <div class="alert alert-danger">{{ error.message }}</div>
+        {% endif %}
+        <input type="text" class="form-control" id="username" name="_username" value="{{ last_username }}" placeholder="帐号名称" required autofocus />
+        <input type="password" class="form-control" id="password" name="_password" placeholder="密码" required />
+        <input type="hidden" name="_target_path" value="/" />
         <button class="btn btn-lg btn-primary btn-block" type="submit">登录</button>
       </form>
 
