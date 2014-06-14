@@ -1,21 +1,32 @@
 security:
-    firewalls:
-        login_firewall:
-            pattern: ^/login$
-            anonymous: ~
-        secured_area:
-            pattern: ^/
-            form_login:
-                login_path: login
-                check_path: login_check
-    
-    access_control:
-        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/, roles: ROLE_ADMIN }
-    
+    encoders:
+        Symfony\Component\Security\Core\User\User: plaintext
+
+    role_hierarchy:
+        ROLE_ADMIN:       ROLE_USER
+        ROLE_SUPER_ADMIN: [ROLE_USER, ROLE_ADMIN, ROLE_ALLOWED_TO_SWITCH]
+
     providers:
-        default_provider:
+        in_memory:
             memory:
                 users:
-                    admin: { password: sess2014, roles: "ROLE_ADMIN" }
-                
+                    admin: { password: sess2014, roles: [ 'ROLE_ADMIN' ] }
+
+    firewalls:
+        dev:
+            pattern:  ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        login:
+            pattern:  ^/login$
+            security: false
+
+        secured_area:
+            pattern:    ^/
+            form_login:
+                check_path: login_check
+                login_path: login
+
+    access_control:
+        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/, roles: ROLE_ADMIN }   
