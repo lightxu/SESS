@@ -1,31 +1,44 @@
 stock_account_homepage:
     pattern:  /hello/{name}
     defaults: { _controller: StockAccountBundle:Default:index }
+    methods: [GET]
     
 openPersonal_page:
     path: /accounts/newperson
     defaults: {_controller: StockAccountBundle:Account:openPersonal}
+    methods: [GET]
 
 openCompany_page:
     path: /accounts/newcompany
     defaults: {_controller: StockAccountBundle:Account:openCompany}
+    methods: [GET]
     
 confirmPersonal_page:
     path: /accounts/confirmperson
     defaults: {_controller: StockAccountBundle:Account:confirmPersonal}
+    methods: [GET]
 
 confirmCompany_page:
     path: /accounts/confirmconpany
     defaults: {_controller: StockAccountBundle:Account:confirmCompany}
+    methods: [GET]
     
 reportLoss_page:
     path: /accounts/report_loss
     defaults: {_controller: StockAccountBundle:Account:reportLoss}
+    methods: [GET]
+    
+reportLoss_api:
+    path: /accounts/report_loss
+    defaults: {_controller: StockAccountBundle:Account:reportLossApi}
+    methods: [POST]
     
 postRegister_page:
     path: /accounts/verify_renew
     defaults: {_controller: StockAccountBundle:Account:postRegister}
+    methods: [GET]
     
 cancel_page:
     path: /accounts/cancel
     defaults: {_controller: StockAccountBundle:Account:cancel}
+    methods: [GET]

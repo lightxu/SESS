@@ -10,6 +10,7 @@ class TradeController extends Controller
 {
     const STATUS_SUCCESS = "success";
     const STATUS_ARGUMENT_ERROR = "too few arguments";
+    const STATUS_FORMAT_ERROR = "invalid arguments";
     const STATUS_UNAUTHORIZED_ERROR = "unauthorized";
     const STATUS_DB_ERROR = "database error";
     const STATUS_STOCK_ERROR = "insufficient amount";
