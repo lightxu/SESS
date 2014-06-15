@@ -33,7 +33,7 @@
             <li class="active"><a href="#">Lake</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="../navbar-fixed-top/">登出</a></li>
+            <li><a href="{{ path("logout") }}">登出</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -60,7 +60,7 @@
 				  <div class="panel-body" style="font-size:16px">
 	    			<p>请要求用户提供相关证件并完成申请表</p>	
 					</div>
-
+                <form class="form-horizontal" role="form" action="{{ path('openCompany_api') }}" method="post">
 				  <!-- Table -->
 				  	
 				  <table class="table">
@@ -68,85 +68,86 @@
 				  	<div class="col-md-6">
 					    <div class="input-group">
 							  <span class="input-group-addon">股票帐户号码</span>
-							  <input type="text" class="form-control" >
+							  <input type="text" class="form-control"name="stock_acc_No" >
 							</div>
 						</div>
 						<div class="col-md-6">
 					    <div class="input-group">
 							  <span class="input-group-addon">注册登记号码</span>
-							  <input type="text" class="form-control" >
+							  <input type="text" class="form-control" name="reg_No">
 							</div>
 						</div>
 						<br /> <br />
 				  	<div class="col-md-6">
 					    <div class="input-group">
 							  <span class="input-group-addon">营业执照号码</span>
-							  <input type="text" class="form-control" >
+							  <input type="text" class="form-control" name="business_licence_No">
 							</div>
 						</div>
 						<div class="col-md-6">
 					    <div class="input-group">
 							  <span class="input-group-addon">代表人身份证号码</span>
-							  <input type="text" class="form-control" >
+							  <input type="text" class="form-control" name="rep_ID_No">
 							</div>
 						</div>
 						<br /> <br />
 				  	<div class="col-md-6">
 					    <div class="input-group">
 							  <span class="input-group-addon">姓名</span>
-							  <input type="text" class="form-control" >
+							  <input type="text" class="form-control" name="name">
 							</div>
 						</div>
 						<div class="col-md-6">
 					    <div class="input-group">
 							  <span class="input-group-addon">联系电话</span>
-							  <input type="text" class="form-control" >
+							  <input type="text" class="form-control" name="contact_No">
 							</div>
 						</div>
 						<br /> <br />
 				  	<div class="col-md-12">
 					    <div class="input-group">
 							  <span class="input-group-addon">联系地址</span>
-							  <input type="text" class="form-control" >
+							  <input type="text" class="form-control" name="contact_addr">
 							</div>
 						</div>
 						<br /> <br />
 						<div class="col-md-6">
 					    <div class="input-group">
 							  <span class="input-group-addon">授权交易人</span>
-							  <input type="text" class="form-control" >
+							  <input type="text" class="form-control" name="auth_dealer">
 							</div>
 						</div>
 						<div class="col-md-6">
 					    <div class="input-group">
 							  <span class="input-group-addon">授权人身份证号码</span>
-							  <input type="text" class="form-control" >
+							  <input type="text" class="form-control" name="dealer_ID_No">
 							</div>
 						</div>
 						<br /> <br />
 						<div class="col-md-6">
 					    <div class="input-group">
 							  <span class="input-group-addon">授权人联系电话</span>
-							  <input type="text" class="form-control" >
+							  <input type="text" class="form-control" name="dealer_Tel">
 							</div>
 						</div>
 						<br /> <br />
 				  	<div class="col-md-12">
 					    <div class="input-group">
 							  <span class="input-group-addon">授权人地址</span>
-							  <input type="text" class="form-control" >
+							  <input type="text" class="form-control"name= "dealer_addr" >
 							</div>
 						</div>
 						
 						<br /> <br />
 
 						<div class="col-md-6" align="center">
-						  <button type="button" class="btn btn-success btn-lg btn-block">提交</button>
+						  <button type="button" class="btn btn-success btn-lg btn-block" type="submit">提交</button>
 						</div>
 						<div class="col-md-6" align="center">
 						  <button type="button" class="btn btn-danger btn-lg btn-block">取消</button>
 						</div>
 					</table>
+				</form>
 				</div>
       </div>  
      
