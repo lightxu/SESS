@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>测试API</title>
+
+  </head>
+  <body>
+    <h1>Testing API!</h1>
+    <script src="{{ asset('js/jquery-1.11.1.min.js') }}"></script>
+    <div id="result1">testing success...</div>
+    <script>
+        $.post("{{ path('deactivate_stocks') }}", {
+            account_id: "1",
+            stock_id: "1",
+            amount: "1",
+            token: "354DD0DE1AB36DC4531B8723C34B9EFE"
+        }, function(result) {
+            $("#result1").text(result["status"]);
+        });
+    </script>
+    <div id="result2">testing argument error...</div>
+    <script>
+        $.post("{{ path('deactivate_stocks') }}", {
+            account_id: "1",
+            stock_id: "1",
+            amount: "1",
+        }, function(result) {
+            $("#result2").text(result["status"]);
+        });
+    </script>
+    <div id="result3">testing unauthenticated...</div>
+    <script>
+        $.post("{{ path('deactivate_stocks') }}", {
+            account_id: "1",
+            stock_id: "1",
+            amount: "1",
+            token: "1234567890"
+        }, function(result) {
+            $("#result3").text(result["status"]);
+        });
+    </script>
+  </body>
+</html>
+	

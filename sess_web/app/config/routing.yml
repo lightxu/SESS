@@ -10,6 +10,9 @@ login_check:
     path: /login_check
     defaults: { _controller: StockAdministrationBundle:Security:loginCheck }
 
+logout:
+    path: /logout
+
 stock_trade:
     resource: "@StockTradeBundle/Resources/config/routing.yml"
     prefix:   /

@@ -1,3 +1,32 @@
-stock_trade_homepage:
-    pattern:  /hello/{name}
-    defaults: { _controller: StockTradeBundle:Default:index }
+deactivate_stocks:
+    path: /stocks/deactivate
+    defaults: { _controller: StockTradeBundle:Trade:deactivate }
+    methods: [POST]
+activate_stocks:
+    path: /stocks/activate
+    defaults: { _controller: StockTradeBundle:Trade:activate }
+    methods: [POST]
+trade_stocks:
+    path: /stocks/trade
+    defaults: { _controller: StockTradeBundle:Trade:trade }
+    methods: [POST]
+trade_confirm:
+    path: /stocks/trade/confirm
+    defaults: { _controller: StockTradeBundle:Trade:tradeConfirm }
+    methods: [POST]
+trade_cancel:
+    path: /stocks/trade/cancel
+    defaults: { _controller: StockTradeBundle:Trade:tradeCancel }
+    methods: [POST]
+stock_info:
+    path: /stocks/info
+    defaults: { _controller: StockTradeBundle:Trade:stocksInfo }
+    methods: [POST]
+check_account:
+    path: /accounts/check
+    defaults: { _controller: StockTradeBundle:Trade:checkAccount }
+    methods: [POST]
+test_api:
+    path: /stocks/test_api
+    defaults: { _controller: StockTradeBundle:Trade:testApi }
+    methods: [GET]
