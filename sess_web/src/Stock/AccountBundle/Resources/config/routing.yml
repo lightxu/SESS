@@ -7,21 +7,41 @@ openPersonal_page:
     path: /accounts/newperson
     defaults: {_controller: StockAccountBundle:Account:openPersonal}
     methods: [GET]
+    
+openPersonal_api:
+    path: /accounts/newperson
+    defaults: {_controller: StockAccountBundle:Account:openPersonalApi}
+    methods: [POST]
 
 openCompany_page:
     path: /accounts/newcompany
     defaults: {_controller: StockAccountBundle:Account:openCompany}
     methods: [GET]
     
+openCompany_api:
+    path: /accounts/newcompany
+    defaults: {_controller: StockAccountBundle:Account:openCompanyApi}
+    methods: [POST]
+    
 confirmPersonal_page:
     path: /accounts/confirmperson
     defaults: {_controller: StockAccountBundle:Account:confirmPersonal}
     methods: [GET]
 
+confirmPersonal_api:
+    path: /accounts/confirmperson
+    defaults: {_controller: StockAccountBundle:Account:confirmPersonalApi}
+    methods: [POST]
+
 confirmCompany_page:
     path: /accounts/confirmconpany
     defaults: {_controller: StockAccountBundle:Account:confirmCompany}
     methods: [GET]
+    
+confirmCompany_api:
+    path: /accounts/confirmconpany
+    defaults: {_controller: StockAccountBundle:Account:confirmCompanyApi}
+    methods: [POST]
     
 reportLoss_page:
     path: /accounts/report_loss
@@ -38,7 +58,17 @@ postRegister_page:
     defaults: {_controller: StockAccountBundle:Account:postRegister}
     methods: [GET]
     
+postRegister_api:
+    path: /accounts/verify_renew
+    defaults: {_controller: StockAccountBundle:Account:postRegisterApi}
+    methods: [POST]
+    
 cancel_page:
     path: /accounts/cancel
     defaults: {_controller: StockAccountBundle:Account:cancel}
     methods: [GET]
+    
+cancel_api:
+    path: /accounts/cancel
+    defaults: {_controller: StockAccountBundle:Account:cancelApi}
+    methods: [POST]
