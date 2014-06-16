@@ -1,0 +1,15 @@
+# src/Stock/AccountBundle/Resources/config/doctrine/NaturalCustomer.orm.yml
+Stock\AccountBundle\Entity\NaturalCustomer:
+    type: entity
+    table: natural_customer
+    id:
+        customer_id:
+            type: string
+            length: 100
+    fields:
+        name:
+            type: string
+            length: 100
+        id_number:
+            type: string
+            length: 100

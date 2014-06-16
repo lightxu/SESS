@@ -230,4 +230,19 @@ class AccountController extends Controller
         return $this->makeResponse(self::STATUS_SUCCESS);
     }
     
+    // db accessing functions
+    public function createNaturalCustomer($customer)
+    {
+        $natural_customer = new NaturalCustomer();
+        $natural_customer->setCustomerId($customer["id"]);
+        $natural_customer->setName($customer["name"]);
+        $natural_customer->setIdNumber($customer["id"]);
+        
+        // TODO: db error?
+        $db_error = false;
+        $em = $this->getDoctrine()->getEntityManager();
+        $em->persist($natural_customer);
+        $em->flush();
+        return $db_error;
+    }
 }
