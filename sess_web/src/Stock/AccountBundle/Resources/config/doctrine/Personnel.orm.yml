@@ -1,0 +1,12 @@
+# src/Stock/AccountBundle/Resources/config/doctrine/Personnel.orm.yml
+Stock\AccountBundle\Entity\Personnel:
+    type: entity
+    table: personnel
+    id:
+        id_number:
+            type: string
+            length: 100
+    fields:
+        name:
+            type: string
+            length: 100

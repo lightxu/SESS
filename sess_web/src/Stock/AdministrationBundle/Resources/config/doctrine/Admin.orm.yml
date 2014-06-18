@@ -1,0 +1,15 @@
+# src/Stock/AdministrationBundle/Resources/config/doctrine/Admin.orm.yml
+Stock\AdministrationBundle\Entity\Admin:
+    type: entity
+    table: admin
+    id:
+        admin_id:
+            type: string
+            length: 100
+    fields:
+        admin_password:
+            type: string
+            length: 100
+        admin_bank:
+            type: string
+            length: 100

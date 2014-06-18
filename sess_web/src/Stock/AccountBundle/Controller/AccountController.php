@@ -2,6 +2,7 @@
 namespace Stock\AccountBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Stock\AccountBundle\Entity;
 
 class AccountController extends Controller
 {
@@ -230,19 +231,189 @@ class AccountController extends Controller
         return $this->makeResponse(self::STATUS_SUCCESS);
     }
     
-    // db accessing functions
-    public function createNaturalCustomer($customer)
+    
+    
+    //database operations
+    //create a natural customer
+    public function createNaturalCustomerAction()
     {
-        $natural_customer = new NaturalCustomer();
-        $natural_customer->setCustomerId($customer["id"]);
-        $natural_customer->setName($customer["name"]);
-        $natural_customer->setIdNumber($customer["id"]);
-        
-        // TODO: db error?
-        $db_error = false;
+        //check for personnel
+		$natural_customer = $this->getDoctrine()
+                 ->getRepository('StockAccountBundle:Personnel')
+                 ->find($id_number);
+        if($natural_customer){
+            throw $this->createNotFoundException('Personnel found for id_number ' .$id_number);
+		}
+		//pass parameters
+		$natural_customer = new NaturalCustomer();
+        $natural_customer->setCustomerId($customerId);
+        $natural_customer->setName($name);
+        $natural_customer->setIdNumber($id_number);
+        $natural_customer->setRegisterDate($register_date);
+        $natural_customer->setGender($gender);
+        $natural_customer->setAddress($address);
+        $natural_customer->setOccupation($occupation);
+        $natural_customer->setEducationalBackground($educational_background);
+        $natural_customer->setCompanyOrOrganization($company_or_organization);
+        $natural_customer->setTel($tel);
+        $natural_customer->setAgentId($agent_id);
+        $natural_customer->setBank($bank);
+        $natural_customer->setAssestsNumber($assestsNumber);
+        $natural_customer->setFrozen($frozen);
+		
+		//instantiate database query
         $em = $this->getDoctrine()->getEntityManager();
         $em->persist($natural_customer);
         $em->flush();
-        return $db_error;
+
+        return new Response();
+    
     }
+
+    //query for natural customer
+    public function showNaturalCustomerAction($customer_id)
+    {
+        //query
+		$natural_customer = $this->getDoctrine()
+                 ->getRepository('StockAccountBundle:NaturalCustomer')
+                 ->find($customer_id);
+		
+		//response if not found
+        if(!$natural_customer){
+             throw $this->createNotFoundException('No natural customer found for customer_id ' .$customer_id);
+        }
+        return new Response();
+    }
+    
+    //update for natural customer, mainly used for forzen action now
+    public function updateNaturalCustomerAction($customer_id, $frozen)
+    {
+        //query
+		$natural_customer = $this->getDoctrine()
+                    ->getRepository('StockAccountBundle:NaturalCustomer')
+                    ->find($customer_id);
+		//response if not found
+        if(!$natural_customer){
+                throw $this->createNotFoundException('No natural customer found for customer_id ' .$customer_id);
+            }
+		//freeze or thaw
+        $natural_customer->setFrozen($frozen);
+
+        $em = $this->getDoctrine()->getEntityManager();
+        $em->flush();
+
+        return new Response();
+    }
+
+    //delete a natural customer
+    public function removeNaturalCustomerAction($customer_id)
+    {
+        //query
+		$natural_customer = $this->getDoctrine()
+                    ->getRepository('StockAccountBundle:NaturalCustomer')
+                    ->find($customer_id);
+		//response if not found
+        if(!$natural_customer){
+                throw $this->createNotFoundException('No natural customer found for customer_id ' .$customer_id);
+            }
+		//remove
+        $em = $this->getDoctrine()->getEntityManager();
+        $em->remove($natural_customer);
+        $em->flush();
+
+        return new Response();
+    }
+
+    //create a legal customer
+    public function createLegalCustomerAction()
+    {
+        //check for personnel table
+		$legal_customer = $this->getDoctrine()
+                 ->getRepository('StockAccountBundle:Personnel')
+                 ->find($id_number);
+        if($legal_customer){
+            throw $this->createNotFoundException('Personnel found for id_number ' .$id_number);
+		}
+		//check for legal_check table
+		$legal_customer = $this->getDoctrine()
+                 ->getRepository('StockAccountBundle:LegalCheck')
+                 ->find($legal_register_number);
+        if((!$legal_customer)
+			||($name != $legal_customer->name)
+			||($id_number != $legal_customer->id_number)
+			||($license != $legal_customer->license)){
+            throw $this->createNotFoundException('The customer qualification is not legal for legal_register_number ' .$legal_register_number);
+		}
+		//pass parameters
+		$legal_customer = new LegalCustomer();
+        $legal_customer->setCustomerId($customerId);
+        $legal_customer->setName($name);
+        $legal_customer->setIdNumber($id_number);
+        $legal_customer->setLegalRegisternumber($legal_register_number);
+        $legal_customer->setLicense($license);
+        $legal_customer->setExecutorName($executor_name);
+        $legal_customer->setExecutorId($executor_id);
+        $legal_customer->setExecutorAddress($executor_address);
+        $legal_customer->setExecutorTel($executor_tel);
+        $legal_customer->setBank($bank);
+        $legal_customer->setAssestsNumber($assestsNumber);
+        $legal_customer->setFrozen($frozen);
+    
+        $em = $this->getDoctrine()->getEntityManager();
+        $em->persist($legal_customer);
+        $em->flush();
+
+        return new Response();
+    
+    }
+
+    //query for legal customer
+    public function showLegalCustomerAction($customer_id)
+    {
+        $legal_customer = $this->getDoctrine()
+                 ->getRepository('StockAccountBundle:LegalCustomer')
+                 ->find($customer_id);
+        if(!$legal_customer){
+             throw $this->createNotFoundException('No legal customer found for customer_id ' .$customer_id);
+        }
+        return $legal_customer;
+    }
+    
+    //update for legal customer, mainly used for forzen action now
+    public function updateLegalCustomerAction($customer_id, $frozen)
+    {
+        $legal_customer = $this->getDoctrine()
+                    ->getRepository('StockAccountBundle:LegalCustomer')
+                    ->find($customer_id);
+    
+        if(!$legal_customer){
+                throw $this->createNotFoundException('No legal customer found for customer_id ' .$customer_id);
+            }
+        $legal_customer->setFrozen($frozen);
+
+        $em = $this->getDoctrine()->getEntityManager();
+        $em->flush();
+
+        return new Response();
+    }
+
+    //delete a legal customer
+    public function removeLegalCustomerAction($customer_id)
+    {
+        $legal_customer = $this->getDoctrine()
+                    ->getRepository('StockAccountBundle:LegalCustomer')
+                    ->find($customer_id);
+    
+        if(!$legal_customer){
+                throw $this->createNotFoundException('No legal customer found for customer_id ' .$customer_id);
+            }
+    
+        $em = $this->getDoctrine()->getEntityManager();
+        $em->remove($legal_customer);
+        $em->flush();
+
+        return new Response();
+    }
+
+
 }

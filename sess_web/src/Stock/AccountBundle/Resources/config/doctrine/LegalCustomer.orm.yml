@@ -1,7 +1,7 @@
-# src/Stock/AccountBundle/Resources/config/doctrine/NaturalCustomer.orm.yml
-Stock\AccountBundle\Entity\NaturalCustomer:
+# src/Stock/AccountBundle/Resources/config/doctrine/LegalCustomer.orm.yml
+Stock\AccountBundle\Entity\LegalCustomer:
     type: entity
-    table: natural_customer
+    table: legal_customer
     id:
         customer_id:
             type: string
@@ -10,28 +10,26 @@ Stock\AccountBundle\Entity\NaturalCustomer:
         name:
             type: string
             length: 100
+        legal_register_number:
+            type: string
+            length: 100
         id_number:
             type: string
             length: 100
-        register_date:
-            type: date
-        gender:
+        license:
             type: string
             length: 100
-        address:
+        executor_name:
+            type: string
+            length: 100
+        executor_id:
+            type: string
+            length: 100
+        executor_address:
             type: text
-        occupation:
-            type: text
-        educational_background:
-            type: text
-        company_or_organization:
-            type: text
-        tel:
+        executor_tel:
             type: string
             length: 20
-        agent_id:
-            type: string
-            length: 100
         bank:
             type: string
             length: 100
