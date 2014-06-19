@@ -26,11 +26,11 @@
             <span class="icon-bar"></span>
 
           </button>
-          <a class="navbar-brand" href="#">欢迎</a>
+          <a class="navbar-brand" href="{{path("index")}}">欢迎</a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Lake</a></li>
+            <li class="active">Lake</li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
             <li><a href="{{ path("logout") }}">登出</a></li>
@@ -49,7 +49,7 @@
     
     
 	    <ol class="breadcrumb">
-	  		<li><a href="#">主界面</a></li>
+	  		<li><a href="{{path("index")}}">主界面</a></li>
 	  		<li class="active">账户补办</li>
 			</ol>
 			
@@ -66,11 +66,6 @@
 
 				  <!-- Table -->
 				<form class="form-horizontal" role="form" action="{{ path('postRegister_api') }}" method="post">	
-				  <table class="table" >
-				  	
-						
-						
-						
 						<div class="col-md-3" >
 				  	</div>
 				  	<div class="col-md-6" >
@@ -82,12 +77,11 @@
 						<br /> <br />
 
 						<div class="col-md-6" align="center">
-						  <button type="button" class="btn btn-success btn-lg btn-block" type="submit">提交</button>
+						  <button role="button" class="btn btn-success btn-lg btn-block" type="submit">提交</button>
 						</div>
 						<div class="col-md-6" align="center">
-						  <button type="button" class="btn btn-danger btn-lg btn-block">取消</button>
+						  <a role="button" class="btn btn-danger btn-lg btn-block" href="{{path('index')}}">取消</a>
 						</div>
-					</table>
 				</form>	
 		   	  </div>
       </div>  

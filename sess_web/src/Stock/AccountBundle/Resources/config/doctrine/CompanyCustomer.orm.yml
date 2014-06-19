@@ -1,0 +1,48 @@
+# src/Stock/AccountBundle/Resources/config/doctrine/CompanyCustomer.orm.yml
+Stock\AccountBundle\Entity\CompanyCustomer:
+    type: entity
+    table: company_customer
+    id:
+        customer_id:
+            type: string
+            length: 100
+    fields:
+        register_id:
+            type: string
+            length: 100
+        license_id:
+            type: string
+            length: 100
+        id_number:
+            type: string
+            length: 100
+        name:
+            type: string
+            length: 100
+        phone:
+            type: string
+            length: 100
+        address:
+            type: text
+        auth_name:
+            type: string
+            length: 100
+        auth_id:
+            type: string
+            length: 100
+        auth_phone:
+            type: string
+            length: 20
+        auth_address:
+            type: text
+        agent_id:
+            type: string
+            length: 100
+        bank:
+            type: string
+            length: 100
+        assets_number:
+            type: string
+            length: 100
+        frozen:
+            type: boolean

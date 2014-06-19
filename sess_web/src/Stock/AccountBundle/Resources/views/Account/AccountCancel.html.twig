@@ -49,7 +49,7 @@
     
     
 	    <ol class="breadcrumb">
-	  		<li><a href="#">主界面</a></li>
+	  		<li><a href="{{path('index')}}">主界面</a></li>
 	  		<li class="active">账户注销</li>
 			</ol>
 			
@@ -82,10 +82,10 @@
 						<br /> <br />
 
 						<div class="col-md-6" align="center">
-						  <button type="button" class="btn btn-success btn-lg btn-block" type="submit">提交</button>
+                          <button role="button" class="btn btn-success btn-lg btn-block" type="submit">提交</button>
 						</div>
 						<div class="col-md-6" align="center">
-						  <button type="button" class="btn btn-danger btn-lg btn-block">取消</button>
+						  <a role="button" class="btn btn-danger btn-lg btn-block" href="{{path('index')}}">取消</a>
 						</div>
 					</table>
 				</form>

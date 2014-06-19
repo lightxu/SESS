@@ -44,12 +44,12 @@ class AccountController extends Controller
         //the following is the same as opening natural 
         if (strcmp($type, 'edit') == 0 || strcmp($type, 'reopen') == 0)
         {
-            $customer_id = $request->query->get('type');
+            $customer_id = $request->query->get('customer_id');
             if ($customer_id == null)
                 throw $this->createNotFoundException('No company customer found for customer_id' . $customer_id);
             $customer = $this->showCompanyCustomerAction($customer_id);
             $this->removeCompanyCustomerAction($customer_id);
-            return $this->render('StockAccountBundle:Account:OpenComapny.html.twig', array("is_open" => false, "customer" => $customer));
+            return $this->render('StockAccountBundle:Account:OpenCompany.html.twig', array("is_open" => false, "customer" => $customer));
         }
         else
             return $this->render('StockAccountBundle:Account:OpenCompany.html.twig', array("is_open" => true));
@@ -79,7 +79,7 @@ class AccountController extends Controller
     //show the web page of reporting the loss of the account
     public function reportLossAction(Request $request)
     {
-        request->query->get('id');
+        $request->query->get('id');
         
         return $this->render('StockAccountBundle:Account:ReportLoss.html.twig');
     }
@@ -211,7 +211,7 @@ class AccountController extends Controller
         //confirm the create
         if ($confirm == 1)
         {
-            $this->updateNaturalCustomerAction($customer_id, false);
+            $this->updateCompanyCustomerAction($customer_id, false);
             return $this->redirect($this->generateUrl('index') . "?notice=公司证券帐户创建成功，id为" . $customer_id);
         }
         // return to change the information
@@ -223,72 +223,59 @@ class AccountController extends Controller
     //the api for reporting the loss of the account
     public function reportLossApiAction(Request $request)
     {
-        $id  = $request->request->get('id');
-        $type = $request->request->get('type');
-        $token = $request->request->get('token');
-        
-        if ($id == null || $type == null || $token == null)
-            return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
-        
-        // Notice that token for each admin should be different
-        // This will be implemented later
-        // TODO: verify token
-        $token_error = false;
-        if ($token_error)
-            return $this->makeResponse(self::STATUS_UNAUTHORIZED_ERROR);
-        
-        if (strcmp($type, "personal") != 0 && strcmp($type, "company") != 0)                
-            return $this->makeResponse(self::STATUS_FORMAT_ERROR);
+        $id = $request->request->get('id');
+        if (($find = $this->findNaturalCustomerAction($id)) != null)
+        {
+            $customer_id = $find->getCustomerId();
+            $this->updateNaturalCustomerAction($customer_id, true);
+            return $this->redirect($this->generateUrl('index') . "?notice=个人证券帐户挂失成功，id为" . $customer_id);
+        }
+        else if ($this->checkCompanyCustomerAction($id))
+        {
+            $this->updateCompanyCustomerAction($id, true);
+            return $this->redirect($this->generateUrl('index') . "?notice=企业证券帐户挂失成功，id为" . $id);
+        }
+        else
+            return $this->redirect($this->generateUrl('reportLoss_page'));
             
-        // TODO: accessing db
-        $db_error = false;
-        $stock_error = false;
-        $account_error = false;
-        if ($db_error)
-            return $this->makeResponse(self::STATUS_DB_ERROR);
-        if ($stock_error)
-            return $this->makeResponse(self::STATUS_STOCK_ERROR);
-        if ($account_error)
-            return $this->makeResponse(self::STATUS_ACCOUNT_ERROR);
-        
-        return $this->makeResponse(self::STATUS_SUCCESS);
     }
     
     //the api for register the account
     public function postRegisterApiAction(Request $request)
     {
-        //TODO: accessing db
-        $db_error = false;
-        $stock_error = false;
-        $account_error = false;
-        if ($db_error)
-            return $this->makeResponse(self::STATUS_DB_ERROR);
-        if ($stock_error)
-            return $this->makeResponse(self::STATUS_STOCK_ERROR);
-        if ($account_error)
-            return $this->makeResponse(self::STATUS_ACCOUNT_ERROR);
-        
-        return $this->makeResponse(self::STATUS_SUCCESS);
+        $id = $request->request->get('id');
+        if (($find = $this->findNaturalCustomerAction($id)) != null)
+        {
+            $customer_id = $find->getCustomerId();
+            $this->updateNaturalCustomerAction($customer_id, false);
+            return $this->redirect($this->generateUrl('index') . "?notice=个人证券帐户补办成功，id为" . $customer_id);
+        }
+        else if ($this->checkCompanyCustomerAction($id))
+        {
+            $this->updateCompanyCustomerAction($id, true);
+            return $this->redirect($this->generateUrl('index') . "?notice=企业证券帐户补办成功，id为" . $id);
+        }
+        else
+            throw $this->createNotFoundException('No natural or company customer found for id' . $id);
     }
     
     //the api for cancelling an account
     public function cancelApiAction(Request $request)
     {
-        $id  = $request->request->get('id');
-        $type = $request->request->get('type');
-        $token = $request->request->get('token');
-        //TODO: accessing db
-        $db_error = false;
-        $stock_error = false;
-        $account_error = false;
-        if ($db_error)
-            return $this->makeResponse(self::STATUS_DB_ERROR);
-        if ($stock_error)
-            return $this->makeResponse(self::STATUS_STOCK_ERROR);
-        if ($account_error)
-            return $this->makeResponse(self::STATUS_ACCOUNT_ERROR);
-        
-        return $this->makeResponse(self::STATUS_SUCCESS);
+        $id = $request->request->get('id');
+        if (($find = $this->findNaturalCustomerAction($id)) != null)
+        {
+            $customer_id = $find->getCustomerId();
+            $this->removeNaturalCustomerAction($customer_id);
+            return $this->redirect($this->generateUrl('index') . "?notice=个人证券帐户销户成功，id为" . $customer_id);
+        }
+        else if ($this->checkCompanyCustomerAction($id))
+        {
+            $this->removeCompanyCustomerAction($id);
+            return $this->redirect($this->generateUrl('index') . "?notice=企业证券帐户销户成功，id为" . $id);
+        }
+        else
+            throw $this->createNotFoundException('No natural or company customer found for id' . $id);
     }
     
     //the function used to check whether the person is a personnel
@@ -345,14 +332,26 @@ class AccountController extends Controller
     private function findNaturalCustomerAction($id)
     {
         $natural_customer = $this->getDoctrine()
-                 ->getRepository('StockAccountBundle:CompanyCustomer')
-                 ->find($id);
-        if (natural_customer != null)
-            return natural_customer;
+                 ->getRepository('StockAccountBundle:NaturalCustomer')
+                 ->findOneBy(
+                    array('id_number' => $id)
+                 );
+        if ($natural_customer != null)
+            return $natural_customer;
         else
             return null;
     }
     
+    private function findCompanyCustomerAction($id)
+    {
+        $company_customer = $this->getDoctrine()
+                 ->getRepository('StockAccountBundle:CompanyCustomer')
+                 ->findBy($id);
+        if ($company_customer != null)
+            return $company_customer;
+        else
+            return null;
+    }
     //query for natural customer
     private function showNaturalCustomerAction($customer_id)
     {
@@ -477,7 +476,7 @@ class AccountController extends Controller
             throw $this->createNotFoundException('No company customer found for customer_id' . $customer_id);
         // return get_object_vars($company_customer);
         $customer = array();
-        $customer['id'] = $company_customer->getCustomerId();
+        $customer['customer_id'] = $company_customer->getCustomerId();
         $customer['name']  = $company_customer->getName();
         $customer['phone'] = $company_customer->getPhone();
         $customer['address'] = $company_customer->getAddress();
@@ -488,7 +487,6 @@ class AccountController extends Controller
         $customer['auth_id'] = $company_customer->getAuthId();
         $customer['auth_address'] = $company_customer->getAuthAddress();
         $customer['auth_phone'] = $company_customer->getAuthPhone();
-        // TODO: get agent information
         $customer['agent_id'] = $company_customer->getAgentId();
         $customer['bank'] = $company_customer->getBank();
         $customer['assets_number'] = $company_customer->getAssetsNumber();

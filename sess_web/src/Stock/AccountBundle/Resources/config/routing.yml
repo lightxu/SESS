@@ -34,12 +34,12 @@ confirmPersonal_api:
     methods: [GET]
 
 confirmCompany_page:
-    path: /accounts/confirmconpany
+    path: /accounts/viewcompany
     defaults: {_controller: StockAccountBundle:Account:confirmCompany}
     methods: [GET]
     
 confirmCompany_api:
-    path: /accounts/confirmconpany
+    path: /accounts/confirmcompany
     defaults: {_controller: StockAccountBundle:Account:confirmCompanyApi}
     methods: [GET]
     
