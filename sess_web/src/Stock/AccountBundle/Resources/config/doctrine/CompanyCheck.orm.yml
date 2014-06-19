@@ -1,0 +1,18 @@
+# src/Stock/AccountBundle/Resources/config/doctrine/CompanyCheck.orm.yml
+Stock\AccountBundle\Entity\CompanyCheck:
+    type: entity
+    table: company_check
+    id:
+        company_register_number:
+            type: string
+            length: 100
+    fields:
+        license:
+            type: string
+            length: 100
+        id_number:
+            type: string
+            length: 100
+        name:
+            type: string
+            length: 100

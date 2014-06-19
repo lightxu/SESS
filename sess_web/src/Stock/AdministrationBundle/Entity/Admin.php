@@ -1,79 +1,160 @@
 <?php
+
 namespace Stock\AdministrationBundle\Entity;
 
-class Admin
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
+
+
+/**
+ * Admin
+ */
+class Admin implements UserInterface, \Serializable
 {
-
-    protected $admin_id;
-    protected $admin_password;
-    protected $admin_bank;
+    /**
+     * @var integer
+     */
+    private $id;
 
     /**
-     * Set admin_id
+     * @var string
+     */
+    private $username;
+
+    /**
+     * @var string
+     */
+    private $password;
+
+    /**
+     * @var boolean
+     */
+    private $isActive;
+
+    /**
+     * @var string
+     */
+    private $bankname;
+
+
+    /**
+     * Get id
      *
-     * @param string $adminId
+     * @return integer 
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set username
+     *
+     * @param string $username
      * @return Admin
      */
-    public function setAdminId($adminId)
+    public function setUsername($username)
     {
-        $this->admin_id = $adminId;
+        $this->username = $username;
 
         return $this;
     }
 
     /**
-     * Get admin_id
+     * Get username
      *
      * @return string 
      */
-    public function getAdminId()
+    public function getUsername()
     {
-        return $this->admin_id;
+        return $this->username;
     }
 
     /**
-     * Set admin_password
+     * Get password
      *
-     * @param string $adminPassword
+     * @return string 
+     */
+    public function getPassword()
+    {
+        return $this->password;
+    }
+
+    /**
+     * Set isActive
+     *
+     * @param boolean $isActive
      * @return Admin
      */
-    public function setAdminPassword($adminPassword)
+    public function setIsActive($isActive)
     {
-        $this->admin_password = $adminPassword;
+        $this->isActive = $isActive;
 
         return $this;
     }
 
     /**
-     * Get admin_password
+     * Get isActive
      *
-     * @return string 
+     * @return boolean 
      */
-    public function getAdminPassword()
+    public function getIsActive()
     {
-        return $this->admin_password;
+        return $this->isActive;
     }
 
     /**
-     * Set admin_bank
+     * Set bankname
      *
-     * @param string $adminBank
+     * @param string $bankname
      * @return Admin
      */
-    public function setAdminBank($adminBank)
+    public function setBankname($bankname)
     {
-        $this->admin_bank = $adminBank;
+        $this->bankname = $bankname;
 
         return $this;
     }
 
     /**
-     * Get admin_bank
+     * Get bankname
      *
      * @return string 
      */
-    public function getAdminBank()
+    public function getBankname()
     {
-        return $this->admin_bank;
+        return $this->bankname;
+    }
+    
+    public function getSalt()
+    {
+        return null;
+    }
+    
+    public function getRoles()
+    {
+        return array('ROLE_ADMIN');
+    }
+    
+    public function eraseCredentials()
+    {
+    }
+    
+    public function serialize()
+    {
+        return serialize(array(
+            $this->id,
+            $this->username,
+            $this->password    
+        ));
+    }
+    
+    public function unserialize($serialized)
+    {
+        list(
+            $this->id,
+            $this->username,
+            $this->password
+        ) = unserialize($serialized);
     }
 }

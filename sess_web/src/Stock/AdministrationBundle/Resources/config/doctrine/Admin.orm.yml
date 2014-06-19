@@ -1,15 +1,22 @@
-# src/Stock/AdministrationBundle/Resources/config/doctrine/Admin.orm.yml
 Stock\AdministrationBundle\Entity\Admin:
     type: entity
-    table: admin
+    table: null
     id:
-        admin_id:
-            type: string
-            length: 100
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
     fields:
-        admin_password:
+        username:
             type: string
-            length: 100
-        admin_bank:
+            length: 255
+        password:
             type: string
-            length: 100
+            length: 255
+        isActive:
+            type: boolean
+        bankname:
+            type: string
+            length: 255
+    lifecycleCallbacks: {  }

@@ -35,9 +35,6 @@ Stock\AccountBundle\Entity\CompanyCustomer:
             length: 20
         auth_address:
             type: text
-        agent_id:
-            type: string
-            length: 100
         bank:
             type: string
             length: 100

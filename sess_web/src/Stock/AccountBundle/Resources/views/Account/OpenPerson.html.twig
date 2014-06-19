@@ -31,10 +31,10 @@
                 <a class="navbar-brand" href="{{path('index')}}">欢迎</a>
             </div>
             <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li class="active">Lake
-                    </li>
-                </ul>
+                  <ul class="nav navbar-nav">
+                    <li><p class="navbar-text">管理员: {{username}}<p></li>
+                    <li><p class="navbar-text">营业部: {{bankname}}<p></li>
+                  </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="{{ path("logout") }}">登出</a>
                     </li>
@@ -43,12 +43,18 @@
             <!--/.nav-collapse -->
         </div>
     </div>
-    {% if notice %}
+    {% for notice in app.session.flashbag.get('notice') %}
         <div class="alert alert-success alert-dismissable">
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            {{notice}}
+            {{ notice }}
         </div>
-    {% endif %}
+    {% endfor %}
+    {% for alert in app.session.flashbag.get('alert') %}
+        <div class="alert alert-danger alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            {{ alert }}
+        </div>
+    {% endfor %}
     <div class="container">
         <div class="bigtitle">
             <h1 style="font-size:62px">证券账户系统</h1>
@@ -153,6 +159,20 @@
                                 <input type="text" class="form-control" name="tel">
                             {% else %}
                                 <input type="text" class="form-control" name="tel" value="{{customer['tel']}}">
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <br />
+                    <br />
+                    
+                    <div class="col-md-6">
+                        <div class="input-group">
+                            <span class="input-group-addon">代办人身份证号码</span>
+                            {% if is_open %}
+                                <input type="text" class="form-control" name="agent_id">
+                            {% else %}
+                                <input type="text" class="form-control" name="agent_id" value="{{customer['agent_id']}}">
                             {% endif %}
                         </div>
                     </div>

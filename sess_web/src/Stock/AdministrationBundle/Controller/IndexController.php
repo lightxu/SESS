@@ -9,6 +9,7 @@ class IndexController extends Controller
     public function indexAction(Request $request)
     {
         $notice = $request->query->get("notice");
-        return $this->render('StockAdministrationBundle:Index:index.html.twig', array("notice" => $notice));
+        $admin = $this->getUser();
+        return $this->render('StockAdministrationBundle:Index:index.html.twig', array("username" => $admin->getUsername(), "bankname" => $admin->getBankname()));
     }
 }

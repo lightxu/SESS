@@ -17,7 +17,6 @@ class CompanyCustomer
     protected $auth_address;
     protected $auth_phone;
     
-    protected $agent_id;
     protected $bank;
     protected $assets_number;
     protected $frozen;
@@ -217,19 +216,7 @@ class CompanyCustomer
     {
         return $this->auth_phone;
     }
-
-    public function setAgentId($agentId)
-    {
-        $this->agent_id = $agentId;
-        
-        return $this;
-    }
     
-    public function getAgentId()
-    {
-        return $this->agent_id;
-    }
-
     /**
      * Set bank
      *

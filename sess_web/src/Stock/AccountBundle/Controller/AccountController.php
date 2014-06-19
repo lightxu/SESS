@@ -19,6 +19,7 @@ class AccountController extends Controller
         $type = $request->query->get('type');
         if ($type == null)
             $type = 'open';
+        $admin = $this->getUser();
         //change the information
         if (strcmp($type, 'edit') == 0 || strcmp($type, 'reopen') == 0)
         {
@@ -29,10 +30,10 @@ class AccountController extends Controller
             $customer = $this->showNaturalCustomerAction($customer_id);
             $this->removeNaturalCustomerAction($customer_id);
             //open the according page
-            return $this->render('StockAccountBundle:Account:OpenPerson.html.twig', array("is_open" => false, "customer" => $customer));
+            return $this->render('StockAccountBundle:Account:OpenPerson.html.twig', array("is_open" => false, "customer" => $customer, "username" => $admin->getUsername(), "bankname" => $admin->getBankname()));
         }
         else
-            return $this->render('StockAccountBundle:Account:OpenPerson.html.twig', array("is_open" => true));
+            return $this->render('StockAccountBundle:Account:OpenPerson.html.twig', array("is_open" => true, "username" => $admin->getUsername(), "bankname" => $admin->getBankname()));
     }
     //show the web page of opening an account of a company
     public function openCompanyAction(Request $request)
@@ -41,6 +42,7 @@ class AccountController extends Controller
         $type = $request->query->get('type');
         if ($type == null)
             $type = 'open';
+        $admin = $this->getUser();
         //the following is the same as opening natural 
         if (strcmp($type, 'edit') == 0 || strcmp($type, 'reopen') == 0)
         {
@@ -49,18 +51,23 @@ class AccountController extends Controller
                 throw $this->createNotFoundException('No company customer found for customer_id' . $customer_id);
             $customer = $this->showCompanyCustomerAction($customer_id);
             $this->removeCompanyCustomerAction($customer_id);
-            return $this->render('StockAccountBundle:Account:OpenCompany.html.twig', array("is_open" => false, "customer" => $customer));
+            return $this->render('StockAccountBundle:Account:OpenCompany.html.twig', array("is_open" => false, "customer" => $customer, "username" => $admin->getUsername(), "bankname" => $admin->getBankname()));
         }
         else
-            return $this->render('StockAccountBundle:Account:OpenCompany.html.twig', array("is_open" => true));
+            return $this->render('StockAccountBundle:Account:OpenCompany.html.twig', array("is_open" => true, "username" => $admin->getUsername(), "bankname" => $admin->getBankname()));
     }
     //show the web page of confirming the information of a person
     public function confirmPersonalAction(Request $request)
     {
         $customer_id = $request->query->get('customer_id');
-        //no such is, report the error
         if ($customer_id == null)
-            return $this->makeResponse(STATUS_ARGUMENT_ERROR);
+        {
+            $this->get('session')->getFlashBag()->add(
+                'alert',
+                '用户ID('.$customer_id.')未找到。'
+            );
+            return $this->redirect($this->generateUrl('index'));
+        }
         //show the information of customer
         $customer = $this->showNaturalCustomerAction($customer_id);
         // return new Response(var_dump($customer));
@@ -72,7 +79,11 @@ class AccountController extends Controller
     {
         $customer_id = $request->query->get('customer_id');
         if ($customer_id == null)
-            return $this->makeResponse(STATUS_ACCOUNT_ERROR);
+            $this->get('session')->getFlashBag()->add(
+                'alert',
+                '用户ID('.$customer_id.')未找到。'
+            );
+            return $this->redirect($this->generateUrl('index'));
         $customer = $this->showCompanyCustomerAction($customer_id);
         return $this->render('StockAccountBundle:Account:ConfirmCompany.html.twig', $customer);
     }
@@ -80,35 +91,23 @@ class AccountController extends Controller
     public function reportLossAction(Request $request)
     {
         $request->query->get('id');
+        $admin = $this->getUser();
         
-        return $this->render('StockAccountBundle:Account:ReportLoss.html.twig');
+        return $this->render('StockAccountBundle:Account:ReportLoss.html.twig', array("username" => $admin->getUsername(), "bankname" => $admin->getBankname()));
     }
     //show the web page of registering a new account
     public function postRegisterAction()
     {
-        return $this->render('StockAccountBundle:Account:PostRegister.html.twig');
+        $admin = $this->getUser();
+        return $this->render('StockAccountBundle:Account:PostRegister.html.twig', array("username" => $admin->getUsername(), "bankname" => $admin->getBankname()));
     }
     //show the web page of cancelling the account
     public function cancelAction()
     {
-        return $this->render('StockAccountBundle:Account:AccountCancel.html.twig');
+        $admin = $this->getUser();
+        return $this->render('StockAccountBundle:Account:AccountCancel.html.twig', array("username" => $admin->getUsername(), "bankname" => $admin->getBankname()));
     }
-    
-    //define the error code for later use
-    const STATUS_SUCCESS = "success";
-    const STATUS_ARGUMENT_ERROR = "too few arguments";
-    const STATUS_FORMAT_ERROR = "invalid arguments";
-    const STATUS_DB_ERROR = "database error";
-    const STATUS_STOCK_ERROR = "insufficient amount";
-    const STATUS_ACCOUNT_ERROR = "invalid account";
-    
-    //function used to report of the status
-    private function makeResponse($status)
-    {
-        $data["status"] = $status;
-        return new Response('<h1>'.$status.'</h1>');
-    }
-    
+  
     //the api for opening an account for a person
     public function openPersonalApiAction(Request $request)
     {
@@ -126,37 +125,59 @@ class AccountController extends Controller
         $customer['educational_background'] = $request->request->get('educational_background');
         $customer['company_or_organization'] = $request->request->get('company_or_organization');
         $customer['tel'] = $request->request->get('tel');
-        // TODO: get agent information
-        $customer['agent_id'] = '1';
-        $customer['bank'] = 'Laohe Branch';
+        $customer['agent_id'] = $request->request->get('agent_id');
+        if ($customer['agent_id'] == null)
+            $customer['agent_id'] = '';
+        $admin = $this->getUser();
+        $customer['bank'] = $admin->getBankname();
         
         // Check arguments existence
         foreach ($customer as $key => $value)
             if ($value == null)
-                return $this->makeResponse(self::STATUS_FORMAT_ERROR . " " . $key);
+            {                
+                $this->get('session')->getFlashBag()->add(
+                    'alert',
+                    '表单未填写完整。'
+                );
+                return $this->render('StockAccountBundle:Account:OpenPerson.html.twig', array("is_open" => false, "customer" => $customer, "username" => $admin->getUsername(), "bankname" => $admin->getBankname()));
+            }
         
         // Check personnel
         if ($this->checkPersonnel($customer['id_number']))
-            return $this->redirect($this->generateUrl('openPersonal_page') . "?notice=从业人员不能开设账户");
+        {
+            $this->get('session')->getFlashBag()->add(
+                'alert',
+                '从业人员不能开设账户。'
+            );
+            return $this->render('StockAccountBundle:Account:OpenPerson.html.twig', array("is_open" => false, "customer" => $customer, "username" => $admin->getUsername(), "bankname" => $admin->getBankname()));
+        }
             
         // Check age
         $birthdate = substr($customer['id_number'], 6, 4);
         $intbirth = intval($birthdata);
-        if (2014 - $intbirth <= 18)
-            return $this->redirect($this->generateUrl('openPersonal_page') . "?notice=小于18岁不能开设账户");
-        // TODO
+        if (2014 - $intbirth <= 18 && strcmp($customer['agent_id'], '') == 0)
+        {
+            $this->get('session')->getFlashBag()->add(
+                'alert',
+                '小于18岁不能开设账户。'
+            );
+            return $this->render('StockAccountBundle:Account:OpenPerson.html.twig', array("is_open" => true, "username" => $admin->getUsername(), "bankname" => $admin->getBankname()));
+        }
         
         //check same idnumber
         if ($this->findNaturalCustomerAction($customer['id_number']))
-            return $this->redirect($this->generateUrl('openPersonal_page') . "?notice=该身份证已创建过账户");
-
-            //create the natural customer
-        $db_error = $this->createNaturalCustomerAction($customer);
-        if ($db_error)
-            return $this->makeResponse(self::STATUS_DB_ERROR);
-        //return $this->redirect($this->generateUrl('openPersonal_page') . "?notice=从业人员不能开设账户");
-            
-        //return $this->redirect($this->generateUrl('confirmPersonal_page') . '?customer_id=' . $customer['id']);
+        {
+            $this->get('session')->getFlashBag()->add(
+                'alert',
+                '该身份证已创建过账户。'
+            );
+            return $this->render('StockAccountBundle:Account:OpenPerson.html.twig', array("is_open" => true, "username" => $admin->getUsername(), "bankname" => $admin->getBankname()));
+        }
+        
+        //create the natural customer
+        $this->createNaturalCustomerAction($customer);
+        
+        return $this->redirect($this->generateUrl('confirmPersonal_page') . '?customer_id=' . $customer['id']);
     }
     
     //the api for opening an account for a company
@@ -176,22 +197,32 @@ class AccountController extends Controller
         $customer['auth_id'] = $request->request->get('auth_id');
         $customer['auth_phone'] = $request->request->get('auth_phone');
         $customer['auth_address'] = $request->request->get('auth_address');
-        // TODO: get agent information
-        $customer['agent_id'] = '1';
-        $customer['bank'] = 'Laohe Branch';
+        $admin = $this->getUser();
+        $customer['bank'] = $admin->getBankname();
         // Check arguments existence
         foreach ($customer as $key => $value)
             if ($value == null)
-                return $this->makeResponse(self::STATUS_FORMAT_ERROR . " " . $key);
+            {
+                $this->get('session')->getFlashBag()->add(
+                    'alert',
+                    '表单未填写完整。'
+                );
+                return $this->render('StockAccountBundle:Account:OpenCompany.html.twig', array("is_open" => false, "customer" => $customer, "username" => $admin->getUsername(), "bankname" => $admin->getBankname()));
+            }
         
         // Check personnel
         if ($this->checkPersonnel($customer['auth_id']) || $this->checkPersonnel($customer['id_number']))
-            return $this->redirect($this->generateUrl('openCompany_page') . "?notice=从业人员不能开设账户");
+        {
+            $this->get('session')->getFlashBag()->add(
+                'alert',
+                '从业人员不得开设证券账户。'
+            );
+            return $this->render('StockAccountBundle:Account:OpenCompany.html.twig', array("is_open" => true, "username" => $admin->getUsername(), "bankname" => $admin->getBankname()));
+        }
+
         
         //create the company customer
-        $db_error = $this->createCompanyCustomerAction($customer);
-        if ($db_error)
-            return $this->makeResponse(self::STATUS_DB_ERROR);
+        $this->createCompanyCustomerAction($customer);
         
         return $this->redirect($this->generateUrl('confirmCompany_page') . '?customer_id=' . $customer['id']);
     }
@@ -205,7 +236,11 @@ class AccountController extends Controller
         if ($confirm == 1)
         {
             $this->updateNaturalCustomerAction($customer_id, false);
-            return $this->redirect($this->generateUrl('index') . "?notice=个人证券帐户创建成功，id为" . $customer_id);
+            $this->get('session')->getFlashBag()->add(
+                'notice',
+                '个人证券帐户创建成功，id为' . $customer_id
+            );
+            return $this->redirect($this->generateUrl('index'));
         }
         //return to change the information
         else
@@ -221,7 +256,11 @@ class AccountController extends Controller
         if ($confirm == 1)
         {
             $this->updateCompanyCustomerAction($customer_id, false);
-            return $this->redirect($this->generateUrl('index') . "?notice=公司证券帐户创建成功，id为" . $customer_id);
+            $this->get('session')->getFlashBag()->add(
+                'notice',
+                '个人证券帐户创建成功，id为' . $customer_id
+            );
+            return $this->redirect($this->generateUrl('index'));
         }
         // return to change the information
         else
@@ -237,15 +276,29 @@ class AccountController extends Controller
         {
             $customer_id = $find->getCustomerId();
             $this->updateNaturalCustomerAction($customer_id, true);
-            return $this->redirect($this->generateUrl('index') . "?notice=个人证券帐户挂失成功，id为" . $customer_id);
+            $this->get('session')->getFlashBag()->add(
+                'notice',
+                "notice=个人证券帐户挂失成功，id为" . $customer_id
+            );
+            return $this->redirect($this->generateUrl('index'));
         }
         else if ($this->checkCompanyCustomerAction($id))
         {
             $this->updateCompanyCustomerAction($id, true);
-            return $this->redirect($this->generateUrl('index') . "?notice=企业证券帐户挂失成功，id为" . $id);
+            $this->get('session')->getFlashBag()->add(
+                'notice',
+                "企业证券帐户挂失成功，id为" . $id
+            );
+            return $this->redirect($this->generateUrl('index'));
         }
         else
-            return $this->redirect($this->generateUrl('reportLoss_page') . "?notice=该身份账号不存在");
+        {
+            $this->get('session')->getFlashBag()->add(
+                'alert',
+                "该身份账号不存在"
+            );
+            return $this->redirect($this->generateUrl('reportLoss_page'));
+        }
     }
     
     //the api for register the account
@@ -256,15 +309,29 @@ class AccountController extends Controller
         {
             $customer_id = $find->getCustomerId();
             $this->updateNaturalCustomerAction($customer_id, false);
-            return $this->redirect($this->generateUrl('index') . "?notice=个人证券帐户补办成功，id为" . $customer_id);
+            $this->get('session')->getFlashBag()->add(
+                'notice',
+                "个人证券帐户补办成功，id为" . $customer_id
+            );
+            return $this->redirect($this->generateUrl('index'));
         }
         else if ($this->checkCompanyCustomerAction($id))
         {
             $this->updateCompanyCustomerAction($id, true);
-            return $this->redirect($this->generateUrl('index') . "?notice=企业证券帐户补办成功，id为" . $id);
+            $this->get('session')->getFlashBag()->add(
+                'notice',
+                "企业证券帐户补办成功，id为" . $id
+            );
+            return $this->redirect($this->generateUrl('index'));
         }
         else
-            return $this->redirect($this->generateUrl('postRegister_page') . "?notice=该身份账号不存在");
+        {
+            $this->get('session')->getFlashBag()->add(
+                'alert',
+                "该身份账号不存在"
+            );
+            return $this->redirect($this->generateUrl('postRegister_page'));
+        }
     }
     
     //the api for cancelling an account
@@ -275,15 +342,29 @@ class AccountController extends Controller
         {
             $customer_id = $find->getCustomerId();
             $this->removeNaturalCustomerAction($customer_id);
-            return $this->redirect($this->generateUrl('index') . "?notice=个人证券帐户销户成功，id为" . $customer_id);
+            $this->get('session')->getFlashBag()->add(
+                'notice',
+                "个人证券帐户销户成功，id为" . $customer_id
+            );
+            return $this->redirect($this->generateUrl('index'));
         }
         else if ($this->checkCompanyCustomerAction($id))
         {
             $this->removeCompanyCustomerAction($id);
-            return $this->redirect($this->generateUrl('index') . "?notice=企业证券帐户销户成功，id为" . $id);
+            $this->get('session')->getFlashBag()->add(
+                'notice',
+                "企业证券帐户销户成功，id为" . $id
+            );
+            return $this->redirect($this->generateUrl('index'));
         }
         else
-            return $this->redirect($this->generateUrl('cancel_page') . "?notice=该身份账号不存在");
+        {
+            $this->get('session')->getFlashBag()->add(
+                'alert',
+                "该身份账号不存在"
+            );
+            return $this->redirect($this->generateUrl('cancel_page'));
+        }
     }
     
     //the function used to check whether the person is a personnel

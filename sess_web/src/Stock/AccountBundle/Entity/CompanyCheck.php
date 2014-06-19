@@ -1,10 +1,10 @@
 <?php
 namespace Stock\AccountBundle\Entity;
 
-class LegalCheck
+class CompanyCheck
 {
 
-    protected $legal_register_number;
+    protected $company_register_number;
 
     protected $name;
 
@@ -12,33 +12,33 @@ class LegalCheck
     protected $license;
 
     /**
-     * Set legal_register_number
+     * Set company_register_number
      *
-     * @param string $legalRegisterNumber
-     * @return LegalCheck
+     * @param string $companyRegisterNumber
+     * @return CompanyCheck
      */
-    public function setLegalRegisterNumber($legalRegisterNumber)
+    public function setCompanyRegisterNumber($companyRegisterNumber)
     {
-        $this->legal_register_number = $legalRegisterNumber;
+        $this->company_register_number = $companyRegisterNumber;
 
         return $this;
     }
 
     /**
-     * Get legal_register_number
+     * Get company_register_number
      *
      * @return string 
      */
-    public function getLegalRegisterNumber()
+    public function getCompanyRegisterNumber()
     {
-        return $this->legal_register_number;
+        return $this->company_register_number;
     }
 
     /**
      * Set license
      *
      * @param string $license
-     * @return LegalCheck
+     * @return CompanyCheck
      */
     public function setLicense($license)
     {
@@ -61,7 +61,7 @@ class LegalCheck
      * Set id_number
      *
      * @param string $idNumber
-     * @return LegalCheck
+     * @return CompanyCheck
      */
     public function setIdNumber($idNumber)
     {
@@ -84,7 +84,7 @@ class LegalCheck
      * Set name
      *
      * @param string $name
-     * @return LegalCheck
+     * @return CompanyCheck
      */
     public function setName($name)
     {
