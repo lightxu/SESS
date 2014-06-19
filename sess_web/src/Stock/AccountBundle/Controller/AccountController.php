@@ -137,17 +137,26 @@ class AccountController extends Controller
         
         // Check personnel
         if ($this->checkPersonnel($customer['id_number']))
-            return $this->makeResponse(self::STATUS_ACCOUNT_ERROR);
+            return $this->redirect($this->generateUrl('openPersonal_page') . "?notice=从业人员不能开设账户");
             
         // Check age
+        $birthdate = substr($customer['id_number'], 6, 4);
+        $intbirth = intval($birthdata);
+        if (2014 - $intbirth <= 18)
+            return $this->redirect($this->generateUrl('openPersonal_page') . "?notice=小于18岁不能开设账户");
         // TODO
         
-        //create the natural customer
+        //check same idnumber
+        if ($this->findNaturalCustomerAction($customer['id_number']))
+            return $this->redirect($this->generateUrl('openPersonal_page') . "?notice=该身份证已创建过账户");
+
+            //create the natural customer
         $db_error = $this->createNaturalCustomerAction($customer);
         if ($db_error)
             return $this->makeResponse(self::STATUS_DB_ERROR);
-        
-        return $this->redirect($this->generateUrl('confirmPersonal_page') . '?customer_id=' . $customer['id']);
+        //return $this->redirect($this->generateUrl('openPersonal_page') . "?notice=从业人员不能开设账户");
+            
+        //return $this->redirect($this->generateUrl('confirmPersonal_page') . '?customer_id=' . $customer['id']);
     }
     
     //the api for opening an account for a company
@@ -177,7 +186,7 @@ class AccountController extends Controller
         
         // Check personnel
         if ($this->checkPersonnel($customer['auth_id']) || $this->checkPersonnel($customer['id_number']))
-            return $this->makeResponse(self::STATUS_ACCOUNT_ERROR);
+            return $this->redirect($this->generateUrl('openCompany_page') . "?notice=从业人员不能开设账户");
         
         //create the company customer
         $db_error = $this->createCompanyCustomerAction($customer);
@@ -236,8 +245,7 @@ class AccountController extends Controller
             return $this->redirect($this->generateUrl('index') . "?notice=企业证券帐户挂失成功，id为" . $id);
         }
         else
-            return $this->redirect($this->generateUrl('reportLoss_page'));
-            
+            return $this->redirect($this->generateUrl('reportLoss_page') . "?notice=该身份账号不存在");
     }
     
     //the api for register the account
@@ -256,7 +264,7 @@ class AccountController extends Controller
             return $this->redirect($this->generateUrl('index') . "?notice=企业证券帐户补办成功，id为" . $id);
         }
         else
-            throw $this->createNotFoundException('No natural or company customer found for id' . $id);
+            return $this->redirect($this->generateUrl('postRegister_page') . "?notice=该身份账号不存在");
     }
     
     //the api for cancelling an account
@@ -275,7 +283,7 @@ class AccountController extends Controller
             return $this->redirect($this->generateUrl('index') . "?notice=企业证券帐户销户成功，id为" . $id);
         }
         else
-            throw $this->createNotFoundException('No natural or company customer found for id' . $id);
+            return $this->redirect($this->generateUrl('cancel_page') . "?notice=该身份账号不存在");
     }
     
     //the function used to check whether the person is a personnel
