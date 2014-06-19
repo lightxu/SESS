@@ -68,8 +68,11 @@ class AccountController extends Controller
             );
             return $this->redirect($this->generateUrl('index'));
         }
+        $admin = $this->getUser();
         //show the information of customer
         $customer = $this->showNaturalCustomerAction($customer_id);
+        $customer["username"] = $admin->getUsername();
+        $customer["bankname"] = $admin->getBankname();
         // return new Response(var_dump($customer));
         return $this->render('StockAccountBundle:Account:ConfirmPerson.html.twig', $customer);
     }
@@ -79,12 +82,17 @@ class AccountController extends Controller
     {
         $customer_id = $request->query->get('customer_id');
         if ($customer_id == null)
+        {
             $this->get('session')->getFlashBag()->add(
                 'alert',
                 '用户ID('.$customer_id.')未找到。'
             );
             return $this->redirect($this->generateUrl('index'));
+        }
+        $admin = $this->getUser();
         $customer = $this->showCompanyCustomerAction($customer_id);
+        $customer["username"] = $admin->getUsername();
+        $customer["bankname"] = $admin->getBankname();
         return $this->render('StockAccountBundle:Account:ConfirmCompany.html.twig', $customer);
     }
     //show the web page of reporting the loss of the account
@@ -127,7 +135,7 @@ class AccountController extends Controller
         $customer['tel'] = $request->request->get('tel');
         $customer['agent_id'] = $request->request->get('agent_id');
         if ($customer['agent_id'] == null)
-            $customer['agent_id'] = '';
+            $customer['agent_id'] = '空';
         $admin = $this->getUser();
         $customer['bank'] = $admin->getBankname();
         
@@ -153,9 +161,11 @@ class AccountController extends Controller
         }
             
         // Check age
+        $agentbirth = substr($customer['agent_id'], 6, 4);
+        $intagentbirth = intval($agentbirth);
         $birthdate = substr($customer['id_number'], 6, 4);
-        $intbirth = intval($birthdata);
-        if (2014 - $intbirth <= 18 && strcmp($customer['agent_id'], '') == 0)
+        $intbirth = intval($birthdate);
+        if ((2014 - $intbirth <= 18 && strcmp($customer['agent_id'], '空') == 0) || (2014 - $intbirth <= 18 && 2014-$intagentbirth <= 18))
         {
             $this->get('session')->getFlashBag()->add(
                 'alert',
@@ -274,15 +284,16 @@ class AccountController extends Controller
         $id = $request->request->get('id');
         if (($find = $this->findNaturalCustomerAction($id)) != null)
         {
+            
             $customer_id = $find->getCustomerId();
             $this->updateNaturalCustomerAction($customer_id, true);
             $this->get('session')->getFlashBag()->add(
                 'notice',
-                "notice=个人证券帐户挂失成功，id为" . $customer_id
+                "个人证券帐户挂失成功，id为" . $customer_id
             );
             return $this->redirect($this->generateUrl('index'));
         }
-        else if ($this->checkCompanyCustomerAction($id))
+        else if (($find = $this->findCompanyCustomerAction($id)) != null)
         {
             $this->updateCompanyCustomerAction($id, true);
             $this->get('session')->getFlashBag()->add(
@@ -307,6 +318,14 @@ class AccountController extends Controller
         $id = $request->request->get('id');
         if (($find = $this->findNaturalCustomerAction($id)) != null)
         {
+            if ($find->getFrozen() == 0)
+             {
+                 $this->get('session')->getFlashBag()->add(
+                     'alert',
+                     "该账户未曾挂失。"
+                 );
+                 return $this->redirect($this->generateUrl('reportLoss_page'));
+             }
             $customer_id = $find->getCustomerId();
             $this->updateNaturalCustomerAction($customer_id, false);
             $this->get('session')->getFlashBag()->add(
@@ -315,9 +334,17 @@ class AccountController extends Controller
             );
             return $this->redirect($this->generateUrl('index'));
         }
-        else if ($this->checkCompanyCustomerAction($id))
+        else if (($find = $this->findCompanyCustomerAction($id)) != null)
         {
-            $this->updateCompanyCustomerAction($id, true);
+            if ($find->getFrozen() == 0)
+            {
+                $this->get('session')->getFlashBag()->add(
+                    'alert',
+                    "该账户未曾挂失。"
+                );
+                return $this->redirect($this->generateUrl('reportLoss_page'));
+            }
+            $this->updateCompanyCustomerAction($id, false);
             $this->get('session')->getFlashBag()->add(
                 'notice',
                 "企业证券帐户补办成功，id为" . $id
@@ -435,7 +462,7 @@ class AccountController extends Controller
     {
         $company_customer = $this->getDoctrine()
                  ->getRepository('StockAccountBundle:CompanyCustomer')
-                 ->findBy($id);
+                 ->find($id);
         if ($company_customer != null)
             return $company_customer;
         else
@@ -534,7 +561,6 @@ class AccountController extends Controller
         $company_customer->setAuthAddress($customer['auth_address']);
         $company_customer->setAuthPhone($customer['auth_phone']);
         $company_customer->setBank($customer['bank']);
-        $company_customer->setAgentId($customer['agent_id']);
         $company_customer->setAssetsNumber('');
         $company_customer->setFrozen(true);
     
@@ -549,7 +575,10 @@ class AccountController extends Controller
         $company_customer = $this->getDoctrine()
                   ->getRepository('StockAccountBundle:CompanyCustomer')
                   ->find($customer_id);
-        return $company_customer != null;
+        if ($company_customer != null)
+            return $company_customer;
+        else
+            return null;
     }
     
     //query for company customer
@@ -576,7 +605,6 @@ class AccountController extends Controller
         $customer['auth_id'] = $company_customer->getAuthId();
         $customer['auth_address'] = $company_customer->getAuthAddress();
         $customer['auth_phone'] = $company_customer->getAuthPhone();
-        $customer['agent_id'] = $company_customer->getAgentId();
         $customer['bank'] = $company_customer->getBank();
         $customer['assets_number'] = $company_customer->getAssetsNumber();
         $customer['frozen'] = $company_customer->getFrozen();
