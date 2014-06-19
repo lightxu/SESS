@@ -24,14 +24,14 @@ openCompany_api:
     methods: [POST]
     
 confirmPersonal_page:
-    path: /accounts/confirmperson
+    path: /accounts/viewperson
     defaults: {_controller: StockAccountBundle:Account:confirmPersonal}
     methods: [GET]
 
 confirmPersonal_api:
     path: /accounts/confirmperson
     defaults: {_controller: StockAccountBundle:Account:confirmPersonalApi}
-    methods: [POST]
+    methods: [GET]
 
 confirmCompany_page:
     path: /accounts/confirmconpany
@@ -41,7 +41,7 @@ confirmCompany_page:
 confirmCompany_api:
     path: /accounts/confirmconpany
     defaults: {_controller: StockAccountBundle:Account:confirmCompanyApi}
-    methods: [POST]
+    methods: [GET]
     
 reportLoss_page:
     path: /accounts/report_loss

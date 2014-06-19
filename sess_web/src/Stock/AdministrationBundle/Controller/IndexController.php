@@ -2,11 +2,13 @@
 namespace Stock\AdministrationBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
 
 class IndexController extends Controller
 {
-    public function indexAction()
+    public function indexAction(Request $request)
     {
-        return $this->render('StockAdministrationBundle:Index:index.html.twig');
+        $notice = $request->query->get("notice");
+        return $this->render('StockAdministrationBundle:Index:index.html.twig', array("notice" => $notice));
     }
 }

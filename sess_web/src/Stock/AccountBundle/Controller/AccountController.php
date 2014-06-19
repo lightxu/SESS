@@ -2,18 +2,34 @@
 namespace Stock\AccountBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Stock\AccountBundle\Entity\NaturalCustomer;
+use Stock\AccountBundle\Entity\LegalCheck;
+use Stock\AccounteBundle\Entity\LegalCustomer;
+use Stock\AccountBundle\Entity\Personnel;
+
 use Stock\AccountBundle\Entity;
 
 class AccountController extends Controller
 {
-    /*public function indexAction()
-    {
-        return $this->render('StockAccountBundle:Account:index.html.twig');
-    }*/
     //show the web page of opening an account of a person
-    public function openPersonalAction()
+    public function openPersonalAction(Request $request)
     {
-        return $this->render('StockAccountBundle:Account:OpenPerson.html.twig');
+        $type = $request->query->get('type');
+        if ($type == null)
+            $type = 'open';
+        if (strcmp($type, 'edit') == 0 || strcmp($type, 'reopen') == 0)
+        {
+            $customer_id = $request->query->get('customer_id');
+            if ($customer_id == null)
+                throw $this->createNotFoundException('No natural customer found for customer_id' . $customer_id);
+            $customer = $this->showNaturalCustomerAction($customer_id);
+            $this->removeNaturalCustomerAction($customer_id);
+            return $this->render('StockAccountBundle:Account:OpenPerson.html.twig', array("is_open" => false, "customer" => $customer));
+        }
+        else
+            return $this->render('StockAccountBundle:Account:OpenPerson.html.twig', array("is_open" => true));
     }
     //show the web page of opening an account of a company
     public function openCompanyAction()
@@ -21,9 +37,14 @@ class AccountController extends Controller
         return $this->render('StockAccountBundle:Account:OpenCompany.html.twig');
     }
     //show the web page of confirming the information of a person
-    public function confirmPersonalAction()
+    public function confirmPersonalAction(Request $request)
     {
-        return $this->render('StockAccountBundle:Account:ConfirmPerson.html.twig');
+        $customer_id = $request->query->get('customer_id');
+        if ($customer_id == null)
+            return $this->makeResponse(STATUS_ARGUMENT_ERROR);
+        $customer = $this->showNaturalCustomerAction($customer_id);
+        // return new Response(var_dump($customer));
+        return $this->render('StockAccountBundle:Account:ConfirmPerson.html.twig', $customer);
     }
     //show the web page of confirming the information of a company
     public function confirmCompanyAction()
@@ -50,84 +71,74 @@ class AccountController extends Controller
     const STATUS_SUCCESS = "success";
     const STATUS_ARGUMENT_ERROR = "too few arguments";
     const STATUS_FORMAT_ERROR = "invalid arguments";
-    const STATUS_UNAUTHORIZED_ERROR = "unauthorized";
     const STATUS_DB_ERROR = "database error";
     const STATUS_STOCK_ERROR = "insufficient amount";
     const STATUS_ACCOUNT_ERROR = "invalid account";
     
-    private function makeResponse($status, $data=[])
+    private function makeResponse($status)
     {
         $data["status"] = $status;
-        $response = new Response(json_encode($data));
-        $response->headers->set('Content-Type', 'application/json');
-        return $response;
+        return new Response('<h1>'.$status.'</h1>');
     }
     
     //the api for opening an account for a person
     public function openPersonalApiAction(Request $request)
     {
-        $type = $request->request->get('type');
-        $name  = $request->request->get('name');
-        $gender = $request->request->get('gender');
-        $id_no = $request->request->get('id_no');
-        $address = $request->request->get('address');
-        $phone = $request->request->get('phone');
-        $token = $request->request->get('token');
-        $job = $request->request->get('job');
-        $education = $request->request->get('education');
-        $company = $request->request->get('company');
-        $commission_id = $request->request->get('commission_id');
+        $customer = array();
+        $customer['id'] = "P" . time();
+        while ($this->checkNaturalCustomerAction($customer['id']))
+            $customer['id'] = "P" . time();
         
+        $customer['name']  = $request->request->get('name');
+        $customer['id_number'] = $request->request->get('id_number');
+        $customer['register_date'] = new \DateTime();
+        $customer['gender'] = $request->request->get('gender');
+        $customer['address'] = $request->request->get('address');
+        $customer['occupation'] = $request->request->get('occupation');
+        $customer['educational_background'] = $request->request->get('educational_background');
+        $customer['company_or_organization'] = $request->request->get('company_or_organization');
+        $customer['tel'] = $request->request->get('tel');
+        // TODO: get agent information
+        $customer['agent_id'] = '1';
+        $customer['bank'] = 'Laohe Branch';
         
-        //TODO: accessing db
-        $db_error = false;
-        $stock_error = false;
-        $account_error = false;
+        // Check arguments existence
+        foreach ($customer as $key => $value)
+            if ($value == null)
+                return $this->makeResponse(self::STATUS_FORMAT_ERROR . " " . $key);
+        
+        // Check personnel
+        if ($this->checkPersonnel($customer['id_number']))
+            return $this->makeResponse(self::STATUS_ACCOUNT_ERROR);
+            
+        // Check age
+        // TODO
+        
+        $db_error = $this->createNaturalCustomerAction($customer);
         if ($db_error)
             return $this->makeResponse(self::STATUS_DB_ERROR);
-        if ($stock_error)
-            return $this->makeResponse(self::STATUS_STOCK_ERROR);
-        if ($account_error)
-            return $this->makeResponse(self::STATUS_ACCOUNT_ERROR);
         
-        return $this->makeResponse(self::STATUS_SUCCESS);
+        return $this->redirect($this->generateUrl('confirmPersonal_page') . '?customer_id=' . $customer['id']);
     }
     
     //the api for opening an account for a company
     public function openCompanyApiAction(Request $request)
     {
-        $type = $request->request->get('type');
-        $name  = $request->request->get('name');
-        $gender = $request->request->get('gender');
-        $id_no = $request->request->get('id_no');
-        $address = $request->request->get('address');
-        $phone = $request->request->get('phone');
-        $token = $request->request->get('token');
-        $register_id = $request->request->get('register_id');
-        $license_id = $request->request->get('license_id');
-        $auth_name = $request->request->get('auth_name');
-        $auth_id = $request->request->get('auth_id');
-        $auth_phone = $request->request->get('auth_phone');
-        $auth_address = $request->request->get('auth_address');
-        
-        //TODO: accessing db
-        $db_error = false;
-        $stock_error = false;
-        $account_error = false;
-        if ($db_error)
-            return $this->makeResponse(self::STATUS_DB_ERROR);
-        if ($stock_error)
-            return $this->makeResponse(self::STATUS_STOCK_ERROR);
-        if ($account_error)
-            return $this->makeResponse(self::STATUS_ACCOUNT_ERROR);
-        
-        return $this->makeResponse(self::STATUS_SUCCESS);
-    }
-    
-    //the api for confirming the information of the person
-    public function confirmPersonalApiAction(Request $request)
-    {
-        $token = $request->request->get('token');
+        $customer = array();
+        $customer['type'] = $request->request->get('type');
+        $customer['name']  = $request->request->get('name');
+        $customer['gender'] = $request->request->get('gender');
+        $customer['id_no'] = $request->request->get('id_no');
+        $customer['address'] = $request->request->get('address');
+        $customer['phone'] = $request->request->get('phone');
+        $customer['token'] = $request->request->get('token');
+        $customer['register_id'] = $request->request->get('register_id');
+        $customer['license_id'] = $request->request->get('license_id');
+        $customer['auth_name'] = $request->request->get('auth_name');
+        $customer['auth_id'] = $request->request->get('auth_id');
+        $customer['auth_phone'] = $request->request->get('auth_phone');
+        $customer['auth_address'] = $request->request->get('auth_address');
+        $this->createNaturalCustomer($customer);
         //TODO: accessing db
         $db_error = false;
         $stock_error = false;
@@ -143,9 +154,22 @@ class AccountController extends Controller
     }
     
     //the api for confirming the information of the company
+    public function confirmPersonalApiAction(Request $request)
+    {
+        $customer_id = $request->query->get('customer_id');
+        $confirm = $request->query->get('confirm');
+        if ($confirm == 1)
+        {
+            $this->updateNaturalCustomerAction($customer_id, false);
+            return $this->redirect($this->generateUrl('index') . "?notice=个人证券帐户创建成功，id为" . $customer_id);
+        }
+        else
+            return $this->redirect($this->generateUrl('openPersonal_page') . '?type=edit&customer_id=' . $customer_id);
+    }
+    
+    //the api for confirming the information of the person
     public function confirmCompanyApiAction(Request $request)
     {
-        $token = $request->request->get('token');
         //TODO: accessing db
         $db_error = false;
         $stock_error = false;
@@ -159,6 +183,7 @@ class AccountController extends Controller
         
         return $this->makeResponse(self::STATUS_SUCCESS);
     }
+    
     
     //the api for reporting the loss of the account
     public function reportLossApiAction(Request $request)
@@ -231,47 +256,57 @@ class AccountController extends Controller
         return $this->makeResponse(self::STATUS_SUCCESS);
     }
     
-    
+    private function checkPersonnel($id_number)
+    {
+        $natural_customer = $this->getDoctrine()
+                 ->getRepository('StockAccountBundle:Personnel')
+                 ->find($id_number);
+        if ($natural_customer)
+            return true;
+        else
+            return false;
+    }
     
     //database operations
     //create a natural customer
-    public function createNaturalCustomerAction()
+    private function createNaturalCustomerAction($customer)
     {
-        //check for personnel
-		$natural_customer = $this->getDoctrine()
-                 ->getRepository('StockAccountBundle:Personnel')
-                 ->find($id_number);
-        if($natural_customer){
-            throw $this->createNotFoundException('Personnel found for id_number ' .$id_number);
-		}
 		//pass parameters
 		$natural_customer = new NaturalCustomer();
-        $natural_customer->setCustomerId($customerId);
-        $natural_customer->setName($name);
-        $natural_customer->setIdNumber($id_number);
-        $natural_customer->setRegisterDate($register_date);
-        $natural_customer->setGender($gender);
-        $natural_customer->setAddress($address);
-        $natural_customer->setOccupation($occupation);
-        $natural_customer->setEducationalBackground($educational_background);
-        $natural_customer->setCompanyOrOrganization($company_or_organization);
-        $natural_customer->setTel($tel);
-        $natural_customer->setAgentId($agent_id);
-        $natural_customer->setBank($bank);
-        $natural_customer->setAssestsNumber($assestsNumber);
-        $natural_customer->setFrozen($frozen);
+        $natural_customer->setCustomerId($customer['id']);
+        $natural_customer->setName($customer['name']);
+        $natural_customer->setIdNumber($customer['id_number']);
+        $natural_customer->setRegisterDate($customer['register_date']);
+        $natural_customer->setGender($customer['gender']);
+        $natural_customer->setAddress($customer['address']);
+        $natural_customer->setOccupation($customer['occupation']);
+        $natural_customer->setEducationalBackground($customer['educational_background']);
+        $natural_customer->setCompanyOrOrganization($customer['company_or_organization']);
+        $natural_customer->setTel($customer['tel']);
+        $natural_customer->setAgentId($customer['agent_id']);
+        $natural_customer->setBank($customer['bank']);
+        $natural_customer->setAssestsNumber('');
+        $natural_customer->setFrozen(true);
 		
 		//instantiate database query
         $em = $this->getDoctrine()->getEntityManager();
         $em->persist($natural_customer);
         $em->flush();
 
-        return new Response();
+        return false;
     
     }
-
+    
+    private function checkNaturalCustomerAction($customer_id)
+    {
+		$natural_customer = $this->getDoctrine()
+                 ->getRepository('StockAccountBundle:NaturalCustomer')
+                 ->find($customer_id);
+        return $natural_customer != null;
+    }
+    
     //query for natural customer
-    public function showNaturalCustomerAction($customer_id)
+    private function showNaturalCustomerAction($customer_id)
     {
         //query
 		$natural_customer = $this->getDoctrine()
@@ -279,14 +314,30 @@ class AccountController extends Controller
                  ->find($customer_id);
 		
 		//response if not found
-        if(!$natural_customer){
-             throw $this->createNotFoundException('No natural customer found for customer_id ' .$customer_id);
-        }
-        return new Response();
+        if(!$natural_customer)
+            throw $this->createNotFoundException('No natural customer found for customer_id' . $customer_id);
+        // return get_object_vars($natural_customer);
+        $customer = array();
+        $customer['customer_id'] = $natural_customer->getCustomerId();
+        $customer['name']  = $natural_customer->getName();
+        $customer['id_number'] = $natural_customer->getIdNumber();
+        $customer['register_date'] = $natural_customer->getRegisterDate();
+        $customer['gender'] = $natural_customer->getGender();
+        $customer['address'] = $natural_customer->getAddress();
+        $customer['occupation'] = $natural_customer->getOccupation();
+        $customer['educational_background'] = $natural_customer->getEducationalBackground();
+        $customer['company_or_organization'] = $natural_customer->getCompanyOrOrganization();
+        $customer['tel'] = $natural_customer->getTel();
+        // TODO: get agent information
+        $customer['agent_id'] = $natural_customer->getAgentId();
+        $customer['bank'] = $natural_customer->getBank();
+        $customer['assets_number'] = $natural_customer->getAssestsNumber();
+        $customer['frozen'] = $natural_customer->getFrozen();
+        return $customer;
     }
     
-    //update for natural customer, mainly used for forzen action now
-    public function updateNaturalCustomerAction($customer_id, $frozen)
+    //update for natural customer, mainly used for frozen action now
+    private function updateNaturalCustomerAction($customer_id, $frozen)
     {
         //query
 		$natural_customer = $this->getDoctrine()
@@ -306,7 +357,7 @@ class AccountController extends Controller
     }
 
     //delete a natural customer
-    public function removeNaturalCustomerAction($customer_id)
+    private function removeNaturalCustomerAction($customer_id)
     {
         //query
 		$natural_customer = $this->getDoctrine()
@@ -325,7 +376,7 @@ class AccountController extends Controller
     }
 
     //create a legal customer
-    public function createLegalCustomerAction()
+    private function createLegalCustomerAction()
     {
         //check for personnel table
 		$legal_customer = $this->getDoctrine()
@@ -368,7 +419,7 @@ class AccountController extends Controller
     }
 
     //query for legal customer
-    public function showLegalCustomerAction($customer_id)
+    private function showLegalCustomerAction($customer_id)
     {
         $legal_customer = $this->getDoctrine()
                  ->getRepository('StockAccountBundle:LegalCustomer')
@@ -380,7 +431,7 @@ class AccountController extends Controller
     }
     
     //update for legal customer, mainly used for forzen action now
-    public function updateLegalCustomerAction($customer_id, $frozen)
+    private function updateLegalCustomerAction($customer_id, $frozen)
     {
         $legal_customer = $this->getDoctrine()
                     ->getRepository('StockAccountBundle:LegalCustomer')
@@ -398,7 +449,7 @@ class AccountController extends Controller
     }
 
     //delete a legal customer
-    public function removeLegalCustomerAction($customer_id)
+    private function removeLegalCustomerAction($customer_id)
     {
         $legal_customer = $this->getDoctrine()
                     ->getRepository('StockAccountBundle:LegalCustomer')
