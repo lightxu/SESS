@@ -35,7 +35,7 @@ Stock\AccountBundle\Entity\NaturalCustomer:
         bank:
             type: string
             length: 100
-        assests_number:
+        assets_number:
             type: string
             length: 100
         frozen:

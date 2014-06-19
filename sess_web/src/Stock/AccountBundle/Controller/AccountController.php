@@ -5,8 +5,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Stock\AccountBundle\Entity\NaturalCustomer;
-use Stock\AccountBundle\Entity\LegalCheck;
-use Stock\AccounteBundle\Entity\LegalCustomer;
+use Stock\AccountBundle\Entity\CompanyCheck;
+use Stock\AccountBundle\Entity\CompanyCustomer;
 use Stock\AccountBundle\Entity\Personnel;
 
 use Stock\AccountBundle\Entity;
@@ -19,41 +19,68 @@ class AccountController extends Controller
         $type = $request->query->get('type');
         if ($type == null)
             $type = 'open';
+        //change the information
         if (strcmp($type, 'edit') == 0 || strcmp($type, 'reopen') == 0)
         {
+            //find the customer
             $customer_id = $request->query->get('customer_id');
             if ($customer_id == null)
                 throw $this->createNotFoundException('No natural customer found for customer_id' . $customer_id);
             $customer = $this->showNaturalCustomerAction($customer_id);
             $this->removeNaturalCustomerAction($customer_id);
+            //open the according page
             return $this->render('StockAccountBundle:Account:OpenPerson.html.twig', array("is_open" => false, "customer" => $customer));
         }
         else
             return $this->render('StockAccountBundle:Account:OpenPerson.html.twig', array("is_open" => true));
     }
     //show the web page of opening an account of a company
-    public function openCompanyAction()
+    public function openCompanyAction(Request $request)
     {
-        return $this->render('StockAccountBundle:Account:OpenCompany.html.twig');
+        //get the type
+        $type = $request->query->get('type');
+        if ($type == null)
+            $type = 'open';
+        //the following is the same as opening natural 
+        if (strcmp($type, 'edit') == 0 || strcmp($type, 'reopen') == 0)
+        {
+            $customer_id = $request->query->get('type');
+            if ($customer_id == null)
+                throw $this->createNotFoundException('No company customer found for customer_id' . $customer_id);
+            $customer = $this->showCompanyCustomerAction($customer_id);
+            $this->removeCompanyCustomerAction($customer_id);
+            return $this->render('StockAccountBundle:Account:OpenComapny.html.twig', array("is_open" => false, "customer" => $customer));
+        }
+        else
+            return $this->render('StockAccountBundle:Account:OpenCompany.html.twig', array("is_open" => true));
     }
     //show the web page of confirming the information of a person
     public function confirmPersonalAction(Request $request)
     {
         $customer_id = $request->query->get('customer_id');
+        //no such is, report the error
         if ($customer_id == null)
             return $this->makeResponse(STATUS_ARGUMENT_ERROR);
+        //show the information of customer
         $customer = $this->showNaturalCustomerAction($customer_id);
         // return new Response(var_dump($customer));
         return $this->render('StockAccountBundle:Account:ConfirmPerson.html.twig', $customer);
     }
+    
     //show the web page of confirming the information of a company
-    public function confirmCompanyAction()
+    public function confirmCompanyAction(Request $request)
     {
-        return $this->render('StockAccountBundle:Account:ConfirmCompany.html.twig');
+        $customer_id = $request->query->get('customer_id');
+        if ($customer_id == null)
+            return $this->makeResponse(STATUS_ACCOUNT_ERROR);
+        $customer = $this->showCompanyCustomerAction($customer_id);
+        return $this->render('StockAccountBundle:Account:ConfirmCompany.html.twig', $customer);
     }
     //show the web page of reporting the loss of the account
-    public function reportLossAction()
+    public function reportLossAction(Request $request)
     {
+        request->query->get('id');
+        
         return $this->render('StockAccountBundle:Account:ReportLoss.html.twig');
     }
     //show the web page of registering a new account
@@ -75,6 +102,7 @@ class AccountController extends Controller
     const STATUS_STOCK_ERROR = "insufficient amount";
     const STATUS_ACCOUNT_ERROR = "invalid account";
     
+    //function used to report of the status
     private function makeResponse($status)
     {
         $data["status"] = $status;
@@ -114,6 +142,7 @@ class AccountController extends Controller
         // Check age
         // TODO
         
+        //create the natural customer
         $db_error = $this->createNaturalCustomerAction($customer);
         if ($db_error)
             return $this->makeResponse(self::STATUS_DB_ERROR);
@@ -125,63 +154,69 @@ class AccountController extends Controller
     public function openCompanyApiAction(Request $request)
     {
         $customer = array();
-        $customer['type'] = $request->request->get('type');
+        $customer['id'] = "C" . time();
+        while ($this->checkCompanyCustomerAction($customer['id']))
+            $customer['id'] = "C" . time();
         $customer['name']  = $request->request->get('name');
-        $customer['gender'] = $request->request->get('gender');
-        $customer['id_no'] = $request->request->get('id_no');
-        $customer['address'] = $request->request->get('address');
         $customer['phone'] = $request->request->get('phone');
-        $customer['token'] = $request->request->get('token');
+        $customer['address'] = $request->request->get('address');
+        $customer['id_number'] = $request->request->get('id_number');
         $customer['register_id'] = $request->request->get('register_id');
         $customer['license_id'] = $request->request->get('license_id');
         $customer['auth_name'] = $request->request->get('auth_name');
         $customer['auth_id'] = $request->request->get('auth_id');
         $customer['auth_phone'] = $request->request->get('auth_phone');
         $customer['auth_address'] = $request->request->get('auth_address');
-        $this->createNaturalCustomer($customer);
-        //TODO: accessing db
-        $db_error = false;
-        $stock_error = false;
-        $account_error = false;
-        if ($db_error)
-            return $this->makeResponse(self::STATUS_DB_ERROR);
-        if ($stock_error)
-            return $this->makeResponse(self::STATUS_STOCK_ERROR);
-        if ($account_error)
+        // TODO: get agent information
+        $customer['agent_id'] = '1';
+        $customer['bank'] = 'Laohe Branch';
+        // Check arguments existence
+        foreach ($customer as $key => $value)
+            if ($value == null)
+                return $this->makeResponse(self::STATUS_FORMAT_ERROR . " " . $key);
+        
+        // Check personnel
+        if ($this->checkPersonnel($customer['auth_id']) || $this->checkPersonnel($customer['id_number']))
             return $this->makeResponse(self::STATUS_ACCOUNT_ERROR);
         
-        return $this->makeResponse(self::STATUS_SUCCESS);
+        //create the company customer
+        $db_error = $this->createCompanyCustomerAction($customer);
+        if ($db_error)
+            return $this->makeResponse(self::STATUS_DB_ERROR);
+        
+        return $this->redirect($this->generateUrl('confirmCompany_page') . '?customer_id=' . $customer['id']);
     }
     
-    //the api for confirming the information of the company
+    //the api for confirming the information of the person customer
     public function confirmPersonalApiAction(Request $request)
     {
         $customer_id = $request->query->get('customer_id');
         $confirm = $request->query->get('confirm');
+        //confirm create the account
         if ($confirm == 1)
         {
             $this->updateNaturalCustomerAction($customer_id, false);
             return $this->redirect($this->generateUrl('index') . "?notice=个人证券帐户创建成功，id为" . $customer_id);
         }
+        //return to change the information
         else
             return $this->redirect($this->generateUrl('openPersonal_page') . '?type=edit&customer_id=' . $customer_id);
     }
     
-    //the api for confirming the information of the person
+    //the api for confirming the information of the company customer
     public function confirmCompanyApiAction(Request $request)
     {
-        //TODO: accessing db
-        $db_error = false;
-        $stock_error = false;
-        $account_error = false;
-        if ($db_error)
-            return $this->makeResponse(self::STATUS_DB_ERROR);
-        if ($stock_error)
-            return $this->makeResponse(self::STATUS_STOCK_ERROR);
-        if ($account_error)
-            return $this->makeResponse(self::STATUS_ACCOUNT_ERROR);
-        
-        return $this->makeResponse(self::STATUS_SUCCESS);
+        $customer_id = $request->query->get('customer_id');
+        $confirm = $request->query->get('confirm');
+        //confirm the create
+        if ($confirm == 1)
+        {
+            $this->updateNaturalCustomerAction($customer_id, false);
+            return $this->redirect($this->generateUrl('index') . "?notice=公司证券帐户创建成功，id为" . $customer_id);
+        }
+        // return to change the information
+        else
+            return $this->redirect($this->generateUrl('openCompany_page') . '?type=edit&customer_id=' . $customer_id);
     }
     
     
@@ -256,6 +291,7 @@ class AccountController extends Controller
         return $this->makeResponse(self::STATUS_SUCCESS);
     }
     
+    //the function used to check whether the person is a personnel
     private function checkPersonnel($id_number)
     {
         $natural_customer = $this->getDoctrine()
@@ -285,7 +321,7 @@ class AccountController extends Controller
         $natural_customer->setTel($customer['tel']);
         $natural_customer->setAgentId($customer['agent_id']);
         $natural_customer->setBank($customer['bank']);
-        $natural_customer->setAssestsNumber('');
+        $natural_customer->setAssetsNumber('');
         $natural_customer->setFrozen(true);
 		
 		//instantiate database query
@@ -297,12 +333,24 @@ class AccountController extends Controller
     
     }
     
+    //check the information of the natural customer
     private function checkNaturalCustomerAction($customer_id)
     {
 		$natural_customer = $this->getDoctrine()
                  ->getRepository('StockAccountBundle:NaturalCustomer')
                  ->find($customer_id);
         return $natural_customer != null;
+    }
+    
+    private function findNaturalCustomerAction($id)
+    {
+        $natural_customer = $this->getDoctrine()
+                 ->getRepository('StockAccountBundle:CompanyCustomer')
+                 ->find($id);
+        if (natural_customer != null)
+            return natural_customer;
+        else
+            return null;
     }
     
     //query for natural customer
@@ -331,11 +379,11 @@ class AccountController extends Controller
         // TODO: get agent information
         $customer['agent_id'] = $natural_customer->getAgentId();
         $customer['bank'] = $natural_customer->getBank();
-        $customer['assets_number'] = $natural_customer->getAssestsNumber();
+        $customer['assets_number'] = $natural_customer->getAssetsNumber();
         $customer['frozen'] = $natural_customer->getFrozen();
         return $customer;
     }
-    
+
     //update for natural customer, mainly used for frozen action now
     private function updateNaturalCustomerAction($customer_id, $frozen)
     {
@@ -352,8 +400,6 @@ class AccountController extends Controller
 
         $em = $this->getDoctrine()->getEntityManager();
         $em->flush();
-
-        return new Response();
     }
 
     //delete a natural customer
@@ -371,99 +417,115 @@ class AccountController extends Controller
         $em = $this->getDoctrine()->getEntityManager();
         $em->remove($natural_customer);
         $em->flush();
-
-        return new Response();
     }
 
-    //create a legal customer
-    private function createLegalCustomerAction()
+    //create a company customer
+    private function createCompanyCustomerAction($customer)
     {
-        //check for personnel table
-		$legal_customer = $this->getDoctrine()
-                 ->getRepository('StockAccountBundle:Personnel')
-                 ->find($id_number);
-        if($legal_customer){
-            throw $this->createNotFoundException('Personnel found for id_number ' .$id_number);
-		}
-		//check for legal_check table
-		$legal_customer = $this->getDoctrine()
-                 ->getRepository('StockAccountBundle:LegalCheck')
-                 ->find($legal_register_number);
-        if((!$legal_customer)
-			||($name != $legal_customer->name)
-			||($id_number != $legal_customer->id_number)
-			||($license != $legal_customer->license)){
-            throw $this->createNotFoundException('The customer qualification is not legal for legal_register_number ' .$legal_register_number);
-		}
+		//check for company_check table
+		// $company_customer = $this->getDoctrine()
+                 // ->getRepository('StockAccountBundle:CompanyCheck')
+                 // ->find($company_register_number);
+        // if((!$company_customer)
+			// ||($name != $company_customer->name)
+			// ||($id_number != $company_customer->id_number)
+			// ||($license != $company_customer->license)){
+            // throw $this->createNotFoundException('The customer qualification is not company for company_register_number ' .$company_register_number);
+		// }
 		//pass parameters
-		$legal_customer = new LegalCustomer();
-        $legal_customer->setCustomerId($customerId);
-        $legal_customer->setName($name);
-        $legal_customer->setIdNumber($id_number);
-        $legal_customer->setLegalRegisternumber($legal_register_number);
-        $legal_customer->setLicense($license);
-        $legal_customer->setExecutorName($executor_name);
-        $legal_customer->setExecutorId($executor_id);
-        $legal_customer->setExecutorAddress($executor_address);
-        $legal_customer->setExecutorTel($executor_tel);
-        $legal_customer->setBank($bank);
-        $legal_customer->setAssestsNumber($assestsNumber);
-        $legal_customer->setFrozen($frozen);
+		$company_customer = new CompanyCustomer();
+        $company_customer->setCustomerId($customer['id']);
+        $company_customer->setName($customer['name']);
+        $company_customer->setPhone($customer['phone']);
+        $company_customer->setAddress($customer['address']);
+        $company_customer->setIdNumber($customer['id_number']);
+        $company_customer->setRegisterId($customer['register_id']);
+        $company_customer->setLicense($customer['license_id']);
+        $company_customer->setAuthName($customer['auth_name']);
+        $company_customer->setAuthId($customer['auth_id']);
+        $company_customer->setAuthAddress($customer['auth_address']);
+        $company_customer->setAuthPhone($customer['auth_phone']);
+        $company_customer->setBank($customer['bank']);
+        $company_customer->setAgentId($customer['agent_id']);
+        $company_customer->setAssetsNumber('');
+        $company_customer->setFrozen(true);
     
         $em = $this->getDoctrine()->getEntityManager();
-        $em->persist($legal_customer);
+        $em->persist($company_customer);
         $em->flush();
-
-        return new Response();
-    
     }
 
-    //query for legal customer
-    private function showLegalCustomerAction($customer_id)
+    //check the information of the company customer
+    private function checkCompanyCustomerAction($customer_id)
     {
-        $legal_customer = $this->getDoctrine()
-                 ->getRepository('StockAccountBundle:LegalCustomer')
+        $company_customer = $this->getDoctrine()
+                  ->getRepository('StockAccountBundle:CompanyCustomer')
+                  ->find($customer_id);
+        return $company_customer != null;
+    }
+    
+    //query for company customer
+    private function showCompanyCustomerAction($customer_id)
+    {
+        //query
+		$company_customer = $this->getDoctrine()
+                 ->getRepository('StockAccountBundle:CompanyCustomer')
                  ->find($customer_id);
-        if(!$legal_customer){
-             throw $this->createNotFoundException('No legal customer found for customer_id ' .$customer_id);
-        }
-        return $legal_customer;
+		
+		//response if not found
+        if(!$company_customer)
+            throw $this->createNotFoundException('No company customer found for customer_id' . $customer_id);
+        // return get_object_vars($company_customer);
+        $customer = array();
+        $customer['id'] = $company_customer->getCustomerId();
+        $customer['name']  = $company_customer->getName();
+        $customer['phone'] = $company_customer->getPhone();
+        $customer['address'] = $company_customer->getAddress();
+        $customer['id_number'] = $company_customer->getIdNumber();
+        $customer['register_id'] = $company_customer->getRegisterId();
+        $customer['license_id'] = $company_customer->getLicense();
+        $customer['auth_name'] = $company_customer->getAuthName();
+        $customer['auth_id'] = $company_customer->getAuthId();
+        $customer['auth_address'] = $company_customer->getAuthAddress();
+        $customer['auth_phone'] = $company_customer->getAuthPhone();
+        // TODO: get agent information
+        $customer['agent_id'] = $company_customer->getAgentId();
+        $customer['bank'] = $company_customer->getBank();
+        $customer['assets_number'] = $company_customer->getAssetsNumber();
+        $customer['frozen'] = $company_customer->getFrozen();
+        return $customer;
     }
     
-    //update for legal customer, mainly used for forzen action now
-    private function updateLegalCustomerAction($customer_id, $frozen)
+    //update for company customer, mainly used for forzen action now
+    private function updateCompanyCustomerAction($customer_id, $frozen)
     {
-        $legal_customer = $this->getDoctrine()
-                    ->getRepository('StockAccountBundle:LegalCustomer')
+        $company_customer = $this->getDoctrine()
+                    ->getRepository('StockAccountBundle:CompanyCustomer')
                     ->find($customer_id);
     
-        if(!$legal_customer){
-                throw $this->createNotFoundException('No legal customer found for customer_id ' .$customer_id);
+        if(!$company_customer){
+                throw $this->createNotFoundException('No company customer found for customer_id ' .$customer_id);
             }
-        $legal_customer->setFrozen($frozen);
+        $company_customer->setFrozen($frozen);
 
         $em = $this->getDoctrine()->getEntityManager();
         $em->flush();
-
-        return new Response();
     }
 
-    //delete a legal customer
-    private function removeLegalCustomerAction($customer_id)
+    //delete a company customer
+    private function removeCompanyCustomerAction($customer_id)
     {
-        $legal_customer = $this->getDoctrine()
-                    ->getRepository('StockAccountBundle:LegalCustomer')
+        $company_customer = $this->getDoctrine()
+                    ->getRepository('StockAccountBundle:CompanyCustomer')
                     ->find($customer_id);
     
-        if(!$legal_customer){
-                throw $this->createNotFoundException('No legal customer found for customer_id ' .$customer_id);
+        if(!$company_customer){
+                throw $this->createNotFoundException('No company customer found for customer_id ' .$customer_id);
             }
     
         $em = $this->getDoctrine()->getEntityManager();
-        $em->remove($legal_customer);
+        $em->remove($company_customer);
         $em->flush();
-
-        return new Response();
     }
 
 

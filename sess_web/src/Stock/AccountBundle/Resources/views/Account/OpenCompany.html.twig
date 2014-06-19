@@ -65,86 +65,120 @@
 				  	
 				  <table class="table">
 				  	
-				  	<div class="col-md-6">
-					    <div class="input-group">
-							  <span class="input-group-addon">股票帐户号码</span>
-							  <input type="text" class="form-control"name="stock_acc_No" >
-							</div>
-						</div>
 						<div class="col-md-6">
 					    <div class="input-group">
 							  <span class="input-group-addon">注册登记号码</span>
-							  <input type="text" class="form-control" name="register_id">
+                              {% if is_open %}
+                                <input type="text" class="form-control" name="register_id">
+                              {% else %}
+                                <input type="text" class="form-control" name="register_id" value="{{customer['register_id']}}">
+                              {% endif %}
 							</div>
 						</div>
 						<br /> <br />
 				  	<div class="col-md-6">
 					    <div class="input-group">
 							  <span class="input-group-addon">营业执照号码</span>
-							  <input type="text" class="form-control" name="license_id">
+                              {% if is_open %}
+                                <input type="text" class="form-control" name="license_id">
+                              {% else %}
+                                <input type="text" class="form-control" name="license_id" value="{{customer['license_id']}}">
+                              {% endif %}
 							</div>
 						</div>
 						<div class="col-md-6">
 					    <div class="input-group">
 							  <span class="input-group-addon">代表人身份证号码</span>
-							  <input type="text" class="form-control" name="id_no">
+                              {% if is_open %}
+                                <input type="text" class="form-control" name="id_number">
+                              {% else %}
+                                <input type="text" class="form-control" name="id_number" value="{{customer['id_number']}}">
+                              {% endif %}
 							</div>
 						</div>
 						<br /> <br />
 				  	<div class="col-md-6">
 					    <div class="input-group">
 							  <span class="input-group-addon">姓名</span>
-							  <input type="text" class="form-control" name="name">
+                              {% if is_open %}
+                                <input type="text" class="form-control" name="name">
+                              {% else %}
+                                <input type="text" class="form-control" name="name" value="{{customer['name']}}">
+                              {% endif %}
 							</div>
 						</div>
 						<div class="col-md-6">
 					    <div class="input-group">
 							  <span class="input-group-addon">联系电话</span>
-							  <input type="text" class="form-control" name="phone">
+                              {% if is_open %}
+                                <input type="text" class="form-control" name="phone">
+                              {% else %}
+                                <input type="text" class="form-control" name="phone" value="{{customer['phone']}}">
+                              {% endif %}
 							</div>
 						</div>
 						<br /> <br />
 				  	<div class="col-md-12">
 					    <div class="input-group">
 							  <span class="input-group-addon">联系地址</span>
-							  <input type="text" class="form-control" name="address">
+                              {% if is_open %}
+                                <input type="text" class="form-control" name="address">
+                              {% else %}
+                                <input type="text" class="form-control" name="address" value="{{customer['address']}}">
+                              {% endif %}
 							</div>
 						</div>
 						<br /> <br />
 						<div class="col-md-6">
 					    <div class="input-group">
 							  <span class="input-group-addon">授权交易人</span>
-							  <input type="text" class="form-control" name="auth_name">
+                              {% if is_open %}
+                                <input type="text" class="form-control" name="auth_name">
+                              {% else %}
+                                <input type="text" class="form-control" name="auth_name" value="{{customer['auth_name']}}">
+                              {% endif %}
 							</div>
 						</div>
 						<div class="col-md-6">
 					    <div class="input-group">
 							  <span class="input-group-addon">授权人身份证号码</span>
-							  <input type="text" class="form-control" name="auth_id">
+                              {% if is_open %}
+                                <input type="text" class="form-control" name="auth_id">
+                              {% else %}
+                                <input type="text" class="form-control" name="auth_id" value="{{customer['auth_id']}}">
+                              {% endif %}
 							</div>
 						</div>
 						<br /> <br />
 						<div class="col-md-6">
 					    <div class="input-group">
 							  <span class="input-group-addon">授权人联系电话</span>
-							  <input type="text" class="form-control" name="auth_phone">
+                              {% if is_open %}
+                                <input type="text" class="form-control" name="auth_phone">
+                              {% else %}
+                                <input type="text" class="form-control" name="auth_phone" value="{{customer['auth_phone']}}">
+                              {% endif %}
 							</div>
 						</div>
 						<br /> <br />
 				  	<div class="col-md-12">
 					    <div class="input-group">
 							  <span class="input-group-addon">授权人地址</span>
-							  <input type="text" class="form-control"name= "auth_address" >
+                              {% if is_open %}
+                                <input type="text" class="form-control" name="auth_address">
+                              {% else %}
+                                <input type="text" class="form-control" name="auth_address" value="{{customer['auth_address']}}">
+                              {% endif %}
 							</div>
 						</div>
 						
 						<br /> <br />
 
 						<div class="col-md-6" align="center">
-						  <button type="button" class="btn btn-success btn-lg btn-block" type="submit">提交</button>
+						  <button role="button" class="btn btn-success btn-lg btn-block" type="submit">提交</button>
 						</div>
 						<div class="col-md-6" align="center">
-						  <button type="button" class="btn btn-danger btn-lg btn-block">取消</button>
+						  <a role="button" class="btn btn-danger btn-lg btn-block" href="{{path('index')}}">取消</a>
 						</div>
 					</table>
 				</form>

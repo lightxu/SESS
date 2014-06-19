@@ -18,7 +18,7 @@ class NaturalCustomer
     protected $tel;
     protected $agent_id;
     protected $bank;
-    protected $assests_number;
+    protected $assets_number;
     protected $frozen;
 
     /**
@@ -298,26 +298,26 @@ class NaturalCustomer
     }
 
     /**
-     * Set assests_number
+     * Set assets_number
      *
-     * @param string $assestsNumber
+     * @param string $assetsNumber
      * @return NaturalCustomer
      */
-    public function setAssestsNumber($assestsNumber)
+    public function setAssetsNumber($assetsNumber)
     {
-        $this->assests_number = $assestsNumber;
+        $this->assets_number = $assetsNumber;
 
         return $this;
     }
 
     /**
-     * Get assests_number
+     * Get assets_number
      *
      * @return string 
      */
-    public function getAssestsNumber()
+    public function getAssetsNumber()
     {
-        return $this->assests_number;
+        return $this->assets_number;
     }
 
     /**

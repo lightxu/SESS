@@ -69,83 +69,83 @@
 				  	<div class="col-md-6">
 					    <div class="input-group">
 							  <span class="input-group-addon">股票帐户号码</span>
-							  <input type="text" class="form-control" placeholder="12345678"  readonly="readonly">
+							  <input type="text" class="form-control" placeholder="{{customer_id}}"  readonly="readonly">
 							</div>
 						</div>
 						<div class="col-md-6">
 					    <div class="input-group">
 							  <span class="input-group-addon">注册登记号码</span>
-							  <input type="text" class="form-control" placeholder="12345678"  readonly="readonly">
+							  <input type="text" class="form-control" placeholder="{{register_id}}"  readonly="readonly">
 							</div>
 						</div>
 						<br /> <br />
 				  	<div class="col-md-6">
 					    <div class="input-group">
 							  <span class="input-group-addon">营业执照号码</span>
-							  <input type="text" class="form-control" placeholder="12345678"  readonly="readonly">
+							  <input type="text" class="form-control" placeholder="{{license_id}}"  readonly="readonly">
 							</div>
 						</div>
 						<div class="col-md-6">
 					    <div class="input-group">
 							  <span class="input-group-addon">代表人身份证号码</span>
-							  <input type="text" class="form-control" placeholder="12345678"  readonly="readonly">
+							  <input type="text" class="form-control" placeholder="{{id_number}}"  readonly="readonly">
 							</div>
 						</div>
 						<br /> <br />
 				  	<div class="col-md-6">
 					    <div class="input-group">
 							  <span class="input-group-addon">姓名</span>
-							  <input type="text" class="form-control" placeholder="12345678"  readonly="readonly">
+							  <input type="text" class="form-control" placeholder="{{name}}"  readonly="readonly">
 							</div>
 						</div>
 						<div class="col-md-6">
 					    <div class="input-group">
 							  <span class="input-group-addon">联系电话</span>
-							  <input type="text" class="form-control" placeholder="12345678"  readonly="readonly">
+							  <input type="text" class="form-control" placeholder="{{phone}}"  readonly="readonly">
 							</div>
 						</div>
 						<br /> <br />
 				  	<div class="col-md-12">
 					    <div class="input-group">
 							  <span class="input-group-addon">联系地址</span>
-							  <input type="text" class="form-control" placeholder="12345678"  readonly="readonly">
+							  <input type="text" class="form-control" placeholder="{{address}}"  readonly="readonly">
 							</div>
 						</div>
 						<br /> <br />
 						<div class="col-md-6">
 					    <div class="input-group">
 							  <span class="input-group-addon">授权交易人</span>
-							  <input type="text" class="form-control" placeholder="12345678"  readonly="readonly">
+							  <input type="text" class="form-control" placeholder="{{auth_name}}"  readonly="readonly">
 							</div>
 						</div>
 						<div class="col-md-6">
 					    <div class="input-group">
 							  <span class="input-group-addon">授权人身份证号码</span>
-							  <input type="text" class="form-control" placeholder="12345678"  readonly="readonly">
+							  <input type="text" class="form-control" placeholder="{{auth_id}}"  readonly="readonly">
 							</div>
 						</div>
 						<br /> <br />
 						<div class="col-md-6">
 					    <div class="input-group">
 							  <span class="input-group-addon">授权人联系电话</span>
-							  <input type="text" class="form-control" placeholder="12345678"  readonly="readonly">
+							  <input type="text" class="form-control" placeholder="{{auth_phone}}"  readonly="readonly">
 							</div>
 						</div>
 						<br /> <br />
 				  	<div class="col-md-12">
 					    <div class="input-group">
 							  <span class="input-group-addon">授权人地址</span>
-							  <input type="text" class="form-control"placeholder="12345678"  readonly="readonly" >
+							  <input type="text" class="form-control"placeholder="{{auth_address}}"  readonly="readonly" >
 							</div>
 						</div>
 						
 						<br /> <br />
 
 						<div class="col-md-6" align="center">
-						  <button type="button" class="btn btn-success btn-lg btn-block">确认正确</button>
+						  <a type="button" class="btn btn-success btn-lg btn-block" href="{{path('confirmPersonal_api')}}?confirm=1&customer_id={{customer_id}}">确认正确</a>
 						</div>
 						<div class="col-md-6" align="center">
-						  <button type="button" class="btn btn-danger btn-lg btn-block">返回修改</button>
+						  <a type="button" class="btn btn-danger btn-lg btn-block" href="{{path('confirmPersonal_api')}}?confirm=0&customer_id={{customer_id}}">返回修改</a>
 						</div>
 					</table>
 				</div>
