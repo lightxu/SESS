@@ -1,0 +1,23 @@
+Stock\TradeBundle\Entity\Stock:
+    type: entity
+    table: null
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        stockId:
+            type: string
+            length: 255
+            column: stock_id
+        totalAmount:
+            type: integer
+        frozenAmount:
+            type: integer
+        accountId:
+            type: string
+            length: 255
+            column: account_id
+    lifecycleCallbacks: {  }
