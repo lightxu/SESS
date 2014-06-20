@@ -23,3 +23,8 @@ monolog:
             level: debug
         console:
             type:  console
+
+parameters:
+    router.options.matcher.cache_class: ~
+    router.options.matcher_class: Symfony\Component\Routing\Matcher\ApacheUrlMatcher
+    

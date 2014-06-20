@@ -3,4 +3,6 @@ sess_web/app/bootstrap*
 sess_web/app/cache/
 sess_web/app/logs/
 sess_web/vendor/
+sess_web/app/config/parameters.yml
+sess_web/app/config/parameters.yml.dist
 *~
