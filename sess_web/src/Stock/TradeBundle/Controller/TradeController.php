@@ -224,4 +224,85 @@ class TradeController extends Controller
         else
             return $this->render('StockTradeBundle:Trade:test_api.html.twig');
     }
+    
+    public function createStock($stock)
+    {
+        $stock = new Stock();
+        $stock->setAccountId($stock["account_id"]);
+        $stock->setStockId($stock["stock_id"]);
+        $stock->setTotalAmount(intval($stock["amount"]);
+        $stock->setFrozenAmount(0);
+        
+        $em = $this->getDoctrine()->getEntityManager();
+        $em->persist($stock);
+        $em->flush();
+    }
+    
+    public function showStock($account_id)
+    {
+        $stocks = $this->getDoctrine()
+             ->getRepository('StockAccountBundle:NaturalCustomer')
+             ->findAllByAccountId($account_id);
+        $stock_array = array();
+        foreach ($stocks as $stock)
+        {
+            array_push($stock_array, array(
+                "account_id" => $stock->getAccountId(),
+                "stock_id" => $stock->getStockId(),
+                "total_amount" => $stock->getTotalAmount(),
+                "frozen_amount" => $stock->getFrozenAmount()
+            ));
+        }
+        return $stock_array;
+    }
+    
+    public function updateStockFrozenAmount($account_id, $stock_id, $frozen_amount)
+    {
+        $stock = $this->getDoctrine()
+            ->getRepository('StockAccountBundle:NaturalCustomer')
+            ->findOneBy(array(
+                "accountId" => $account_id,
+                "stockId" => $stock_id
+            ));
+        if (!$stock)
+        {
+            return true;
+        }
+        $current_amount = $stock->getFrozenAmount();
+        $frozen_amount += $current_amount;
+        if ($frozen_amount < 0 || $frozen_amount > $stock->getTotalAmount())
+        {
+            return true; // return error;
+        }
+        $stock->setFrozenAmount($frozen_amount);
+        
+        $em = $this->getDoctrine()->getEntityManager();
+        $em->flush();
+    }
+    
+    public function updateStockTotalAmount($account_id, $stock_id, $total_amount)
+    {
+        $stock = $this->getDoctrine()
+            ->getRepository('StockAccountBundle:NaturalCustomer')
+            ->findOneBy(array(
+                "accountId" => $account_id,
+                "stockId" => $stock_id
+            ));
+        if (!$stock)
+        {
+            return true;
+        }
+        $current_amount = $stock->getTotalAmount();
+        $total_amount += $current_amount;
+        if ($total_amount < 0 || $total_amount > $stock->getTotalAmount())
+        {
+            return true; // return error;
+        }
+        $stock->setTotalAmount($total_amount);
+        
+        $em = $this->getDoctrine()->getEntityManager();
+        if ($total_amount == 0)
+            $em->remove($stock);
+        $em->flush();
+    }
 }
