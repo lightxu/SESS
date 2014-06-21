@@ -230,7 +230,7 @@ class TradeController extends Controller
         $stock = new Stock();
         $stock->setAccountId($stock["account_id"]);
         $stock->setStockId($stock["stock_id"]);
-        $stock->setTotalAmount(intval($stock["amount"]);
+        $stock->setTotalAmount(intval($stock["amount"]));
         $stock->setFrozenAmount(0);
         
         $em = $this->getDoctrine()->getEntityManager();

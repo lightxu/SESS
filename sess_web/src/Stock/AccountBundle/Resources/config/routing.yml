@@ -72,3 +72,33 @@ cancel_api:
     path: /accounts/cancel
     defaults: {_controller: StockAccountBundle:Account:cancelApi}
     methods: [POST]
+    
+changeInformation_api:
+    path: /accounts/change
+    defaults: {_controller: StockAccountBundle:Account:changeInformationApi}
+    methods: [POST]
+    
+changeInformation_page:
+    path: /accounts/change
+    defaults: {_controller: StockAccountBundle:Account:changeInformation}
+    methods: [GET]
+    
+updatePersonal_page:
+    path: /accounts/updateperson
+    defaults: {_controller: StockAccountBundle:Account:updatePersonal}
+    methods: [GET]
+
+changePersonal_api:
+    path: /accounts/updateperson
+    defaults: {_controller: StockAccountBundle:Account:changePersonalApi}
+    methods: [POST]
+
+updateCompany_page:
+    path: /accounts/updatecompany
+    defaults: {_controller: StockAccountBundle:Account:updateCompany}
+    methods: [GET]
+    
+changeCompany_api:
+    path: /accounts/updatecompany
+    defaults: {_controller: StockAccountBundle:Account:changeCompanyApi}
+    methods: [POST]

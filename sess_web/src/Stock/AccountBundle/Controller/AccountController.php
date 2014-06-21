@@ -115,7 +115,48 @@ class AccountController extends Controller
         $admin = $this->getUser();
         return $this->render('StockAccountBundle:Account:AccountCancel.html.twig', array("username" => $admin->getUsername(), "bankname" => $admin->getBankname()));
     }
-  
+    
+    public function changeInformationAction(Request $request)
+    {
+        $request->query->get('id');
+        $admin = $this->getUser();
+        return $this->render('StockAccountBundle:Account:ChangeInformation.html.twig', array("username" => $admin->getUsername(), "bankname" => $admin->getBankname()));
+    }
+    public function changePersonalApiAction(Request $request)
+    {
+        $updateinfo = array();
+        $customer_id = $request->request->get('customer_id');
+        $updateinfo['address'] = $request->request->get('address');
+        $updateinfo['occupation'] = $request->request->get('occupation');
+        $updateinfo['educational'] = $request->request->get('educational_background');
+        $updateinfo['company'] = $request->request->get('company_or_organization');
+        $updateinfo['tel'] = $request->request->get('tel');
+        //var_dump($updateinfo);
+        //return new Response(var_dump($updateinfo));
+        $this->changeNaturalCustomerAction($customer_id, $updateinfo);
+            $this->get('session')->getFlashBag()->add(
+                'notice',
+                "个人信息修改成功."
+            );
+        return $this->redirect($this->generateUrl('index'));
+    }
+    
+    public function changeCompanyApiAction(Request $request)
+    {
+        $updateinfo = array();
+        $customer_id = $request->request->get('customer_id');
+        $updateinfo['phone'] = $request->request->get('phone');
+        $updateinfo['address'] = $request->request->get('address');
+        $updateinfo['auth_phone'] = $request->request->get('auth_phone');
+        $updateinfo['auth_address'] = $request->request->get('auth_address');
+        $this->changeCompanyCustomerAction($customer_id, $updateinfo);
+            $this->get('session')->getFlashBag()->add(
+                'notice',
+                "企业信息修改成功."
+            );
+        return $this->redirect($this->generateUrl('index'));
+    }
+    
     //the api for opening an account for a person
     public function openPersonalApiAction(Request $request)
     {
@@ -257,6 +298,7 @@ class AccountController extends Controller
             return $this->redirect($this->generateUrl('openPersonal_page') . '?type=edit&customer_id=' . $customer_id);
     }
     
+    
     //the api for confirming the information of the company customer
     public function confirmCompanyApiAction(Request $request)
     {
@@ -361,6 +403,31 @@ class AccountController extends Controller
         }
     }
     
+    //the api fot change the information of the customer
+    public function changeInformationApiAction(Request $request)
+    {
+        $id = $request->request->get('id');
+        if (($find = $this->findNaturalCustomerAction($id)) != null)
+        {   $customer = $this->showNaturalCustomerAction($find->getCustomerId());        
+            return $this->render('StockAccountBundle:Account:UpdatePerson.html.twig', $customer);
+        }
+        else if (($find = $this->findCompanyCustomerAction($id)) != null)
+        {
+            $admin = $this->getUser();
+            $customer = $this->showCompanyCustomerAction($id);
+            $customer["username"] = $admin->getUsername();
+            $customer["bankname"] = $admin->getBankname();
+            return $this->render('StockAccountBundle:Account:UpdateCompany.html.twig', $customer);
+        }
+        else
+        {
+            $this->get('session')->getFlashBag()->add(
+                'alert',
+                "该身份账号不存在"
+            );
+            return $this->redirect($this->generateUrl('changeInformation_page'));
+        }
+    }
     //the api for cancelling an account
     public function cancelApiAction(Request $request)
     {
@@ -516,7 +583,46 @@ class AccountController extends Controller
         $em = $this->getDoctrine()->getEntityManager();
         $em->flush();
     }
-
+    
+    private function changeNaturalCustomerAction($customer_id,$updateinfo)
+    {
+        //query
+		$natural_customer = $this->getDoctrine()
+                    ->getRepository('StockAccountBundle:NaturalCustomer')
+                    ->find($customer_id);
+		//response if not found
+        if(!$natural_customer){
+                throw $this->createNotFoundException('No natural customer found for customer_id ' .$customer_id);
+            }
+		//freeze or thaw
+        $natural_customer->setEducationalBackground($updateinfo['educational']);
+        $natural_customer->setAddress($updateinfo['address']);
+        $natural_customer->setCompanyOrOrganization($updateinfo['company']);
+        $natural_customer->setOccupation($updateinfo['occupation']);
+        $natural_customer->setTel($updateinfo['tel']);
+        $em = $this->getDoctrine()->getEntityManager();
+        $em->flush();
+    }
+    
+    private function changeCompanyCustomerAction($customer_id,$updateinfo)
+    {
+        //query
+		$company_customer = $this->getDoctrine()
+                    ->getRepository('StockAccountBundle:CompanyCustomer')
+                    ->find($customer_id);
+		//response if not found
+        if(!$company_customer){
+                throw $this->createNotFoundException('No company customer found for customer_id ' .$customer_id);
+            }
+		//freeze or thaw
+        $company_customer->setPhone($updateinfo['phone']);
+        $company_customer->setAddress($updateinfo['address']);
+        $company_customer->setAuthPhone($updateinfo['auth_phone']);
+        $company_customer->setAuthAddress($updateinfo['auth_address']);
+        $em = $this->getDoctrine()->getEntityManager();
+        $em->flush();
+    }
+    
     //delete a natural customer
     private function removeNaturalCustomerAction($customer_id)
     {
@@ -537,16 +643,6 @@ class AccountController extends Controller
     //create a company customer
     private function createCompanyCustomerAction($customer)
     {
-		//check for company_check table
-		// $company_customer = $this->getDoctrine()
-                 // ->getRepository('StockAccountBundle:CompanyCheck')
-                 // ->find($company_register_number);
-        // if((!$company_customer)
-			// ||($name != $company_customer->name)
-			// ||($id_number != $company_customer->id_number)
-			// ||($license != $company_customer->license)){
-            // throw $this->createNotFoundException('The customer qualification is not company for company_register_number ' .$company_register_number);
-		// }
 		//pass parameters
 		$company_customer = new CompanyCustomer();
         $company_customer->setCustomerId($customer['id']);
