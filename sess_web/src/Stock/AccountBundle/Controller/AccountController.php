@@ -190,7 +190,6 @@ class AccountController extends Controller
                 );
                 return $this->render('StockAccountBundle:Account:OpenPerson.html.twig', array("is_open" => false, "customer" => $customer, "username" => $admin->getUsername(), "bankname" => $admin->getBankname()));
             }
-        
         // Check personnel
         if ($this->checkPersonnel($customer['id_number']))
         {
@@ -200,7 +199,17 @@ class AccountController extends Controller
             );
             return $this->render('StockAccountBundle:Account:OpenPerson.html.twig', array("is_open" => false, "customer" => $customer, "username" => $admin->getUsername(), "bankname" => $admin->getBankname()));
         }
-            
+        //check id card
+        if (!(strlen($customer['id_number']) == 18 || strlen($customer['id_number']) == 19))
+        {
+            $this->get('session')->getFlashBag()->add(
+                'alert',
+                '身份证号码格式不正确。'
+            );
+            return $this->render('StockAccountBundle:Account:OpenPerson.html.twig', array("is_open" => false, "customer" => $customer, "username" => $admin->getUsername(), "bankname" => $admin->getBankname()));
+        
+        }
+        
         // Check age
         $agentbirth = substr($customer['agent_id'], 6, 4);
         $intagentbirth = intval($agentbirth);
@@ -260,7 +269,7 @@ class AccountController extends Controller
                 );
                 return $this->render('StockAccountBundle:Account:OpenCompany.html.twig', array("is_open" => false, "customer" => $customer, "username" => $admin->getUsername(), "bankname" => $admin->getBankname()));
             }
-        
+
         // Check personnel
         if ($this->checkPersonnel($customer['auth_id']) || $this->checkPersonnel($customer['id_number']))
         {
@@ -738,6 +747,4 @@ class AccountController extends Controller
         $em->remove($company_customer);
         $em->flush();
     }
-
-
 }
