@@ -87,11 +87,20 @@
                     <div class="col-md-6">
                         <div class="input-group">
                             <span class="input-group-addon">性别</span>
+                            <select class="form-control" name="gender">
                             {% if is_open %}
-                                <input type="text" class="form-control" name="gender">
+                                <option value="男">男</option>
+                                <option vlaue="女">女</option>
                             {% else %}
-                                <input type="text" class="form-control" name="gender" value="{{customer['gender']}}">
+                                <% if customer['gender'] == '男' %>
+                                    <option value="男" selected>男</option>
+                                    <option vlaue="女">女</option>
+                                <% else %>
+                                    <option value="男">男</option>
+                                    <option vlaue="女" selected>女</option>
+                                <% endif %>
                             {% endif %}
+                            </select>
                         </div>
                     </div>
                     <br />
