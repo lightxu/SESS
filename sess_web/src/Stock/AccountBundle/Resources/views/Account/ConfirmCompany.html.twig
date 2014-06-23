@@ -26,7 +26,7 @@
             <span class="icon-bar"></span>
 
           </button>
-          <a class="navbar-brand" href="#">欢迎</a>
+          <a class="navbar-brand" href="{{path('index'))}}">欢迎</a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
@@ -41,22 +41,17 @@
     </div>
 
     <div class="container">
-
-      <div class="bigtitle">
-        <h1 style="font-size:62px">证券账户系统</h1>
-        <br /> <br />
-      </div>
-
+        <h1 class="bigtitle">证券账户系统</h1>
     
     
 	    <ol class="breadcrumb">
-	  		<li><a href="#">主界面 </a></li>
-	  		<li><a href="#">开户（法人） </a></li>
+	  		<li><a href="{{path('index')}}">主界面 </a></li>
+	  		<li>法人证券账户管理</li>
 	  		<li class="active">账户信息确认 </li>
 			</ol>
 			
 
-      <div class="panel panel-default">
+        <div class="panel panel-default">
 			  <!-- Default panel contents -->
 			  <div class="panel-heading" style="font-size:22px">信息核对表
 				  <div class="panel-body" style="font-size:16px">

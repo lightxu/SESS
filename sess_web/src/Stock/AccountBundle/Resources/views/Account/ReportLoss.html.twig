@@ -8,7 +8,7 @@
 
     <!-- Bootstrap -->
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/openingaccount.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/mainpage.css') }}" rel="stylesheet">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -39,58 +39,57 @@
         </div><!--/.nav-collapse -->
       </div>
     </div>
-    {% for notice in app.session.flashbag.get('notice') %}
-        <div class="alert alert-success alert-dismissable">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            {{ notice }}
-        </div>
-    {% endfor %}
-    {% for alert in app.session.flashbag.get('alert') %}
-        <div class="alert alert-danger alert-dismissable">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            {{ alert }}
-        </div>
-    {% endfor %}
     <div class="container">
-
-      <div class="bigtitle">
-        <h1 style="font-size:62px">证券账户系统</h1>
-        <br /> <br />
-      </div>
-
-    
-    
+        {% for notice in app.session.flashbag.get('notice') %}
+            <div class="alert alert-success alert-dismissable">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                {{ notice }}
+            </div>
+        {% endfor %}
+        {% for alert in app.session.flashbag.get('alert') %}
+            <div class="alert alert-danger alert-dismissable">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                {{ alert }}
+            </div>
+        {% endfor %}
+        
+        <h1 class="bigtitle">证券账户系统</h1>
+        
 	    <ol class="breadcrumb">
 	  		<li><a href="{{path("index")}}">主界面</a></li>
 	  		<li class="active">账户挂失</li>
 			</ol>
-			
-			
-
-      <div class="panel panel-default">
-          <!-- Default panel contents -->
-          <div class="panel-heading" style="font-size:22px">账户挂失
-          <div class="panel-body" style="font-size:16px">
-            <p>请要求用户出示必须的证件</p>	
-            <p>个人用户请输入身份证号</p>
-            <p>法人用户请输入法人注册登记号</p>
-
-            <form class="form-horizontal" role="form" action="{{ path('reportLoss_api') }}" method="post">	  	
-                <div class="col-md-3" ></div>
-                <div class="col-md-6" >
-                    <div class="form-group input-group">
-                        <span class="input-group-addon">证件号码</span>
-                        <input type="text" class="form-control"name="id" >
+            
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3>账户挂失</h3>
+                <ul>
+                    <li><strong>请要求用户出示必须的证件</strong></li>
+                    <li><strong>个人用户请输入身份证号</strong></li>
+                    <li><strong>法人用户请输入法人注册登记号</strong></li>
+                </ul>
+            </div>
+              
+            <div class="panel-body">
+                <form class="form-horizontal" role="form" action="{{ path('reportLoss_api') }}" method="post">
+                    <div class="row form-group">
+                        <div class="col-md-6 col-md-offset-3" >
+                            <div class="input-group">
+                                <span class="input-group-addon">证件号码</span>
+                                <input type="text"  class="form-control"name="id" >
+                            </div>
+                        </div>
                     </div>
-                </div>
 
-                <div class="col-md-6" align="center">
-                  <button role="button" type="submit" class="btn btn-success btn-lg btn-block">提交</button>
-                </div>
-                <div class="col-md-6" align="center">
-                  <a role="button" class="btn btn-danger btn-lg btn-block" href="{{path('index')}}">取消</a>
-                </div>
-            </form>	
+                    <div class="row">
+                        <div class="col-md-6" align="center">
+                          <button role="button" type="submit" class="btn btn-success btn-lg btn-block">提交</button>
+                        </div>
+                        <div class="col-md-6" align="center">
+                          <a role="button" class="btn btn-danger btn-lg btn-block" href="{{path('index')}}">取消</a>
+                        </div>
+                    </div>
+                </form>	
           </div>
       </div>
     </div>  

@@ -10,7 +10,7 @@
 
     <!-- Bootstrap -->
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/openingaccount.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/mainpage.css') }}" rel="stylesheet">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -32,7 +32,8 @@
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <li class="active">Lake</li>
+            <li><p class="navbar-text">管理员: {{username}}<p></li>
+            <li><p class="navbar-text">营业部: {{bankname}}<p></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
             <li><a href="{{ path("logout") }}">登出</a></li>
@@ -42,133 +43,122 @@
     </div>
 
     <div class="container">
-
-      <div class="bigtitle">
-        <h1 style="font-size:62px">证券账户系统</h1>
-        <br /> <br />
-      </div>
-
-    
+        <h1 class="bigtitle">证券账户系统</h1>
     
 	    <ol class="breadcrumb">
 	  		<li><a href="{{path("index")}}">主界面</a></li>
-	  		<li>信息修改（个人）</li>
+	  		<li>自然人证券账户管理</li>
 	  		<li class="active">账户信息修改 </li>
-			</ol>
-			
-
-      <div class="panel panel-default">
-			  <!-- Default panel contents -->
-			  <div class="panel-heading" style="font-size:22px">信息修改表
-				  <div class="panel-body" style="font-size:16px">
-	    			<p>请根据用户需求修改信息</p>	
-					</div>
-
-				  <!-- Table -->
-				  	
-				  <table class="table">
-				  	<form class="form-horizontal" role="form" action="{{ path('changePersonal_api') }}" method="post">
-				  	<div class="col-md-6">
-					    <div class="input-group">
-							  <span class="input-group-addon">个人股票帐户号码</span>
-							  <input type="text" class="form-control" name = "customer_id" value="{{customer_id}}"  readonly="readonly" >
+        </ol>
+		
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3>信息修改表</h3>
+                <strong>请根据用户需求修改信息
+            </div>
+            
+            <div class="panel-body">
+                <form class="form" role="form" action="{{ path('changePersonal_api') }}" method="post">
+                    <div class="form-group row">
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                  <span class="input-group-addon">个人股票帐户号码</span>
+                                  <input type="text" class="form-control" name = "customer_id" value="{{customer_id}}"  readonly="readonly" >
+                            </div>
+						</div>
+						<div class="col-md-6">
+                            <div class="input-group">
+                                <span class="input-group-addon">登记日期</span>
+                                <input type="text" class="form-control" name = "register_date" value="{{register_date|date("m/d/Y")}}"  readonly="readonly">
+							</div>
+						</div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <span class="input-group-addon">姓名</span>
+                                <input type="text" class="form-control" name = "name" value="{{name}}"  readonly="readonly">
 							</div>
 						</div>
 						<div class="col-md-6">
-					    <div class="input-group">
-							  <span class="input-group-addon">登记日期</span>
-							  <input type="text" class="form-control" name = "register_date" value="{{register_date|date("m/d/Y")}}"  readonly="readonly">
+                            <div class="input-group">
+                                <span class="input-group-addon">性别</span>
+                                <input type="text" class="form-control" name = "gender"  value="{{gender}}"  readonly="readonly">
 							</div>
 						</div>
-						<br /> <br />
-				  	<div class="col-md-6">
-					    <div class="input-group">
-							  <span class="input-group-addon">姓名</span>
-							  <input type="text" class="form-control" name = "name" value="{{name}}"  readonly="readonly">
-							</div>
-						</div>
-						<div class="col-md-6">
-					    <div class="input-group">
-							  <span class="input-group-addon">性别</span>
-							  <input type="text" class="form-control" name = "gender"  value="{{gender}}"  readonly="readonly">
-							</div>
-						</div>
-						<br /> <br />
-				  	<div class="col-md-6">
-					    <div class="input-group">
-							  <span class="input-group-addon">学历</span>
-							  <input type="text" class="form-control" name = "educational_background" value="{{educational_background}}" >
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <span class="input-group-addon">学历</span>
+                                <input type="text" class="form-control" name = "educational_background" value="{{educational_background}}" >
 							</div>
 						</div>
 						<div class="col-md-6">
-					    <div class="input-group">
-							  <span class="input-group-addon">身份证号码</span>
-							  <input type="text" class="form-control" name = "id_number" value="{{id_number}}"  readonly="readonly" >
+                            <div class="input-group">
+                                <span class="input-group-addon">身份证号码</span>
+                                <input type="text" class="form-control" name = "id_number" value="{{id_number}}"  readonly="readonly" >
 							</div>
 						</div>
-						<br /> <br />
-				  	<div class="col-md-12">
+                    </div>
+				  	<div class="form-group">
 					    <div class="input-group">
-							  <span class="input-group-addon">家庭地址</span>
-							  <input type="text" class="form-control" name = "address" value="{{address}}" >
-							</div>
-						</div>
-						<br /> <br />
+                            <span class="input-group-addon">家庭地址</span>
+                            <input type="text" class="form-control" name = "address" value="{{address}}" >
+                        </div>
+                    </div>
+                    <div class="form-group row">
 						<div class="col-md-6">
-					    <div class="input-group">
-							  <span class="input-group-addon">职业</span>
-							  <input type="text" class="form-control" name = "occupation"  value="{{occupation}}" >
-							</div>
-						</div>
-						<div class="col-md-6">
-					    <div class="input-group">
-							  <span class="input-group-addon">工作单位</span>
-							  <input type="text" class="form-control" name = "company_or_organization"  value="{{company_or_organization}}" >
-							</div>
-						</div>
-						<br /> <br />
-						<div class="col-md-6">
-					    <div class="input-group">
-							  <span class="input-group-addon">联系电话</span>
-							  <input type="text" class="form-control" name = "tel"  value="{{tel}}" >
-							</div>
-						</div>
-						
-						<br /> <br />
-                        
-						<div class="col-md-6">
-					    <div class="input-group">
-							  <span class="input-group-addon">代办人身份证ID</span>
-							  <input type="text" class="form-control" value="{{agent_id}}"  readonly="readonly">
+                            <div class="input-group">
+                                <span class="input-group-addon">职业</span>
+                                <input type="text" class="form-control" name = "occupation"  value="{{occupation}}" >
 							</div>
 						</div>
 						<div class="col-md-6">
-					    <div class="input-group">
-							  <span class="input-group-addon">开户行</span>
-							  <input type="text" class="form-control" value="{{bank}}"  readonly="readonly">
+                            <div class="input-group">
+                                <span class="input-group-addon">工作单位</span>
+                                <input type="text" class="form-control" name = "company_or_organization"  value="{{company_or_organization}}" >
 							</div>
 						</div>
-                        <br/>
-                        <br/>
-						<div class="col-md-6" align="center">
-						  <button role="button" class="btn btn-success btn-lg btn-block" type="submit">提交</button>
+                    </div>
+                    <div class="form-group row">
+						<div class="col-md-6">
+                            <div class="input-group">
+                                <span class="input-group-addon">联系电话</span>
+                                <input type="text" class="form-control" name = "tel"  value="{{tel}}" >
+							</div>
 						</div>
-						<div class="col-md-6" align="center">
-						  <a type="button" class="btn btn-danger btn-lg btn-block" href="{{path('index')}}">取消修改</a>
+                    </div>
+                    <div class="form-group row">
+						<div class="col-md-6">
+                            <div class="input-group">
+                                <span class="input-group-addon">代办人身份证ID</span>
+                                <input type="text" class="form-control" value="{{agent_id}}"  readonly="readonly">
+							</div>
 						</div>
-					</table>
-				</div>
-      </div>  
-     
-
-			<hr>
-		<div class="container">
-      <footer>
-        <p>&copy; SESS GROUP 2014</p>
-      </footer>
+						<div class="col-md-6">
+                            <div class="input-group">
+                                <span class="input-group-addon">开户行</span>
+                                <input type="text" class="form-control" value="{{bank}}"  readonly="readonly">
+							</div>
+						</div>
+                    </div>
+                    <div class="form-group row">
+						<div class="col-md-6">
+                            <button role="button" class="btn btn-success btn-lg btn-block" type="submit">提交</button>
+						</div>
+						<div class="col-md-6">
+                            <a type="button" class="btn btn-danger btn-lg btn-block" href="{{path('index')}}">取消修改</a>
+						</div>
+                    </div>
+                </form>
+            </div>        
+        </div>  
+        <hr>
+        <footer>
+            <p>&copy; SESS GROUP 2014</p>
+        </footer>
     </div> <!-- /container -->
-
-    
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="{{ asset('web/js/jquery.min.js') }}"></script>
