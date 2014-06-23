@@ -2,11 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=gb2312">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>账户信息确认</title>
-    
+    <title>账户信息修改</title>
 
     <!-- Bootstrap -->
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
@@ -28,7 +26,7 @@
             <span class="icon-bar"></span>
 
           </button>
-          <a class="navbar-brand" href="{{path('index')}}">欢迎!</a>
+          <a class="navbar-brand" href="#">欢迎</a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
@@ -52,86 +50,93 @@
     
     
 	    <ol class="breadcrumb">
-	  		<li><a href="{{path("index")}}">主界面</a></li>
-	  		<li>开户（个人）</li>
-	  		<li class="active">账户信息确认 </li>
+	  		<li><a href={{path('index')}}>主界面 </a></li>
+	  		<li>信息修改（法人）</li>
+	  		<li class="active">账户信息修改 </li>
 			</ol>
 			
 
       <div class="panel panel-default">
 			  <!-- Default panel contents -->
-			  <div class="panel-heading" style="font-size:22px">信息核对表
+			  <div class="panel-heading" style="font-size:22px">信息修改表
 				  <div class="panel-body" style="font-size:16px">
-	    			<p>请用户核对账户信息是否正确</p>	
+	    			<p>请根据用户需求修改信息 </p>	
 					</div>
 
 				  <!-- Table -->
 				  	
 				  <table class="table">
-				  	
+				  	<form class="form-horizontal" role="form" action="{{ path('changeCompany_api') }}" method="post">
 				  	<div class="col-md-6">
 					    <div class="input-group">
-							  <span class="input-group-addon">个人股票帐户号码</span>
-							  <input type="text" class="form-control" placeholder="{{customer_id}}"  readonly="readonly" >
+							  <span class="input-group-addon">股票帐户号码</span>
+							  <input type="text" class="form-control" name = "customer_id" value="{{customer_id}}"  readonly="readonly">
 							</div>
 						</div>
 						<div class="col-md-6">
 					    <div class="input-group">
-							  <span class="input-group-addon">登记日期</span>
-							  <input type="text" class="form-control" placeholder="{{register_date|date("m/d/Y")}}"  readonly="readonly">
+							  <span class="input-group-addon">注册登记号码</span>
+							  <input type="text" class="form-control" value="{{register_id}}"  readonly="readonly">
+							</div>
+						</div>
+						<br /> <br />
+				  	<div class="col-md-6">
+					    <div class="input-group">
+							  <span class="input-group-addon">营业执照号码</span>
+							  <input type="text" class="form-control" value="{{license_id}}"  readonly="readonly">
+							</div>
+						</div>
+						<div class="col-md-6">
+					    <div class="input-group">
+							  <span class="input-group-addon">代表人身份证号码</span>
+							  <input type="text" class="form-control" value="{{id_number}}"  readonly="readonly">
 							</div>
 						</div>
 						<br /> <br />
 				  	<div class="col-md-6">
 					    <div class="input-group">
 							  <span class="input-group-addon">姓名</span>
-							  <input type="text" class="form-control" placeholder="{{name}}"  readonly="readonly">
+							  <input type="text" class="form-control" value="{{name}}"  readonly="readonly">
 							</div>
 						</div>
 						<div class="col-md-6">
 					    <div class="input-group">
-							  <span class="input-group-addon">性别</span>
-							  <input type="text" class="form-control" placeholder="{{gender}}"  readonly="readonly">
-							</div>
-						</div>
-						<br /> <br />
-				  	<div class="col-md-6">
-					    <div class="input-group">
-							  <span class="input-group-addon">学历</span>
-							  <input type="text" class="form-control" placeholder="{{educational_background}}"  readonly="readonly">
-							</div>
-						</div>
-						<div class="col-md-6">
-					    <div class="input-group">
-							  <span class="input-group-addon">身份证号码</span>
-							  <input type="text" class="form-control"placeholder="{{id_number}}"  readonly="readonly" >
+							  <span class="input-group-addon">联系电话</span>
+							  <input type="text" class="form-control" name = "phone" value="{{phone}}" >
 							</div>
 						</div>
 						<br /> <br />
 				  	<div class="col-md-12">
 					    <div class="input-group">
-							  <span class="input-group-addon">家庭地址</span>
-							  <input type="text" class="form-control" placeholder="{{address}}"  readonly="readonly">
+							  <span class="input-group-addon">联系地址</span>
+							  <input type="text" class="form-control" name = "address" value="{{address}}">
 							</div>
 						</div>
 						<br /> <br />
 						<div class="col-md-6">
 					    <div class="input-group">
-							  <span class="input-group-addon">职业</span>
-							  <input type="text" class="form-control" placeholder="{{occupation}}"  readonly="readonly">
+							  <span class="input-group-addon">授权交易人</span>
+							  <input type="text" class="form-control" value="{{auth_name}}"  readonly="readonly">
 							</div>
 						</div>
 						<div class="col-md-6">
 					    <div class="input-group">
-							  <span class="input-group-addon">工作单位</span>
-							  <input type="text" class="form-control" placeholder="{{company_or_organization}}"  readonly="readonly">
+							  <span class="input-group-addon">授权人身份证号码</span>
+							  <input type="text" class="form-control" value="{{auth_id}}"  readonly="readonly">
 							</div>
 						</div>
 						<br /> <br />
 						<div class="col-md-6">
 					    <div class="input-group">
-							  <span class="input-group-addon">联系电话</span>
-							  <input type="text" class="form-control"placeholder="{{tel}}"  readonly="readonly" >
+							  <span class="input-group-addon">授权人联系电话</span>
+							  <input type="text" class="form-control" name = "auth_phone" value="{{auth_phone}}">
+							</div>
+						</div>
+						<br /> <br />
+				  	<div class="col-md-12">
+					    <div class="input-group">
+							  <span class="input-group-addon">授权人地址</span>
+							  <input type="text" class="form-control" name = "auth_address" value="{{auth_address}}" >
 							</div>
 						</div>
 						
@@ -139,23 +144,18 @@
                         
 						<div class="col-md-6">
 					    <div class="input-group">
-							  <span class="input-group-addon">代办人身份证ID</span>
-							  <input type="text" class="form-control" placeholder="{{agent_id}}"  readonly="readonly">
-							</div>
-						</div>
-						<div class="col-md-6">
-					    <div class="input-group">
 							  <span class="input-group-addon">开户行</span>
-							  <input type="text" class="form-control" placeholder="{{bank}}"  readonly="readonly">
+							  <input type="text" class="form-control" value="{{bank}}"  readonly="readonly">
 							</div>
 						</div>
                         <br/>
-                        <br/>
+                        <br/>   
+
 						<div class="col-md-6" align="center">
-						  <a type="button" class="btn btn-success btn-lg btn-block" href="{{path('confirmPersonal_api')}}?confirm=1&customer_id={{customer_id}}">确认正确</a>
+						  <button role="button" class="btn btn-success btn-lg btn-block" type="submit">提交</button>
 						</div>
 						<div class="col-md-6" align="center">
-						  <a type="button" class="btn btn-danger btn-lg btn-block" href="{{path('confirmPersonal_api')}}?confirm=0&customer_id={{customer_id}}">返回修改</a>
+						  <a type="button" class="btn btn-danger btn-lg btn-block" href="{{path('index')}}">取消修改</a>
 						</div>
 					</table>
 				</div>
