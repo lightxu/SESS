@@ -8,11 +8,13 @@ use Stock\AccountBundle\Entity\NaturalCustomer;
 use Stock\AccountBundle\Entity\CompanyCheck;
 use Stock\AccountBundle\Entity\CompanyCustomer;
 use Stock\AccountBundle\Entity\Personnel;
+use Stock\AccountBundle\Entity\HoldCost;
 
 use Stock\AccountBundle\Entity;
 
 class AccountController extends Controller
 {
+    /********** Page Actions **********/
     //show the web page of opening an account of a person
     public function openPersonalAction(Request $request)
     {
@@ -145,6 +147,7 @@ class AccountController extends Controller
         return $this->render('StockAccountBundle:Account:ViewSearch.html.twig', array("username" => $admin->getUsername(), "bankname" => $admin->getBankname()));
     }
     
+    /********** POST Api Actions **********/
     //the api to change the information of the customer
     public function changePersonalApiAction(Request $request)
     {
@@ -593,6 +596,7 @@ class AccountController extends Controller
         }
     }
     
+    /********** Database Access Actions **********/
     //the function used to check whether the person is a personnel
     private function checkPersonnel($id_number)
     {
@@ -628,10 +632,16 @@ class AccountController extends Controller
         $natural_customer->setBank($customer['bank']);
         $natural_customer->setAssetsNumber('');
         $natural_customer->setFrozen(true);
+        
+        $hold_cost = new HoldCost();
+        $hold_cost->setCustomerId($customer['id']);
+        $hold_cost->setTotalAmount(0);
+        $hold_cost->setHoldCost(0);
 		
 		//instantiate database query
         $em = $this->getDoctrine()->getEntityManager();
         $em->persist($natural_customer);
+        $em->persist($hold_cost);
         $em->flush();
 
         return false;
@@ -774,9 +784,13 @@ class AccountController extends Controller
         if(!$natural_customer){
                 throw $this->createNotFoundException('No natural customer found for customer_id ' .$customer_id);
             }
+        $hold_cost = $this->getDoctrine()
+                    ->getRepository('StockTradeBundle:HoldCost')
+                    ->find($customer_id);
 		//remove
         $em = $this->getDoctrine()->getEntityManager();
         $em->remove($natural_customer);
+        $em->remove($hold_cost);
         $em->flush();
     }
 
@@ -799,9 +813,15 @@ class AccountController extends Controller
         $company_customer->setBank($customer['bank']);
         $company_customer->setAssetsNumber('');
         $company_customer->setFrozen(true);
+        
+        $hold_cost = new HoldCost();
+        $hold_cost->setCustomerId($customer['id']);
+        $hold_cost->setHoldCost(0);
+        $hold_cost->setTotalAmount(0);
     
         $em = $this->getDoctrine()->getEntityManager();
         $em->persist($company_customer);
+        $em->persist($hold_cost);
         $em->flush();
     }
 
@@ -876,9 +896,13 @@ class AccountController extends Controller
         if(!$company_customer){
                 throw $this->createNotFoundException('No company customer found for customer_id ' .$customer_id);
             }
+        $hold_cost = $this->getDoctrine()
+                    ->getRepository('StockTradeBundle:HoldCost')
+                    ->find($customer_id);
     
         $em = $this->getDoctrine()->getEntityManager();
         $em->remove($company_customer);
+        $em->remove($hold_cost);
         $em->flush();
     }
 }

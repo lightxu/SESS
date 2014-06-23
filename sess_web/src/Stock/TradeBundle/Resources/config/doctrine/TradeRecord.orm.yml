@@ -1,0 +1,27 @@
+Stock\TradeBundle\Entity\TradeRecord:
+    type: entity
+    table: null
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        buyerId:
+            type: string
+            length: 255
+            column: buyer_id
+        sellerId:
+            type: string
+            length: 255
+            column: seller_id
+        stockId:
+            type: string
+            length: 255
+            column: stock_id
+        amount:
+            type: integer
+        price:
+            type: float
+    lifecycleCallbacks: {  }
