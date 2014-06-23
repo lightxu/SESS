@@ -59,7 +59,7 @@ class TradeController extends Controller
         if (strcmp($token, self::APP_KEY) != 0)
             return $this->makeResponse(self::STATUS_UNAUTHORIZED_ERROR);
             
-        $status = updateStockFrozenAmount($account_id, $stock_id, $amount)
+        $status = updateStockFrozenAmount($account_id, $stock_id, $amount);
         
         return $this->makeResponse($status);
     }
@@ -83,7 +83,7 @@ class TradeController extends Controller
         
         if ($buyer_id != null)
         {
-            $status = updateStockTotalAmountCheck($buyer_id, $stock_id, $amount)
+            $status = updateStockTotalAmountCheck($buyer_id, $stock_id, $amount);
             if (strcmp($status, self::STATUS_SUCCESS) != 0)
                 return $this->makeResponse($status);
         }
@@ -117,7 +117,7 @@ class TradeController extends Controller
         $trade_record = showTradeRecord($operation_code);
         
         if (strcmp($trade_record["status"], self::STATUS_SUCCESS) != 0)
-            return $this->makeResponse($trade_record["status"])
+            return $this->makeResponse($trade_record["status"]);
         
         $buyer_id = $trade_record["buyer_id"];
         $seller_id = $trade_record["seller_id"];
@@ -161,7 +161,7 @@ class TradeController extends Controller
         if (strcmp($stock_array["status"], self::STATUS_SUCCESS) != 0)
             return $this->makeResponse($stock_array["status"]);
         else
-            return $this->makeResponse($stock_array["status"], $stock_array};
+            return $this->makeResponse($stock_array["status"], $stock_array);
     }
     
     public function checkAccountAction(Request $request)
