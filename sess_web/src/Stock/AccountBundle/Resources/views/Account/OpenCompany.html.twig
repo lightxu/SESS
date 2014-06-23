@@ -8,7 +8,7 @@
 
     <!-- Bootstrap -->
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/openingaccount.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/mainpage.css') }}" rel="stylesheet">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -40,177 +40,165 @@
       </div>
     </div>
 
-    {% for notice in app.session.flashbag.get('notice') %}
-        <div class="alert alert-success alert-dismissable">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            {{ notice }}
-        </div>
-    {% endfor %}
-    {% for alert in app.session.flashbag.get('alert') %}
-        <div class="alert alert-danger alert-dismissable">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            {{ alert }}
-        </div>
-    {% endfor %}
-    
     <div class="container">
+        {% for notice in app.session.flashbag.get('notice') %}
+            <div class="alert alert-success alert-dismissable">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                {{ notice }}
+            </div>
+        {% endfor %}
+        {% for alert in app.session.flashbag.get('alert') %}
+            <div class="alert alert-danger alert-dismissable">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                {{ alert }}
+            </div>
+        {% endfor %}
 
-      <div class="bigtitle">
-        <h1 style="font-size:62px">证券账户系统</h1>
-        <br /> <br />
-      </div>
+        <h1 class="bigtitle">证券账户系统</h1>
 
-    
-    
 	    <ol class="breadcrumb">
 	  		<li><a href="{{path('index')}}">主界面</a></li>
-	  		<li class="active">账户开户（法人）</li>
-			</ol>
+            <li>法人证券账户管理</li>
+	  		<li class="active">账户开户</li>
+        </ol>
 			
 
-      <div class="panel panel-default">
-			  <!-- Default panel contents -->
-			  <div class="panel-heading" style="font-size:22px">申请表
-				  <div class="panel-body" style="font-size:16px">
-	    			<p>请要求用户提供相关证件并完成申请表</p>	
-					</div>
-                <form class="form-horizontal" role="form" action="{{ path('openCompany_api') }}" method="post">
-				  <!-- Table -->
-				  	
-				  <table class="table">
-				  	
-						<div class="col-md-6">
-					    <div class="input-group">
-							  <span class="input-group-addon">注册登记号码</span>
-                              {% if is_open %}
-                                <input type="text" class="form-control" name="register_id">
-                              {% else %}
-                                <input type="text" class="form-control" name="register_id" value="{{customer['register_id']}}">
-                              {% endif %}
+        <div class="panel panel-default">
+            <!-- Default panel contents -->
+            <div class="panel-heading">
+                <h3>开户申请表</h3>
+                <strong>请要求用户提供相关证件并完成申请表</strong>
+            </div>
+            <div class="panel-body">
+                <form class="form" role="form" action="{{ path('openCompany_api') }}" method="post">
+                    <div class="row form-group">
+					    <div class="col-md-6">
+                            <div class="input-group">
+                                <span class="input-group-addon">注册登记号码</span>
+                                {% if is_open %}
+                                    <input type="text" class="form-control" name="register_id">
+                                {% else %}
+                                    <input type="text" class="form-control" name="register_id" value="{{customer['register_id']}}">
+                                {% endif %}
+                            </div>
+                        </div>
+					    <div class="col-md-6">
+                            <div class="input-group">
+                                <span class="input-group-addon">营业执照号码</span>
+                                {% if is_open %}
+                                    <input type="text" class="form-control" name="license_id">
+                                {% else %}
+                                    <input type="text" class="form-control" name="license_id" value="{{customer['license_id']}}">
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <span class="input-group-addon">代表人身份证号码</span>
+                                {% if is_open %}
+                                    <input type="text" class="form-control" name="id_number">
+                                {% else %}
+                                    <input type="text" class="form-control" name="id_number" value="{{customer['id_number']}}">
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="input-group">
+                                <span class="input-group-addon">姓名</span>
+                                {% if is_open %}
+                                    <input type="text" class="form-control" name="name">
+                                {% else %}
+                                    <input type="text" class="form-control" name="name" value="{{customer['name']}}">
+                                {% endif %}
+                            </div>
+                        </div>
+						<div class="col-md-3">
+                            <div class="input-group">
+                                <span class="input-group-addon">联系电话</span>
+                                {% if is_open %}
+                                    <input type="text" class="form-control" name="phone">
+                                {% else %}
+                                    <input type="text" class="form-control" name="phone" value="{{customer['phone']}}">
+                                {% endif %}
 							</div>
 						</div>
-						<br /> <br />
-				  	<div class="col-md-6">
+                    </div>
+				  	<div class="form-group">
 					    <div class="input-group">
-							  <span class="input-group-addon">营业执照号码</span>
-                              {% if is_open %}
-                                <input type="text" class="form-control" name="license_id">
-                              {% else %}
-                                <input type="text" class="form-control" name="license_id" value="{{customer['license_id']}}">
-                              {% endif %}
-							</div>
-						</div>
-						<div class="col-md-6">
-					    <div class="input-group">
-							  <span class="input-group-addon">代表人身份证号码</span>
-                              {% if is_open %}
-                                <input type="text" class="form-control" name="id_number">
-                              {% else %}
-                                <input type="text" class="form-control" name="id_number" value="{{customer['id_number']}}">
-                              {% endif %}
-							</div>
-						</div>
-						<br /> <br />
-				  	<div class="col-md-6">
-					    <div class="input-group">
-							  <span class="input-group-addon">姓名</span>
-                              {% if is_open %}
-                                <input type="text" class="form-control" name="name">
-                              {% else %}
-                                <input type="text" class="form-control" name="name" value="{{customer['name']}}">
-                              {% endif %}
-							</div>
-						</div>
-						<div class="col-md-6">
-					    <div class="input-group">
-							  <span class="input-group-addon">联系电话</span>
-                              {% if is_open %}
-                                <input type="text" class="form-control" name="phone">
-                              {% else %}
-                                <input type="text" class="form-control" name="phone" value="{{customer['phone']}}">
-                              {% endif %}
-							</div>
-						</div>
-						<br /> <br />
-				  	<div class="col-md-12">
-					    <div class="input-group">
-							  <span class="input-group-addon">联系地址</span>
-                              {% if is_open %}
+                            <span class="input-group-addon">联系地址</span>
+                            {% if is_open %}
                                 <input type="text" class="form-control" name="address">
-                              {% else %}
+                            {% else %}
                                 <input type="text" class="form-control" name="address" value="{{customer['address']}}">
-                              {% endif %}
-							</div>
-						</div>
-						<br /> <br />
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="form-group row">
 						<div class="col-md-6">
-					    <div class="input-group">
-							  <span class="input-group-addon">授权交易人</span>
-                              {% if is_open %}
-                                <input type="text" class="form-control" name="auth_name">
-                              {% else %}
-                                <input type="text" class="form-control" name="auth_name" value="{{customer['auth_name']}}">
-                              {% endif %}
+                            <div class="input-group">
+                                <span class="input-group-addon">授权人身份证号码</span>
+                                {% if is_open %}
+                                    <input type="text" class="form-control" name="auth_id">
+                                {% else %}
+                                    <input type="text" class="form-control" name="auth_id" value="{{customer['auth_id']}}">
+                                {% endif %}
 							</div>
 						</div>
-						<div class="col-md-6">
-					    <div class="input-group">
-							  <span class="input-group-addon">授权人身份证号码</span>
-                              {% if is_open %}
-                                <input type="text" class="form-control" name="auth_id">
-                              {% else %}
-                                <input type="text" class="form-control" name="auth_id" value="{{customer['auth_id']}}">
-                              {% endif %}
+						<div class="col-md-3">
+                            <div class="input-group">
+                                <span class="input-group-addon">授权交易人</span>
+                                {% if is_open %}
+                                    <input type="text" class="form-control" name="auth_name">
+                                {% else %}
+                                    <input type="text" class="form-control" name="auth_name" value="{{customer['auth_name']}}">
+                                {% endif %}
 							</div>
 						</div>
-						<br /> <br />
-						<div class="col-md-6">
-					    <div class="input-group">
-							  <span class="input-group-addon">授权人联系电话</span>
-                              {% if is_open %}
-                                <input type="text" class="form-control" name="auth_phone">
-                              {% else %}
-                                <input type="text" class="form-control" name="auth_phone" value="{{customer['auth_phone']}}">
-                              {% endif %}
+						<div class="col-md-3">
+                            <div class="input-group">
+                                <span class="input-group-addon">授权人联系电话</span>
+                                {% if is_open %}
+                                    <input type="text" class="form-control" name="auth_phone">
+                                {% else %}
+                                    <input type="text" class="form-control" name="auth_phone" value="{{customer['auth_phone']}}">
+                                {% endif %}
 							</div>
 						</div>
-						<br /> <br />
-				  	<div class="col-md-12">
+                    </div>
+				  	<div class="form-group">
 					    <div class="input-group">
-							  <span class="input-group-addon">授权人地址</span>
-                              {% if is_open %}
+                            <span class="input-group-addon">授权人地址</span>
+                            {% if is_open %}
                                 <input type="text" class="form-control" name="auth_address">
-                              {% else %}
+                            {% else %}
                                 <input type="text" class="form-control" name="auth_address" value="{{customer['auth_address']}}">
-                              {% endif %}
-							</div>
-						</div>
-						
-						<br /> <br />
-
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="form-group row">
 						<div class="col-md-6" align="center">
-						  <button role="button" class="btn btn-success btn-lg btn-block" type="submit">提交</button>
+                            <button role="button" class="btn btn-success btn-lg btn-block" type="submit">提交</button>
 						</div>
 						<div class="col-md-6" align="center">
-						  <a role="button" class="btn btn-danger btn-lg btn-block" href="{{path('index')}}">取消</a>
+                            <a role="button" class="btn btn-danger btn-lg btn-block" href="{{path('index')}}">取消</a>
 						</div>
-					</table>
+                    </div>
 				</form>
-				</div>
-      </div>  
+            </div>
+        </div>  
      
-
-			<hr>
-		<div class="container">
-      <footer>
-        <p>&copy; SESS GROUP 2014</p>
-      </footer>
+        <hr>
+        <footer>
+            <p>&copy; SESS GROUP 2014</p>
+        </footer>
     </div> <!-- /container -->
 
     
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="{{ asset('web/js/jquery.min.js') }}"></script>
+    <script src="{{ asset('js/jquery-1.11.1.min.js') }}"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="{{ asset('js/bootstrap.min.js') }}"></script>
   </body>
