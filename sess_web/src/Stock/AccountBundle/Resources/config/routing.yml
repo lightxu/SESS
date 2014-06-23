@@ -82,6 +82,16 @@ changeInformation_page:
     path: /accounts/change
     defaults: {_controller: StockAccountBundle:Account:changeInformation}
     methods: [GET]
+
+viewSearch_page:
+    path: /accounts/preview
+    defaults: {_controller: StockAccountBundle:Account:viewSearch}
+    methods: [GET]
+    
+viewSearch_api:
+    path: /accounts/preview
+    defaults: {_controller: StockAccountBundle:Account:viewSearchApi}
+    methods: [POST]
     
 updatePersonal_page:
     path: /accounts/updateperson

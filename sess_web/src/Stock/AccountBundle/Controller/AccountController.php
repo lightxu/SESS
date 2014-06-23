@@ -122,6 +122,14 @@ class AccountController extends Controller
         $admin = $this->getUser();
         return $this->render('StockAccountBundle:Account:ChangeInformation.html.twig', array("username" => $admin->getUsername(), "bankname" => $admin->getBankname()));
     }
+    
+    public function viewSearchAction(Request $request)
+    {
+        $request->query->get('id');
+        $admin = $this->getUser();
+        return $this->render('StockAccountBundle:Account:ViewSearch.html.twig', array("username" => $admin->getUsername(), "bankname" => $admin->getBankname()));
+    }
+    
     public function changePersonalApiAction(Request $request)
     {
         $updateinfo = array();
@@ -199,6 +207,18 @@ class AccountController extends Controller
             );
             return $this->render('StockAccountBundle:Account:OpenPerson.html.twig', array("is_open" => false, "customer" => $customer, "username" => $admin->getUsername(), "bankname" => $admin->getBankname()));
         }
+        
+        //check gender
+        if (strcmp($customer['gender'], '男') && strcmp($customer['gender'], '女'))
+        {
+             $this->get('session')->getFlashBag()->add(
+                'alert',
+                '性别只能是男或女。'
+            );
+            return $this->render('StockAccountBundle:Account:OpenPerson.html.twig', array("is_open" => false, "customer" => $customer, "username" => $admin->getUsername(), "bankname" => $admin->getBankname()));
+        
+        }
+        
         //check id card
         if (!(strlen($customer['id_number']) == 18 || strlen($customer['id_number']) == 19))
         {
@@ -207,9 +227,20 @@ class AccountController extends Controller
                 '身份证号码格式不正确。'
             );
             return $this->render('StockAccountBundle:Account:OpenPerson.html.twig', array("is_open" => false, "customer" => $customer, "username" => $admin->getUsername(), "bankname" => $admin->getBankname()));
-        
         }
-        
+        //check phone
+        for ($i = 0; $i < strlen($customer['tel']); $i++)
+        {
+            $phonum = substr($customer['tel'], $i, 1);
+            if (!($phonum >= '0' && $phonum <= '9'))
+            {
+                $this->get('session')->getFlashBag()->add(
+                'alert',
+                '电话号码格式不正确。'
+            );
+            return $this->render('StockAccountBundle:Account:OpenPerson.html.twig', array("is_open" => false, "customer" => $customer, "username" => $admin->getUsername(), "bankname" => $admin->getBankname()));
+            }
+        }
         // Check age
         $agentbirth = substr($customer['agent_id'], 6, 4);
         $intagentbirth = intval($agentbirth);
@@ -435,6 +466,31 @@ class AccountController extends Controller
                 "该身份账号不存在"
             );
             return $this->redirect($this->generateUrl('changeInformation_page'));
+        }
+    }
+    
+    public function viewSearchApiAction(Request $request)
+    {
+        $id = $request->request->get('id');
+        if (($find = $this->findNaturalCustomerAction($id)) != null)
+        {   $customer = $this->showNaturalCustomerAction($find->getCustomerId());        
+            return $this->render('StockAccountBundle:Account:ViewPerson.html.twig', $customer);
+        }
+        else if (($find = $this->findCompanyCustomerAction($id)) != null)
+        {
+            $admin = $this->getUser();
+            $customer = $this->showCompanyCustomerAction($id);
+            $customer["username"] = $admin->getUsername();
+            $customer["bankname"] = $admin->getBankname();
+            return $this->render('StockAccountBundle:Account:ViewCompany.html.twig', $customer);
+        }
+        else
+        {
+            $this->get('session')->getFlashBag()->add(
+                'alert',
+                "该身份账号不存在"
+            );
+            return $this->redirect($this->generateUrl('viewSearch_page'));
         }
     }
     //the api for cancelling an account

@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>账户挂失</title>
+    <title>查看账户信息</title>
 
     <!-- Bootstrap -->
     <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
@@ -26,7 +26,7 @@
             <span class="icon-bar"></span>
 
           </button>
-          <a class="navbar-brand" href="{{path("index")}}">欢迎</a>
+          <a class="navbar-brand" href="path{{'index'}}">欢迎</a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
@@ -61,7 +61,7 @@
     
     
 	    <ol class="breadcrumb">
-	  		<li><a href="{{path("index")}}">主界面</a></li>
+	  		<li><a href="path{{'index'}}">主界面</a></li>
 	  		<li class="active">账户挂失</li>
 			</ol>
 			
@@ -69,13 +69,13 @@
 
       <div class="panel panel-default">
           <!-- Default panel contents -->
-          <div class="panel-heading" style="font-size:22px">账户挂失
+          <div class="panel-heading" style="font-size:22px">查看账户信息
           <div class="panel-body" style="font-size:16px">
             <p>请要求用户出示必须的证件</p>	
             <p>个人用户请输入身份证号</p>
             <p>法人用户请输入法人注册登记号</p>
 
-            <form class="form-horizontal" role="form" action="{{ path('reportLoss_api') }}" method="post">	  	
+            <form class="form-horizontal" role="form" action="{{ path('viewSearch_api') }}" method="post">	  	
                 <div class="col-md-3" ></div>
                 <div class="col-md-6" >
                     <div class="form-group input-group">
