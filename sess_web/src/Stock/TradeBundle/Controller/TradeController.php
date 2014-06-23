@@ -18,7 +18,7 @@ class TradeController extends Controller
     const STATUS_TRADE_ERROR = "no such trade record";
     const APP_KEY = "354DD0DE1AB36DC4531B8723C34B9EFE";
     
-    private function makeResponse($status, $data=[])
+    private function makeResponse($status, $data=array())
     {
         $data["status"] = $status;
         $response = new Response(json_encode($data));
