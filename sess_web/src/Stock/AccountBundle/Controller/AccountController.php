@@ -490,20 +490,13 @@ class AccountController extends Controller
     public function changeInformationApiAction(Request $request)
     {
         $id = $request->request->get('id');
-<<<<<<< HEAD
-        //find the customer
-        if (($find = $this->findNaturalCustomerAction($id)) != null)
-        {   
-            $customer = $this->showNaturalCustomerAction($find->getCustomerId()); 
-            //
-=======
         $admin = $this->getUser();
+        //find the customer
         if (($find = $this->findNaturalCustomerAction($id)) != null)
         {   
             $customer = $this->showNaturalCustomerAction($find->getCustomerId());        
             $customer['username'] = $admin->getUsername();
             $customer['bankname'] = $admin->getBankname();
->>>>>>> 0cd607294d25f6496b4d84724fe71ce53f8daf76
             return $this->render('StockAccountBundle:Account:UpdatePerson.html.twig', $customer);
         }
         else if (($find = $this->findCompanyCustomerAction($id)) != null)

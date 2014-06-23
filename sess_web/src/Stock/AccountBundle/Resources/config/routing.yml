@@ -92,21 +92,12 @@ viewSearch_api:
     path: /accounts/preview
     defaults: {_controller: StockAccountBundle:Account:viewSearchApi}
     methods: [POST]
-    
-updatePersonal_page:
-    path: /accounts/updateperson
-    defaults: {_controller: StockAccountBundle:Account:updatePersonal}
-    methods: [GET]
 
 changePersonal_api:
     path: /accounts/updateperson
     defaults: {_controller: StockAccountBundle:Account:changePersonalApi}
     methods: [POST]
 
-updateCompany_page:
-    path: /accounts/updatecompany
-    defaults: {_controller: StockAccountBundle:Account:updateCompany}
-    methods: [GET]
     
 changeCompany_api:
     path: /accounts/updatecompany
