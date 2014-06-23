@@ -25,6 +25,7 @@ class AccountController extends Controller
         {
             //find the customer
             $customer_id = $request->query->get('customer_id');
+            //no customer
             if ($customer_id == null)
                 throw $this->createNotFoundException('No natural customer found for customer_id' . $customer_id);
             $customer = $this->showNaturalCustomerAction($customer_id);
@@ -47,19 +48,24 @@ class AccountController extends Controller
         if (strcmp($type, 'edit') == 0 || strcmp($type, 'reopen') == 0)
         {
             $customer_id = $request->query->get('customer_id');
+            //no customer
             if ($customer_id == null)
                 throw $this->createNotFoundException('No company customer found for customer_id' . $customer_id);
+            //show the infor of the customer
             $customer = $this->showCompanyCustomerAction($customer_id);
             $this->removeCompanyCustomerAction($customer_id);
             return $this->render('StockAccountBundle:Account:OpenCompany.html.twig', array("is_open" => false, "customer" => $customer, "username" => $admin->getUsername(), "bankname" => $admin->getBankname()));
         }
+        //open opencompany page
         else
             return $this->render('StockAccountBundle:Account:OpenCompany.html.twig', array("is_open" => true, "username" => $admin->getUsername(), "bankname" => $admin->getBankname()));
     }
     //show the web page of confirming the information of a person
     public function confirmPersonalAction(Request $request)
     {
+        //get the customer id
         $customer_id = $request->query->get('customer_id');
+        //can not find the customer
         if ($customer_id == null)
         {
             $this->get('session')->getFlashBag()->add(
@@ -71,6 +77,7 @@ class AccountController extends Controller
         $admin = $this->getUser();
         //show the information of customer
         $customer = $this->showNaturalCustomerAction($customer_id);
+        //get the infomation of the bank and administrator
         $customer["username"] = $admin->getUsername();
         $customer["bankname"] = $admin->getBankname();
         // return new Response(var_dump($customer));
@@ -81,6 +88,7 @@ class AccountController extends Controller
     public function confirmCompanyAction(Request $request)
     {
         $customer_id = $request->query->get('customer_id');
+        //can not find the customer
         if ($customer_id == null)
         {
             $this->get('session')->getFlashBag()->add(
@@ -89,8 +97,10 @@ class AccountController extends Controller
             );
             return $this->redirect($this->generateUrl('index'));
         }
+        //get the administrator of the bank
         $admin = $this->getUser();
         $customer = $this->showCompanyCustomerAction($customer_id);
+        //get the administrator name and the bank name
         $customer["username"] = $admin->getUsername();
         $customer["bankname"] = $admin->getBankname();
         return $this->render('StockAccountBundle:Account:ConfirmCompany.html.twig', $customer);
@@ -100,13 +110,14 @@ class AccountController extends Controller
     {
         $request->query->get('id');
         $admin = $this->getUser();
-        
+        //open the report loss page
         return $this->render('StockAccountBundle:Account:ReportLoss.html.twig', array("username" => $admin->getUsername(), "bankname" => $admin->getBankname()));
     }
     //show the web page of registering a new account
     public function postRegisterAction()
     {
         $admin = $this->getUser();
+        //open the page of post register
         return $this->render('StockAccountBundle:Account:PostRegister.html.twig', array("username" => $admin->getUsername(), "bankname" => $admin->getBankname()));
     }
     //show the web page of cancelling the account
@@ -116,22 +127,28 @@ class AccountController extends Controller
         return $this->render('StockAccountBundle:Account:AccountCancel.html.twig', array("username" => $admin->getUsername(), "bankname" => $admin->getBankname()));
     }
     
+    //function to search the id to change information
     public function changeInformationAction(Request $request)
     {
         $request->query->get('id');
         $admin = $this->getUser();
+        //open the page
         return $this->render('StockAccountBundle:Account:ChangeInformation.html.twig', array("username" => $admin->getUsername(), "bankname" => $admin->getBankname()));
     }
     
+    //function to search the id to view the information
     public function viewSearchAction(Request $request)
     {
         $request->query->get('id');
         $admin = $this->getUser();
+        //open the page
         return $this->render('StockAccountBundle:Account:ViewSearch.html.twig', array("username" => $admin->getUsername(), "bankname" => $admin->getBankname()));
     }
     
+    //the api to change the information of the customer
     public function changePersonalApiAction(Request $request)
     {
+        //create the addry to record the update information
         $updateinfo = array();
         $customer_id = $request->request->get('customer_id');
         $updateinfo['address'] = $request->request->get('address');
@@ -139,29 +156,34 @@ class AccountController extends Controller
         $updateinfo['educational'] = $request->request->get('educational_background');
         $updateinfo['company'] = $request->request->get('company_or_organization');
         $updateinfo['tel'] = $request->request->get('tel');
-        //var_dump($updateinfo);
-        //return new Response(var_dump($updateinfo));
+        //call the change function
         $this->changeNaturalCustomerAction($customer_id, $updateinfo);
             $this->get('session')->getFlashBag()->add(
                 'notice',
                 "个人信息修改成功."
             );
+        //return to the main page
         return $this->redirect($this->generateUrl('index'));
     }
     
+    //the api to update the information of the company customer
     public function changeCompanyApiAction(Request $request)
     {
+        //create the array to record the inforamtion
         $updateinfo = array();
         $customer_id = $request->request->get('customer_id');
+        //get the information from the post
         $updateinfo['phone'] = $request->request->get('phone');
         $updateinfo['address'] = $request->request->get('address');
         $updateinfo['auth_phone'] = $request->request->get('auth_phone');
         $updateinfo['auth_address'] = $request->request->get('auth_address');
+        //call the function to update the infomation
         $this->changeCompanyCustomerAction($customer_id, $updateinfo);
             $this->get('session')->getFlashBag()->add(
                 'notice',
                 "企业信息修改成功."
             );
+        //return to the main page
         return $this->redirect($this->generateUrl('index'));
     }
     
@@ -169,10 +191,11 @@ class AccountController extends Controller
     public function openPersonalApiAction(Request $request)
     {
         $customer = array();
+        //create the id numner use the time stamp
         $customer['id'] = "P" . time();
         while ($this->checkNaturalCustomerAction($customer['id']))
             $customer['id'] = "P" . time();
-        
+        //get the information from the post
         $customer['name']  = $request->request->get('name');
         $customer['id_number'] = $request->request->get('id_number');
         $customer['register_date'] = new \DateTime();
@@ -186,6 +209,7 @@ class AccountController extends Controller
         if ($customer['agent_id'] == null)
             $customer['agent_id'] = '空';
         $admin = $this->getUser();
+        //get the bank name
         $customer['bank'] = $admin->getBankname();
         
         // Check arguments existence
@@ -275,9 +299,12 @@ class AccountController extends Controller
     public function openCompanyApiAction(Request $request)
     {
         $customer = array();
+        //create the id numner using the time stamp
         $customer['id'] = "C" . time();
+        // if the id has existed, we have to recreate
         while ($this->checkCompanyCustomerAction($customer['id']))
             $customer['id'] = "C" . time();
+        //get the information from the post
         $customer['name']  = $request->request->get('name');
         $customer['phone'] = $request->request->get('phone');
         $customer['address'] = $request->request->get('address');
@@ -289,7 +316,9 @@ class AccountController extends Controller
         $customer['auth_phone'] = $request->request->get('auth_phone');
         $customer['auth_address'] = $request->request->get('auth_address');
         $admin = $this->getUser();
+        //get the bank name
         $customer['bank'] = $admin->getBankname();
+        
         // Check arguments existence
         foreach ($customer as $key => $value)
             if ($value == null)
@@ -331,6 +360,7 @@ class AccountController extends Controller
                 'notice',
                 '个人证券帐户创建成功，id为' . $customer_id
             );
+            //return to the main page
             return $this->redirect($this->generateUrl('index'));
         }
         //return to change the information
@@ -364,9 +394,10 @@ class AccountController extends Controller
     public function reportLossApiAction(Request $request)
     {
         $id = $request->request->get('id');
+        //find the customer
         if (($find = $this->findNaturalCustomerAction($id)) != null)
         {
-            
+            //freeze the account 
             $customer_id = $find->getCustomerId();
             $this->updateNaturalCustomerAction($customer_id, true);
             $this->get('session')->getFlashBag()->add(
@@ -375,8 +406,10 @@ class AccountController extends Controller
             );
             return $this->redirect($this->generateUrl('index'));
         }
+        //for company customer
         else if (($find = $this->findCompanyCustomerAction($id)) != null)
         {
+            //freeze the customer
             $this->updateCompanyCustomerAction($id, true);
             $this->get('session')->getFlashBag()->add(
                 'notice',
@@ -384,12 +417,14 @@ class AccountController extends Controller
             );
             return $this->redirect($this->generateUrl('index'));
         }
+        //can not find the id 
         else
         {
             $this->get('session')->getFlashBag()->add(
                 'alert',
                 "该身份账号不存在"
             );
+            //report the alert and return to this page
             return $this->redirect($this->generateUrl('reportLoss_page'));
         }
     }
@@ -398,8 +433,10 @@ class AccountController extends Controller
     public function postRegisterApiAction(Request $request)
     {
         $id = $request->request->get('id');
+        //find the customer
         if (($find = $this->findNaturalCustomerAction($id)) != null)
         {
+            //check whether the account has been frozen
             if ($find->getFrozen() == 0)
              {
                  $this->get('session')->getFlashBag()->add(
@@ -409,6 +446,7 @@ class AccountController extends Controller
                  return $this->redirect($this->generateUrl('reportLoss_page'));
              }
             $customer_id = $find->getCustomerId();
+            //activate the account
             $this->updateNaturalCustomerAction($customer_id, false);
             $this->get('session')->getFlashBag()->add(
                 'notice',
@@ -416,8 +454,10 @@ class AccountController extends Controller
             );
             return $this->redirect($this->generateUrl('index'));
         }
+        //for company customer
         else if (($find = $this->findCompanyCustomerAction($id)) != null)
         {
+            //check if the account have been frozen
             if ($find->getFrozen() == 0)
             {
                 $this->get('session')->getFlashBag()->add(
@@ -426,6 +466,7 @@ class AccountController extends Controller
                 );
                 return $this->redirect($this->generateUrl('reportLoss_page'));
             }
+            //call the function to freeze
             $this->updateCompanyCustomerAction($id, false);
             $this->get('session')->getFlashBag()->add(
                 'notice',
@@ -433,12 +474,14 @@ class AccountController extends Controller
             );
             return $this->redirect($this->generateUrl('index'));
         }
+        //can not find the customer
         else
         {
             $this->get('session')->getFlashBag()->add(
                 'alert',
                 "该身份账号不存在"
             );
+            //report the alert
             return $this->redirect($this->generateUrl('postRegister_page'));
         }
     }
@@ -447,18 +490,24 @@ class AccountController extends Controller
     public function changeInformationApiAction(Request $request)
     {
         $id = $request->request->get('id');
+        //find the customer
         if (($find = $this->findNaturalCustomerAction($id)) != null)
-        {   $customer = $this->showNaturalCustomerAction($find->getCustomerId());        
+        {   
+            $customer = $this->showNaturalCustomerAction($find->getCustomerId()); 
+            //
             return $this->render('StockAccountBundle:Account:UpdatePerson.html.twig', $customer);
         }
         else if (($find = $this->findCompanyCustomerAction($id)) != null)
         {
             $admin = $this->getUser();
+            //get the bank name and administrator name
             $customer = $this->showCompanyCustomerAction($id);
             $customer["username"] = $admin->getUsername();
             $customer["bankname"] = $admin->getBankname();
+            //return to update the company
             return $this->render('StockAccountBundle:Account:UpdateCompany.html.twig', $customer);
         }
+        //can not find the customer
         else
         {
             $this->get('session')->getFlashBag()->add(
@@ -468,28 +517,38 @@ class AccountController extends Controller
             return $this->redirect($this->generateUrl('changeInformation_page'));
         }
     }
-    
+    //seratch the customer who want to view the information
     public function viewSearchApiAction(Request $request)
     {
         $id = $request->request->get('id');
+        //for natural customer
         if (($find = $this->findNaturalCustomerAction($id)) != null)
-        {   $customer = $this->showNaturalCustomerAction($find->getCustomerId());        
+        {   
+            //get the information of the bank
+            $admin = $this->getUser();
+            $customer = $this->showNaturalCustomerAction($find->getCustomerId());  
+            $customer["username"] = $admin->getUsername();
+            $customer["bankname"] = $admin->getBankname();        
             return $this->render('StockAccountBundle:Account:ViewPerson.html.twig', $customer);
         }
+        //for company customer
         else if (($find = $this->findCompanyCustomerAction($id)) != null)
         {
             $admin = $this->getUser();
+            //get the infomation of the bank
             $customer = $this->showCompanyCustomerAction($id);
             $customer["username"] = $admin->getUsername();
             $customer["bankname"] = $admin->getBankname();
             return $this->render('StockAccountBundle:Account:ViewCompany.html.twig', $customer);
         }
+        //can not find the customer
         else
         {
             $this->get('session')->getFlashBag()->add(
                 'alert',
                 "该身份账号不存在"
             );
+            //report the alert
             return $this->redirect($this->generateUrl('viewSearch_page'));
         }
     }
@@ -497,9 +556,11 @@ class AccountController extends Controller
     public function cancelApiAction(Request $request)
     {
         $id = $request->request->get('id');
+        //for natural customer
         if (($find = $this->findNaturalCustomerAction($id)) != null)
         {
             $customer_id = $find->getCustomerId();
+            //remove the account
             $this->removeNaturalCustomerAction($customer_id);
             $this->get('session')->getFlashBag()->add(
                 'notice',
@@ -507,8 +568,10 @@ class AccountController extends Controller
             );
             return $this->redirect($this->generateUrl('index'));
         }
+        //for company customer
         else if ($this->checkCompanyCustomerAction($id))
         {
+            //remove the account
             $this->removeCompanyCustomerAction($id);
             $this->get('session')->getFlashBag()->add(
                 'notice',
@@ -516,12 +579,14 @@ class AccountController extends Controller
             );
             return $this->redirect($this->generateUrl('index'));
         }
+        //can not find the customer
         else
         {
             $this->get('session')->getFlashBag()->add(
                 'alert',
                 "该身份账号不存在"
             );
+            //report the alert
             return $this->redirect($this->generateUrl('cancel_page'));
         }
     }
@@ -529,11 +594,14 @@ class AccountController extends Controller
     //the function used to check whether the person is a personnel
     private function checkPersonnel($id_number)
     {
+        //search the database
         $natural_customer = $this->getDoctrine()
                  ->getRepository('StockAccountBundle:Personnel')
                  ->find($id_number);
+        //find
         if ($natural_customer)
             return true;
+        //not find
         else
             return false;
     }
@@ -571,6 +639,7 @@ class AccountController extends Controller
     //check the information of the natural customer
     private function checkNaturalCustomerAction($customer_id)
     {
+        //search the database
 		$natural_customer = $this->getDoctrine()
                  ->getRepository('StockAccountBundle:NaturalCustomer')
                  ->find($customer_id);
@@ -579,6 +648,7 @@ class AccountController extends Controller
     
     private function findNaturalCustomerAction($id)
     {
+        //search the database
         $natural_customer = $this->getDoctrine()
                  ->getRepository('StockAccountBundle:NaturalCustomer')
                  ->findOneBy(
@@ -590,8 +660,10 @@ class AccountController extends Controller
             return null;
     }
     
+    //the funtion to find the company customer
     private function findCompanyCustomerAction($id)
     {
+        //search the database
         $company_customer = $this->getDoctrine()
                  ->getRepository('StockAccountBundle:CompanyCustomer')
                  ->find($id);
@@ -600,6 +672,7 @@ class AccountController extends Controller
         else
             return null;
     }
+    
     //query for natural customer
     private function showNaturalCustomerAction($customer_id)
     {
@@ -775,13 +848,15 @@ class AccountController extends Controller
     //update for company customer, mainly used for forzen action now
     private function updateCompanyCustomerAction($customer_id, $frozen)
     {
+        //search the database
         $company_customer = $this->getDoctrine()
                     ->getRepository('StockAccountBundle:CompanyCustomer')
                     ->find($customer_id);
-    
+        //can not find
         if(!$company_customer){
                 throw $this->createNotFoundException('No company customer found for customer_id ' .$customer_id);
             }
+        //set forzen
         $company_customer->setFrozen($frozen);
 
         $em = $this->getDoctrine()->getEntityManager();
@@ -791,10 +866,11 @@ class AccountController extends Controller
     //delete a company customer
     private function removeCompanyCustomerAction($customer_id)
     {
+        //search the database
         $company_customer = $this->getDoctrine()
                     ->getRepository('StockAccountBundle:CompanyCustomer')
                     ->find($customer_id);
-    
+        //can not find
         if(!$company_customer){
                 throw $this->createNotFoundException('No company customer found for customer_id ' .$customer_id);
             }
