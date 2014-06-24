@@ -281,7 +281,7 @@ class TradeController extends Controller
     
     public function updateStockTotalAmountCheck($account_id, $stock_id, $update_amount)
     {
-        $status = $this->checkStockAccountFrozen($account_id);
+        $status = $this->checkStockAccount($account_id);
         if (strcmp($status, self::STATUS_SUCCESS) != 0)
             return $status;
             
