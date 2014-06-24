@@ -597,12 +597,12 @@ class AccountController extends Controller
         if (($find = $this->findNaturalCustomerAction($id)) != null)
         {
             $customer_id = $find->getCustomerId();
-            $data = send_post("g2.jiong3.cn/finance/getbind", array("stockUsername" => $customer_id));
+            $data = send_post("http://g2.jiong3.cn/finance/getbind", array("stockUsername" => $customer_id));
             return new Response($data["status"]);
             if (strcmp($data["status"], "find") == 0)
             {
                 $asset_name = $data["username"];
-                send_post("g2.jiong3.cn/finance/unbind", array("stockUsername" => $customer_id));
+                send_post("http://g2.jiong3.cn/finance/unbind", array("stockUsername" => $customer_id));
                 $this->get('session')->getFlashBag()->add(
                     'notice',
                     "已与资金账户解除绑定，id为" . $asset_name
@@ -621,11 +621,11 @@ class AccountController extends Controller
         else if ($this->checkCompanyCustomerAction($id))
         {
             $id = $find->getCustomerId();
-            $data = send_post("g2.jiong3.cn/finance/getbind", array("stockUsername" => $id));
+            $data = send_post("http://g2.jiong3.cn/finance/getbind", array("stockUsername" => $id));
             if (strcmp($data["status"], "find") == 0)
             {
                 $asset_name = $data["username"];
-                send_post("g2.jiong3.cn/finance/unbind", array("stockUsername" => $id));
+                send_post("http://g2.jiong3.cn/finance/unbind", array("stockUsername" => $id));
                 $this->get('session')->getFlashBag()->add(
                     'notice',
                     "已与资金账户解除绑定，id为" . $asset_name
