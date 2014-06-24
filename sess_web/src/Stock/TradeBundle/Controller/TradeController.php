@@ -364,11 +364,11 @@ class TradeController extends Controller
         if (!isset($trade_record))
             return array("status" => self::STATUS_TRADE_ERROR);
         $record = array();
-        $record["buyer_id"] = $record->getBuyerId();
-        $record["seller_id"] = $record->getSellerId();
-        $record["stock_id"] = $record->getStockId();
-        $record["amount"] = $record->getAmount();
-        $record["price"] = $record->getPrice();
+        $record["buyer_id"] = $trade_record->getBuyerId();
+        $record["seller_id"] = $trade_record->getSellerId();
+        $record["stock_id"] = $trade_record->getStockId();
+        $record["amount"] = $trade_record->getAmount();
+        $record["price"] = $trade_record->getPrice();
         $record["status"] = self::STATUS_SUCCESS;
         return $record;
     }
