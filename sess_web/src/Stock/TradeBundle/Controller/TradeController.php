@@ -28,7 +28,7 @@ class TradeController extends Controller
     
     private function argMiss($key, $arr)
     {
-        return !array_key_exists($key, $arr) || strcmp($arr[$key], "") == 0
+        return !array_key_exists($key, $arr) || strcmp($arr[$key], "") == 0;
     }
     
     public function deactivateAction(Request $request)
