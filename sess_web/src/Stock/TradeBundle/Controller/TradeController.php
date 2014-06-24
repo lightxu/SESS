@@ -242,7 +242,7 @@ class TradeController extends Controller
     public function testApiAction(Request $request)
     {
         $test_arg = $request->query->get('test_arg');
-        if (isset($test_arg))
+        if (!isset($test_arg))
             return $this->makeResponse(self::STATUS_SUCCESS, array('test_arg' => $test_arg));
         else
             return $this->render('StockTradeBundle:Trade:test_api.html.twig');
@@ -383,7 +383,7 @@ class TradeController extends Controller
         $trade_record = $this->getDoctrine()
             ->getRepository('StockTradeBundle:TradeRecord')
             ->find($id);
-        if (isset($trade_record))
+        if (!isset($trade_record))
             return array("status" => self::STATUS_TRADE_ERROR);
         $record = array();
         $record["buyer_id"] = $record->getBuyerId();
@@ -400,7 +400,7 @@ class TradeController extends Controller
         $trade_record = $this->getDoctrine()
             ->getRepository('StockTradeBundle:TradeRecord')
             ->find($id);
-        if (isset($trade_record))
+        if (!isset($trade_record))
             return status::STATUS_TRADE_ERROR;
         $em = $this->getDoctrine()->getEntityManager();
         $em->remove($trade_record);
@@ -413,7 +413,7 @@ class TradeController extends Controller
         $hold_cost = $this->getDoctrine()
             ->getRepository('StockTradeBundle:HoldCost')
             ->find($account_id);
-        if (isset($hold_cost))
+        if (!isset($hold_cost))
             return self::STATUS_ACCOUNT_ERROR;
         else
             return self::STATUS_SUCCESS;
