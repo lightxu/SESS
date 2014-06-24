@@ -371,7 +371,7 @@ class TradeController extends Controller
         $em = $this->getDoctrine()->getManager();
         $em->remove($trade_record);
         $em->flush();
-        return status::STATUS_SUCCESS;
+        return self::STATUS_SUCCESS;
     }
     
     public function checkStockAccount($account_id)
