@@ -598,7 +598,6 @@ class AccountController extends Controller
         {
             $customer_id = $find->getCustomerId();
             $data = send_post("http://g2.jiong3.cn/finance/getbind", array("stockUsername" => $customer_id));
-            return new Response($data["status"]);
             if (strcmp($data["status"], "find") == 0)
             {
                 $asset_name = $data["username"];
