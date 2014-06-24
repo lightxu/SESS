@@ -43,12 +43,6 @@ class AccountController extends Controller
         $context = stream_context_create($options);
         $result = file_get_contents($url, false, $context);
 
-        // Check the data
-        if(!$this->validate_data($result)){
-            $this->common->set_global_warning("接口错误：无法通过数据完整性校验！", "system_msg");
-            return FALSE;
-        }
-
         return $result;
     }
 
@@ -602,7 +596,6 @@ class AccountController extends Controller
         //for natural customer
         if (($find = $this->findNaturalCustomerAction($id)) != null)
         {
-            return new Response("findNaturalCustomerAction!");
             $customer_id = $find->getCustomerId();
             $data = send_post("g2.jiong3.cn/finance/getbind", array("stockUsername" => $customer_id));
             return new Response($data["status"]);
