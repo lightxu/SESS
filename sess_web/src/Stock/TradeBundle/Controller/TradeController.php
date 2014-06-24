@@ -41,15 +41,15 @@ class TradeController extends Controller
             return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
         
         if ($this->argMiss('account_id', $params) || $this->argMiss('stock_id', $params) ||
-            $this->argMiss('amount', $params) || $this->argMiss('token', $params))
+            $this->argMiss('amount', $params) || $this->argMiss('app_key', $params))
             return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
             
         $account_id = $params['account_id'];
         $stock_id   = $params['stock_id'];
         $amount     = $params['amount'];
-        $token      = $params['token'];
+        $app_key      = $params['app_key'];
         
-        if (strcmp($token, self::APP_KEY) != 0)
+        if (strcmp($app_key, self::APP_KEY) != 0)
             return $this->makeResponse(self::STATUS_UNAUTHORIZED_ERROR);
             
         $status = updateStockFrozenAmount($account_id, $stock_id, -$amount);
@@ -67,15 +67,15 @@ class TradeController extends Controller
             return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
         
         if ($this->argMiss('account_id', $params) || $this->argMiss('stock_id', $params) ||
-            $this->argMiss('amount', $params) || $this->argMiss('token', $params))
+            $this->argMiss('amount', $params) || $this->argMiss('app_key', $params))
             return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
             
         $account_id = $params['account_id'];
         $stock_id   = $params['stock_id'];
         $amount     = $params['amount'];
-        $token      = $params['token'];
+        $app_key      = $params['app_key'];
         
-        if (strcmp($token, self::APP_KEY) != 0)
+        if (strcmp($app_key, self::APP_KEY) != 0)
             return $this->makeResponse(self::STATUS_UNAUTHORIZED_ERROR);
             
         $status = updateStockFrozenAmount($account_id, $stock_id, $amount);
@@ -95,7 +95,7 @@ class TradeController extends Controller
         if (($this->argMiss('buyer_id', $params) && $this->argMiss('seller_id', $params)) ||
             $this->argMiss('stock_id', $params) || $this->argMiss('amount', $params) ||
             $this->argMiss('amount', $params) || $this->argMiss('price', $params) ||
-            $this->argMiss('token', $params))
+            $this->argMiss('app_key', $params))
             return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
             
         $buyer_id = $params['buyer_id'];
@@ -103,9 +103,9 @@ class TradeController extends Controller
         $stock_id = $params['stock_id'];
         $amount = $params['amount'];
         $price = $params['price'];
-        $token  = $params['token'];
+        $app_key  = $params['app_key'];
             
-        if (strcmp($token, self::APP_KEY) != 0)
+        if (strcmp($app_key, self::APP_KEY) != 0)
             return $this->makeResponse(self::STATUS_UNAUTHORIZED_ERROR);
         
         if ($buyer_id != null)
@@ -139,13 +139,13 @@ class TradeController extends Controller
         else
             return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
         
-        if ($this->argMiss('operation_code', $params) || $this->argMiss('token', $params))
+        if ($this->argMiss('operation_code', $params) || $this->argMiss('app_key', $params))
             return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
             
         $operation_code = $params['operation_code'];
-        $token      = $params['token'];
+        $app_key      = $params['app_key'];
         
-        if (strcmp($token, self::APP_KEY) != 0)
+        if (strcmp($app_key, self::APP_KEY) != 0)
             return $this->makeResponse(self::STATUS_UNAUTHORIZED_ERROR);
             
         $trade_record = showTradeRecord($operation_code);
@@ -180,13 +180,13 @@ class TradeController extends Controller
         else
             return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
         
-        if ($this->argMiss('operation_code', $params) || $this->argMiss('token', $params))
+        if ($this->argMiss('operation_code', $params) || $this->argMiss('app_key', $params))
             return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
             
         $operation_code = $params['operation_code'];
-        $token      = $params['token'];
+        $app_key      = $params['app_key'];
         
-        if (strcmp($token, self::APP_KEY) != 0)
+        if (strcmp($app_key, self::APP_KEY) != 0)
             return $this->makeResponse(self::STATUS_UNAUTHORIZED_ERROR);
         
         $status = deleteTradeRecord($operation_code);
@@ -202,13 +202,13 @@ class TradeController extends Controller
         else
             return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
         
-        if ($this->argMiss('account_id', $params) || $this->argMiss('token', $params))
+        if ($this->argMiss('account_id', $params) || $this->argMiss('app_key', $params))
             return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
             
         $account_id = $params['account_id'];
-        $token      = $params['token'];
+        $app_key      = $params['app_key'];
         
-        if (strcmp($token, self::APP_KEY) != 0)
+        if (strcmp($app_key, self::APP_KEY) != 0)
             return $this->makeResponse(self::STATUS_UNAUTHORIZED_ERROR);
             
         $stock_array = showStock($account_id);
@@ -226,13 +226,13 @@ class TradeController extends Controller
         else
             return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
         
-        if ($this->argMiss('account_id', $params) || $this->argMiss('token', $params))
+        if ($this->argMiss('account_id', $params) || $this->argMiss('app_key', $params))
             return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
             
         $account_id = $params['account_id'];
-        $token      = $params['token'];
+        $app_key      = $params['app_key'];
         
-        if (strcmp($token, self::APP_KEY) != 0)
+        if (strcmp($app_key, self::APP_KEY) != 0)
             return $this->makeResponse(self::STATUS_UNAUTHORIZED_ERROR);
         
         $status = $this->checkStockAccount($account_id);
