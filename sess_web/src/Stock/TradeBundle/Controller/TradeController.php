@@ -18,6 +18,7 @@ class TradeController extends Controller
     const STATUS_STOCK_ERROR = "insufficient amount";
     const STATUS_ACCOUNT_ERROR = "invalid account";
     const STATUS_TRADE_ERROR = "no such trade record";
+    const STATUS_FROZEN_ERROR = "account is frozen";
     const APP_KEY = "354DD0DE1AB36DC4531B8723C34B9EFE";
     
     private function makeResponse($status, $data=array())
