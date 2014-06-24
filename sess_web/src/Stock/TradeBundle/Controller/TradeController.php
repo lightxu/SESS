@@ -55,7 +55,7 @@ class TradeController extends Controller
         if (strcmp($app_key, self::APP_KEY) != 0)
             return $this->makeResponse(self::STATUS_UNAUTHORIZED_ERROR);
             
-        $status = updateStockFrozenAmount($account_id, $stock_id, -$amount);
+        $status = $this->updateStockFrozenAmount($account_id, $stock_id, -$amount);
         
         return $this->makeResponse($status);
     }
@@ -81,7 +81,7 @@ class TradeController extends Controller
         if (strcmp($app_key, self::APP_KEY) != 0)
             return $this->makeResponse(self::STATUS_UNAUTHORIZED_ERROR);
             
-        $status = updateStockFrozenAmount($account_id, $stock_id, $amount);
+        $status = $this->updateStockFrozenAmount($account_id, $stock_id, $amount);
         
         return $this->makeResponse($status);
     }
@@ -152,8 +152,8 @@ class TradeController extends Controller
         $amount = $trade_record["amount"];
         $price = $trade_record["price"];
         
-        updateStockTotalAmount($buyer_id, $stock_id, $amount, $price);
-        updateStockTotalAmount($seller_id, $stock_id, -$amount, -$price);
+        $this->updateStockTotalAmount($buyer_id, $stock_id, $amount, $price);
+        $this->updateStockTotalAmount($seller_id, $stock_id, -$amount, -$price);
         return $this->makeResponse(self::STATUS_SUCCESS);
     }
     
