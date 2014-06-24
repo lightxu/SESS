@@ -260,7 +260,7 @@ class TradeController extends Controller
     
     public function updateStockFrozenAmount($account_id, $stock_id, $frozen_amount)
     {
-        $em = $this->getDoctrine()->getEntityManager();
+        $em = $this->getDoctrine()->getManager();
         $stock = $em->getRepository('StockTradeBundle:Stock')
             ->findOneBy(array(
                 "accountId" => $account_id,
