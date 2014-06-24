@@ -313,7 +313,8 @@ class TradeController extends Controller
             $stock = new Stock();
             $stock->setAccountId($account_id);
             $stock->setStockId($stock_id);
-            $stock->setAmount($update_amount);
+            $stock->setTotalAmount($update_amount);
+            $stock->setHoldCost($price);
             $em->persist($stock);
         }
         else
@@ -360,7 +361,7 @@ class TradeController extends Controller
     {
         $trade_record = $this->getDoctrine()
             ->getRepository('StockTradeBundle:TradeRecord')
-            ->findOneById($id);
+            ->find($id);
         if (!isset($trade_record))
             return array("status" => self::STATUS_TRADE_ERROR);
         $record = array();
