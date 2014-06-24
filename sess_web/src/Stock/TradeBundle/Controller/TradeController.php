@@ -55,7 +55,7 @@ class TradeController extends Controller
         if ($account_id == null || $stock_id == null ||
             $amount == null || $token == null)
             return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
-        
+        /
         if (strcmp($token, self::APP_KEY) != 0)
             return $this->makeResponse(self::STATUS_UNAUTHORIZED_ERROR);
             
@@ -353,7 +353,7 @@ class TradeController extends Controller
         $hold_cost = $this->getDoctrine()
             ->getRepository('StockTradeBundle:HoldCost')
             ->find($account_id);
-        if ($customer == null)
+        if ($hold_cost == null)
             return self::STATUS_ACCOUNT_ERROR;
         else
             return self::STATUS_SUCCESS;
