@@ -55,7 +55,7 @@ class TradeController extends Controller
         if ($account_id == null || $stock_id == null ||
             $amount == null || $token == null)
             return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
-        /
+        
         if (strcmp($token, self::APP_KEY) != 0)
             return $this->makeResponse(self::STATUS_UNAUTHORIZED_ERROR);
             
@@ -166,8 +166,14 @@ class TradeController extends Controller
     
     public function checkAccountAction(Request $request)
     {
-        $account_id = $request->request->get('account_id');
-        $token      = $request->request->get('token');
+        $content = $request->getContent();
+        if (!empty($content))
+            $params = json_decode($content, true);
+        else
+            return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
+        
+        $account_id = $params['account_id'];
+        $token      = $params['token'];
         
         if ($account_id == null || $token == null)
             return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
@@ -175,7 +181,7 @@ class TradeController extends Controller
         if (strcmp($token, self::APP_KEY) != 0)
             return $this->makeResponse(self::STATUS_UNAUTHORIZED_ERROR);
         
-        $status = checkStockAccount($account_id);
+        $status = $this->checkStockAccount($account_id);
         return $this->makeResponse($status);
     }
     

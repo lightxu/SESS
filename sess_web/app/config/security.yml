@@ -15,6 +15,14 @@ security:
         login:
             pattern:  ^/login$
             security: false
+            
+        stock_api:
+            pattern: ^/stocks/*
+            security: false
+            
+        check_account_api:
+            pattern: ^/accounts/check$
+            security: false
 
         secured_area:
             pattern:    ^/
@@ -24,7 +32,9 @@ security:
             logout:
                 path: /logout
                 target: /login
-                
+            
     access_control:
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/stocks/*, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/accounts/check$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/, roles: ROLE_ADMIN }                                                    

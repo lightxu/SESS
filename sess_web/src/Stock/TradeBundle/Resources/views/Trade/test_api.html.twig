@@ -10,37 +10,23 @@
   <body>
     <h1>Testing API!</h1>
     <script src="{{ asset('js/jquery-1.11.1.min.js') }}"></script>
-    <div id="result1">testing success...</div>
+    <div id="result1">testing...</div>
     <script>
-        $.post("{{ path('deactivate_stocks') }}", {
-            account_id: "1",
-            stock_id: "1",
-            amount: "1",
-            token: "354DD0DE1AB36DC4531B8723C34B9EFE"
-        }, function(result) {
-            $("#result1").text(result["status"]);
+        $.ajax({
+            type: "POST",
+            url: "{{ path('check_account') }}",
+            dataType: "json",
+            contentType: "application/json",
+            data: JSON.stringify({account_id: "P11", token: "354DD0DE1AB36DC4531B8723C34B9EFE"}),
+            success: function(data) {
+                //var result = JSON.parse(data);
+                $("#result1").text(data["status"]);
+            },
+            error: function(data) {
+                alert(data);
+            }
         });
-    </script>
-    <div id="result2">testing argument error...</div>
-    <script>
-        $.post("{{ path('deactivate_stocks') }}", {
-            account_id: "1",
-            stock_id: "1",
-            amount: "1",
-        }, function(result) {
-            $("#result2").text(result["status"]);
-        });
-    </script>
-    <div id="result3">testing unauthenticated...</div>
-    <script>
-        $.post("{{ path('deactivate_stocks') }}", {
-            account_id: "1",
-            stock_id: "1",
-            amount: "1",
-            token: "1234567890"
-        }, function(result) {
-            $("#result3").text(result["status"]);
-        });
+        
     </script>
   </body>
 </html>
