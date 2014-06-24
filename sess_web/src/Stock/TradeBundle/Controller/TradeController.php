@@ -344,16 +344,16 @@ class TradeController extends Controller
     public function createTradeRecord($buyer_id, $seller_id, $stock_id, $amount, $price)
     {
         $trade_record = new TradeRecord();
-        $trade_record.setBuyerId($buyer_id);
-        $trade_record.setSellerId($seller_id);
-        $trade_record.setStockId($stock_id);
-        $trade_record.setAmount($amount);
-        $trade_record.setPrice(floatval($price));
+        $trade_record->setBuyerId($buyer_id);
+        $trade_record->setSellerId($seller_id);
+        $trade_record->setStockId($stock_id);
+        $trade_record->setAmount($amount);
+        $trade_record->setPrice(floatval($price));
         
         $em = $this->getDoctrine()->getEntityManager();
         $em->persist($trade_record);
         $em->flush();
-        return $trade_record.getId();
+        return $trade_record->getId();
     }
     
     public function showTradeRecord($id)
