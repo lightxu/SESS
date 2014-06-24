@@ -172,11 +172,11 @@ class TradeController extends Controller
         else
             return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
         
+        if (!isset($params['account_id']) || !isset($params['token']))
+            return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
+            
         $account_id = $params['account_id'];
         $token      = $params['token'];
-        
-        if ($account_id == null || $token == null)
-            return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
         
         if (strcmp($token, self::APP_KEY) != 0)
             return $this->makeResponse(self::STATUS_UNAUTHORIZED_ERROR);
