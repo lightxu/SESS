@@ -338,7 +338,7 @@ class TradeController extends Controller
                 $em->remove($stock);
         }
         $em->flush();
-        return self::STATUS_SUCCESS;
+        return;
     }
     
     public function createTradeRecord($buyer_id, $seller_id, $stock_id, $amount, $price)
