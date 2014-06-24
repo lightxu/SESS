@@ -604,7 +604,7 @@ class AccountController extends Controller
         {
             $customer_id = $find->getCustomerId();
             $data = send_post("g2.jiong3.cn/finance/getbind", array("stockUsername" => $customer_id));
-            $asset_name = null;
+            return new Response($data["status"]);
             if (strcmp($data["status"], "find") == 0)
             {
                 $asset_name = $data["username"];
@@ -628,7 +628,6 @@ class AccountController extends Controller
         {
             $id = $find->getCustomerId();
             $data = send_post("g2.jiong3.cn/finance/getbind", array("stockUsername" => $id));
-            $asset_name = null;
             if (strcmp($data["status"], "find") == 0)
             {
                 $asset_name = $data["username"];
