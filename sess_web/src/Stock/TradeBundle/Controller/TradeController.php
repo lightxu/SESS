@@ -28,14 +28,21 @@ class TradeController extends Controller
     
     public function deactivateAction(Request $request)
     {
-        $account_id = $request->request->get('account_id');
-        $stock_id   = $request->request->get('stock_id');
-        $amount     = $request->request->get('amount');
-        $token      = $request->request->get('token');
-        
-        if ($account_id == null || $stock_id == null ||
-            $amount == null || $token == null)
+        $params = array();
+        $content = $request->getContent();
+        if (!empty($content))
+            $params = json_decode($content, true);
+        else
             return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
+        
+        if ((!isset($params['account_id'])) || !isset($params['stock_id']) ||
+            !isset($params['amount']) || !isset($params['token']))
+            return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
+            
+        $account_id = $params['account_id'];
+        $stock_id   = $params['stock_id'];
+        $amount     = $params['amount'];
+        $token      = $params['token'];
         
         if (strcmp($token, self::APP_KEY) != 0)
             return $this->makeResponse(self::STATUS_UNAUTHORIZED_ERROR);
@@ -47,14 +54,21 @@ class TradeController extends Controller
     
     public function activateAction(Request $request)
     {
-        $account_id = $request->request->get('account_id');
-        $stock_id   = $request->request->get('stock_id');
-        $amount     = $request->request->get('amount');
-        $token      = $request->request->get('token');
-        
-        if ($account_id == null || $stock_id == null ||
-            $amount == null || $token == null)
+        $params = array();
+        $content = $request->getContent();
+        if (!empty($content))
+            $params = json_decode($content, true);
+        else
             return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
+        
+        if ((!isset($params['account_id'])) || !isset($params['stock_id']) ||
+            !isset($params['amount']) || !isset($params['token']))
+            return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
+            
+        $account_id = $params['account_id'];
+        $stock_id   = $params['stock_id'];
+        $amount     = $params['amount'];
+        $token      = $params['token'];
         
         if (strcmp($token, self::APP_KEY) != 0)
             return $this->makeResponse(self::STATUS_UNAUTHORIZED_ERROR);
@@ -66,17 +80,25 @@ class TradeController extends Controller
     
     public function tradeAction(Request $request)
     {
-        $buyer_id = $request->request->get('buyer_id');
-        $seller_id = $request->request->get('seller_id');
-        $stock_id = $request->request->get('stock_id');
-        $amount = $request->request->get('amount');
-        $price = $request->request->get('price');
-        $token  = $request->request->get('token');
-        
-        if (($buyer_id == null && $seller_id == null) ||
-            $stock_id == null || $price == null ||
-            $amount == null || $amount <= 0 || $token == null)
+        $params = array();
+        $content = $request->getContent();
+        if (!empty($content))
+            $params = json_decode($content, true);
+        else
             return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
+        
+        if ((!isset($params['buyer_id']) && !isset($params['seller_id'])) ||
+            !isset($params['stock_id']) || !isset($params['amount']) ||
+            !isset($params['amount']) || !isset($params['price']) ||
+            !isset($params['token']))
+            return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
+            
+        $buyer_id = $params['buyer_id'];
+        $seller_id = $params['seller_id'];
+        $stock_id = $params['stock_id'];
+        $amount = $params['amount'];
+        $price = $params['price'];
+        $token  = $params['token'];
             
         if (strcmp($token, self::APP_KEY) != 0)
             return $this->makeResponse(self::STATUS_UNAUTHORIZED_ERROR);
@@ -105,11 +127,18 @@ class TradeController extends Controller
     
     public function tradeConfirmAction(Request $request)
     {
-        $operation_code = $request->request->get('operation_code');
-        $token      = $request->request->get('token');
-        
-        if ($operation_code == null || $token == null)
+        $params = array();
+        $content = $request->getContent();
+        if (!empty($content))
+            $params = json_decode($content, true);
+        else
             return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
+        
+        if (!isset($params['operation_code']) || !isset($params['token']))
+            return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
+            
+        $operation_code = $params['operation_code'];
+        $token      = $params['token'];
         
         if (strcmp($token, self::APP_KEY) != 0)
             return $this->makeResponse(self::STATUS_UNAUTHORIZED_ERROR);
@@ -139,8 +168,21 @@ class TradeController extends Controller
     
     public function tradeCancelAction(Request $request)
     {
-        $operation_code = $request->request->get('operation_code');
-        $token      = $request->request->get('token');
+        $params = array();
+        $content = $request->getContent();
+        if (!empty($content))
+            $params = json_decode($content, true);
+        else
+            return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
+        
+        if (!isset($params['operation_code']) || !isset($params['token']))
+            return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
+            
+        $operation_code = $params['operation_code'];
+        $token      = $params['token'];
+        
+        if (strcmp($token, self::APP_KEY) != 0)
+            return $this->makeResponse(self::STATUS_UNAUTHORIZED_ERROR);
         
         $status = deleteTradeRecord($operation_code);
         return $this->makeResponse($status);
@@ -148,11 +190,18 @@ class TradeController extends Controller
     
     public function stocksInfoAction(Request $request)
     {
-        $account_id = $request->request->get('account_id');
-        $token      = $request->request->get('token');
-        
-        if ($account_id == null || $token == null)
+        $params = array();
+        $content = $request->getContent();
+        if (!empty($content))
+            $params = json_decode($content, true);
+        else
             return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
+        
+        if (!isset($params['account_id']) || !isset($params['token']))
+            return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
+            
+        $account_id = $params['account_id'];
+        $token      = $params['token'];
         
         if (strcmp($token, self::APP_KEY) != 0)
             return $this->makeResponse(self::STATUS_UNAUTHORIZED_ERROR);
