@@ -195,7 +195,7 @@ class TradeController extends Controller
         
         if (strcmp($app_key, self::APP_KEY) != 0)
             return $this->makeResponse(self::STATUS_UNAUTHORIZED_ERROR);
-            
+        
         $stock_array = $this->showStock($account_id);
         if (strcmp($stock_array["status"], self::STATUS_SUCCESS) != 0)
             return $this->makeResponse($stock_array["status"]);
@@ -229,7 +229,7 @@ class TradeController extends Controller
     {
         $stocks = $this->getDoctrine()
              ->getRepository('StockTradeBundle:Stock')
-             ->findAllByAccountId($account_id);
+             ->findByAccountId($account_id);
         $stock_array = array();
         $stock_array["status"] = self::STATUS_SUCCESS;
         $stock_array["stock_info"] = array();
