@@ -97,8 +97,7 @@ class TradeController extends Controller
         
         if ($this->argMiss('buyer_id', $params) || $this->argMiss('seller_id', $params) ||
             $this->argMiss('stock_id', $params) || $this->argMiss('amount', $params) ||
-            $this->argMiss('amount', $params) || $this->argMiss('price', $params) ||
-            $this->argMiss('app_key', $params))
+            $this->argMiss('price', $params) || $this->argMiss('app_key', $params))
             return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
             
         $buyer_id = $params['buyer_id'];
@@ -111,15 +110,15 @@ class TradeController extends Controller
         if (strcmp($app_key, self::APP_KEY) != 0)
             return $this->makeResponse(self::STATUS_UNAUTHORIZED_ERROR);
         
-        $status = updateStockTotalAmountCheck($buyer_id, $stock_id, $amount);
+        $status = $this->updateStockTotalAmountCheck($buyer_id, $stock_id, $amount);
         if (strcmp($status, self::STATUS_SUCCESS) != 0)
             return $this->makeResponse($status);
         
-        $status = updateStockTotalAmountCheck($seller_id, $stock_id, -$amount);
+        $status = $this->updateStockTotalAmountCheck($seller_id, $stock_id, -$amount);
         if (strcmp($status, self::STATUS_SUCCESS) != 0)
                 return $this->makeResponse($status);
             
-        $operation_code = createTradeRecord($buyer_id, $seller_id, $stock_id, $amount, $price);
+        $operation_code = $this->createTradeRecord($buyer_id, $seller_id, $stock_id, $amount, $price);
         return $this->makeResponse(self::STATUS_SUCCESS, array("operation_code" => $operation_code));
     }
     
@@ -141,7 +140,7 @@ class TradeController extends Controller
         if (strcmp($app_key, self::APP_KEY) != 0)
             return $this->makeResponse(self::STATUS_UNAUTHORIZED_ERROR);
             
-        $trade_record = showTradeRecord($operation_code);
+        $trade_record = $this->showTradeRecord($operation_code);
         
         if (strcmp($trade_record["status"], self::STATUS_SUCCESS) != 0)
             return $this->makeResponse($trade_record["status"]);
@@ -175,7 +174,7 @@ class TradeController extends Controller
         if (strcmp($app_key, self::APP_KEY) != 0)
             return $this->makeResponse(self::STATUS_UNAUTHORIZED_ERROR);
         
-        $status = deleteTradeRecord($operation_code);
+        $status = $this->deleteTradeRecord($operation_code);
         return $this->makeResponse($status);
     }
     
@@ -197,7 +196,7 @@ class TradeController extends Controller
         if (strcmp($app_key, self::APP_KEY) != 0)
             return $this->makeResponse(self::STATUS_UNAUTHORIZED_ERROR);
             
-        $stock_array = showStock($account_id);
+        $stock_array = $this->showStock($account_id);
         if (strcmp($stock_array["status"], self::STATUS_SUCCESS) != 0)
             return $this->makeResponse($stock_array["status"]);
         else
@@ -223,15 +222,6 @@ class TradeController extends Controller
         
         $status = $this->checkStockAccount($account_id);
         return $this->makeResponse($status);
-    }
-    
-    public function testApiAction(Request $request)
-    {
-        $test_arg = $request->query->get('test_arg');
-        if (!isset($test_arg))
-            return $this->makeResponse(self::STATUS_SUCCESS, array('test_arg' => $test_arg));
-        else
-            return $this->render('StockTradeBundle:Trade:test_api.html.twig');
     }
     
     // Database Functions

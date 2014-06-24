@@ -26,7 +26,3 @@ check_account:
     path: /accounts/check
     defaults: { _controller: StockTradeBundle:Trade:checkAccount }
     methods: [POST]
-test_api:
-    path: /stocks/test_api
-    defaults: { _controller: StockTradeBundle:Trade:testApi }
-    methods: [GET]
