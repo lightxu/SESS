@@ -242,7 +242,7 @@ class TradeController extends Controller
     public function testApiAction(Request $request)
     {
         $test_arg = $request->query->get('test_arg');
-        if ($test_arg != null)
+        if (isset($test_arg))
             return $this->makeResponse(self::STATUS_SUCCESS, array('test_arg' => $test_arg));
         else
             return $this->render('StockTradeBundle:Trade:test_api.html.twig');
@@ -292,7 +292,7 @@ class TradeController extends Controller
                 "accountId" => $account_id,
                 "stockId" => $stock_id
             ));
-        if (!$stock)
+        if (!isset($stock))
             return self::STATUS_ACCOUNT_ERROR;
             
         $current_amount = $stock->getFrozenAmount();
@@ -321,7 +321,7 @@ class TradeController extends Controller
         // update frozen amount, if it is selling.
         // as the selling requires deactivate first.
         if ($update_amount < 0)
-            if (!$stock || $stock->getFrozenAmount() + $update_amount < 0)
+            if (!isset($stock) || $stock->getFrozenAmount() + $update_amount < 0)
                 return self::STATUS_STOCK_ERROR;
         return self::STATUS_SUCCESS;
     }
@@ -334,7 +334,7 @@ class TradeController extends Controller
                 "accountId" => $account_id,
                 "stockId" => $stock_id
             ));
-        if (!$stock)
+        if (!isset($stock))
         {
             $stock = new Stock();
             $stock->setAccountId($account_id);
@@ -383,7 +383,7 @@ class TradeController extends Controller
         $trade_record = $this->getDoctrine()
             ->getRepository('StockTradeBundle:TradeRecord')
             ->find($id);
-        if ($trade_record == null)
+        if (isset($trade_record))
             return array("status" => self::STATUS_TRADE_ERROR);
         $record = array();
         $record["buyer_id"] = $record->getBuyerId();
@@ -400,7 +400,7 @@ class TradeController extends Controller
         $trade_record = $this->getDoctrine()
             ->getRepository('StockTradeBundle:TradeRecord')
             ->find($id);
-        if ($trade_record == null)
+        if (isset($trade_record))
             return status::STATUS_TRADE_ERROR;
         $em = $this->getDoctrine()->getEntityManager();
         $em->remove($trade_record);
@@ -413,7 +413,7 @@ class TradeController extends Controller
         $hold_cost = $this->getDoctrine()
             ->getRepository('StockTradeBundle:HoldCost')
             ->find($account_id);
-        if ($hold_cost == null)
+        if (isset($hold_cost))
             return self::STATUS_ACCOUNT_ERROR;
         else
             return self::STATUS_SUCCESS;

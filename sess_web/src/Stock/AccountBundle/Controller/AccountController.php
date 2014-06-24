@@ -19,7 +19,7 @@ class AccountController extends Controller
     public function openPersonalAction(Request $request)
     {
         $type = $request->query->get('type');
-        if ($type == null)
+        if (!isset($type))
             $type = 'open';
         $admin = $this->getUser();
         //change the information
@@ -28,7 +28,7 @@ class AccountController extends Controller
             //find the customer
             $customer_id = $request->query->get('customer_id');
             //no customer
-            if ($customer_id == null)
+            if (!isset($customer_id))
                 throw $this->createNotFoundException('No natural customer found for customer_id' . $customer_id);
             $customer = $this->showNaturalCustomerAction($customer_id);
             $this->removeNaturalCustomerAction($customer_id);
@@ -43,7 +43,7 @@ class AccountController extends Controller
     {
         //get the type
         $type = $request->query->get('type');
-        if ($type == null)
+        if (!isset($type))
             $type = 'open';
         $admin = $this->getUser();
         //the following is the same as opening natural 
@@ -51,7 +51,7 @@ class AccountController extends Controller
         {
             $customer_id = $request->query->get('customer_id');
             //no customer
-            if ($customer_id == null)
+            if (!isset($customer_id))
                 throw $this->createNotFoundException('No company customer found for customer_id' . $customer_id);
             //show the infor of the customer
             $customer = $this->showCompanyCustomerAction($customer_id);
@@ -68,7 +68,7 @@ class AccountController extends Controller
         //get the customer id
         $customer_id = $request->query->get('customer_id');
         //can not find the customer
-        if ($customer_id == null)
+        if (!isset($customer_id))
         {
             $this->get('session')->getFlashBag()->add(
                 'alert',
@@ -91,7 +91,7 @@ class AccountController extends Controller
     {
         $customer_id = $request->query->get('customer_id');
         //can not find the customer
-        if ($customer_id == null)
+        if (!isset($customer_id))
         {
             $this->get('session')->getFlashBag()->add(
                 'alert',
@@ -209,7 +209,7 @@ class AccountController extends Controller
         $customer['company_or_organization'] = $request->request->get('company_or_organization');
         $customer['tel'] = $request->request->get('tel');
         $customer['agent_id'] = $request->request->get('agent_id');
-        if ($customer['agent_id'] == null)
+        if (!isset($customer['agent_id']))
             $customer['agent_id'] = '空';
         $admin = $this->getUser();
         //get the bank name
@@ -217,7 +217,7 @@ class AccountController extends Controller
         
         // Check arguments existence
         foreach ($customer as $key => $value)
-            if ($value == null)
+            if (!isset($value))
             {                
                 $this->get('session')->getFlashBag()->add(
                     'alert',
@@ -324,7 +324,7 @@ class AccountController extends Controller
         
         // Check arguments existence
         foreach ($customer as $key => $value)
-            if ($value == null)
+            if (!isset($value))
             {
                 $this->get('session')->getFlashBag()->add(
                     'alert',
