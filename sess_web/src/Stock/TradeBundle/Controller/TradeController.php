@@ -26,6 +26,11 @@ class TradeController extends Controller
         return $response;
     }
     
+    private function arg_missing($x)
+    {
+        return !isset($x) || strcmp($x, "") == 0;
+    }
+    
     public function deactivateAction(Request $request)
     {
         $params = array();
@@ -35,8 +40,8 @@ class TradeController extends Controller
         else
             return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
         
-        if ((!isset($params['account_id'])) || !isset($params['stock_id']) ||
-            !isset($params['amount']) || !isset($params['token']))
+        if (($this->arg_missing($params['account_id'])) || $this->arg_missing($params['stock_id']) ||
+            $this->arg_missing($params['amount']) || $this->arg_missing($params['token']))
             return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
             
         $account_id = $params['account_id'];
@@ -61,8 +66,8 @@ class TradeController extends Controller
         else
             return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
         
-        if ((!isset($params['account_id'])) || !isset($params['stock_id']) ||
-            !isset($params['amount']) || !isset($params['token']))
+        if (($this->arg_missing($params['account_id'])) || $this->arg_missing($params['stock_id']) ||
+            $this->arg_missing($params['amount']) || $this->arg_missing($params['token']))
             return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
             
         $account_id = $params['account_id'];
@@ -87,10 +92,10 @@ class TradeController extends Controller
         else
             return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
         
-        if ((!isset($params['buyer_id']) && !isset($params['seller_id'])) ||
-            !isset($params['stock_id']) || !isset($params['amount']) ||
-            !isset($params['amount']) || !isset($params['price']) ||
-            !isset($params['token']))
+        if (($this->arg_missing($params['buyer_id']) && $this->arg_missing($params['seller_id'])) ||
+            $this->arg_missing($params['stock_id']) || $this->arg_missing($params['amount']) ||
+            $this->arg_missing($params['amount']) || $this->arg_missing($params['price']) ||
+            $this->arg_missing($params['token']))
             return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
             
         $buyer_id = $params['buyer_id'];
@@ -134,7 +139,7 @@ class TradeController extends Controller
         else
             return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
         
-        if (!isset($params['operation_code']) || !isset($params['token']))
+        if ($this->arg_missing($params['operation_code']) || $this->arg_missing($params['token']))
             return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
             
         $operation_code = $params['operation_code'];
@@ -175,7 +180,7 @@ class TradeController extends Controller
         else
             return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
         
-        if (!isset($params['operation_code']) || !isset($params['token']))
+        if ($this->arg_missing($params['operation_code']) || $this->arg_missing($params['token']))
             return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
             
         $operation_code = $params['operation_code'];
@@ -197,7 +202,7 @@ class TradeController extends Controller
         else
             return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
         
-        if (!isset($params['account_id']) || !isset($params['token']))
+        if ($this->arg_missing($params['account_id']) || $this->arg_missing($params['token']))
             return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
             
         $account_id = $params['account_id'];
@@ -221,7 +226,7 @@ class TradeController extends Controller
         else
             return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
         
-        if (!isset($params['account_id']) || !isset($params['token']))
+        if ($this->arg_missing($params['account_id']) || $this->arg_missing($params['token']))
             return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
             
         $account_id = $params['account_id'];
