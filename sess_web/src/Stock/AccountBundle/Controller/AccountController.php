@@ -599,10 +599,10 @@ class AccountController extends Controller
     public function cancelApiAction(Request $request)
     {
         $id = $request->request->get('id');
-        return new Response("cancelApiAction");
         //for natural customer
         if (($find = $this->findNaturalCustomerAction($id)) != null)
         {
+            return new Response("findNaturalCustomerAction!");
             $customer_id = $find->getCustomerId();
             $data = send_post("g2.jiong3.cn/finance/getbind", array("stockUsername" => $customer_id));
             return new Response($data["status"]);
