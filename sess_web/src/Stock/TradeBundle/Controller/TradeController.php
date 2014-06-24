@@ -26,9 +26,9 @@ class TradeController extends Controller
         return $response;
     }
     
-    private function arg_missing($x)
+    private function argMiss($key, $arr)
     {
-        return !isset($x) || strcmp($x, "") == 0;
+        return !array_key_exists($key, $arr) || strcmp($arr[$key], "") == 0
     }
     
     public function deactivateAction(Request $request)
@@ -40,8 +40,8 @@ class TradeController extends Controller
         else
             return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
         
-        if (($this->arg_missing($params['account_id'])) || $this->arg_missing($params['stock_id']) ||
-            $this->arg_missing($params['amount']) || $this->arg_missing($params['token']))
+        if ($this->argMiss('account_id', $params) || $this->argMiss('stock_id', $params) ||
+            $this->argMiss('amount', $params) || $this->argMiss('token', $params))
             return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
             
         $account_id = $params['account_id'];
@@ -66,8 +66,8 @@ class TradeController extends Controller
         else
             return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
         
-        if (($this->arg_missing($params['account_id'])) || $this->arg_missing($params['stock_id']) ||
-            $this->arg_missing($params['amount']) || $this->arg_missing($params['token']))
+        if ($this->argMiss('account_id', $params) || $this->argMiss('stock_id', $params) ||
+            $this->argMiss('amount', $params) || $this->argMiss('token', $params))
             return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
             
         $account_id = $params['account_id'];
@@ -92,10 +92,10 @@ class TradeController extends Controller
         else
             return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
         
-        if (($this->arg_missing($params['buyer_id']) && $this->arg_missing($params['seller_id'])) ||
-            $this->arg_missing($params['stock_id']) || $this->arg_missing($params['amount']) ||
-            $this->arg_missing($params['amount']) || $this->arg_missing($params['price']) ||
-            $this->arg_missing($params['token']))
+        if (($this->argMiss('buyer_id', $params) && $this->argMiss('seller_id', $params)) ||
+            $this->argMiss('stock_id', $params) || $this->argMiss('amount', $params) ||
+            $this->argMiss('amount', $params) || $this->argMiss('price', $params) ||
+            $this->argMiss('token', $params))
             return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
             
         $buyer_id = $params['buyer_id'];
@@ -139,7 +139,7 @@ class TradeController extends Controller
         else
             return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
         
-        if ($this->arg_missing($params['operation_code']) || $this->arg_missing($params['token']))
+        if ($this->argMiss('operation_code', $params) || $this->argMiss('token', $params))
             return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
             
         $operation_code = $params['operation_code'];
@@ -180,7 +180,7 @@ class TradeController extends Controller
         else
             return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
         
-        if ($this->arg_missing($params['operation_code']) || $this->arg_missing($params['token']))
+        if ($this->argMiss('operation_code', $params) || $this->argMiss('token', $params))
             return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
             
         $operation_code = $params['operation_code'];
@@ -202,7 +202,7 @@ class TradeController extends Controller
         else
             return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
         
-        if ($this->arg_missing($params['account_id']) || $this->arg_missing($params['token']))
+        if ($this->argMiss('account_id', $params) || $this->argMiss('token', $params))
             return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
             
         $account_id = $params['account_id'];
@@ -226,7 +226,7 @@ class TradeController extends Controller
         else
             return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
         
-        if ($this->arg_missing($params['account_id']) || $this->arg_missing($params['token']))
+        if ($this->argMiss('account_id', $params) || $this->argMiss('token', $params))
             return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
             
         $account_id = $params['account_id'];
