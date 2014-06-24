@@ -163,9 +163,9 @@ class TradeController extends Controller
         else
             return $this->makeResponse($stock_array["status"], $stock_array);
     }
-    
     public function checkAccountAction(Request $request)
     {
+        $params = array();
         $content = $request->getContent();
         if (!empty($content))
             $params = json_decode($content, true);
