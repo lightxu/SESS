@@ -225,20 +225,6 @@ class TradeController extends Controller
     }
     
     // Database Functions
-    public function createStock($stock)
-    {
-        $stock = new Stock();
-        $stock->setAccountId($stock["account_id"]);
-        $stock->setStockId($stock["stock_id"]);
-        $stock->setTotalAmount($stock["amount"]);
-        $stock->setFrozenAmount(0);
-        $stock->setHoldCost(1);
-        
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($stock);
-        $em->flush();
-    }
-    
     public function showStock($account_id)
     {
         $stocks = $this->getDoctrine()
@@ -314,6 +300,7 @@ class TradeController extends Controller
             $stock->setAccountId($account_id);
             $stock->setStockId($stock_id);
             $stock->setTotalAmount($update_amount);
+            $stock->setFrozenAmount(0);
             $stock->setHoldCost($price);
             $em->persist($stock);
         }
