@@ -15,19 +15,24 @@ class Stock
     private $id;
 
     /**
-     * @var string
+     * @var integer
      */
     private $stockId;
 
     /**
-     * @var string
+     * @var integer
      */
     private $totalAmount;
 
     /**
-     * @var string
+     * @var integer
      */
     private $frozenAmount;
+
+    /**
+     * @var float
+     */
+    private $holdCost;
 
     /**
      * @var string
@@ -48,7 +53,7 @@ class Stock
     /**
      * Set stockId
      *
-     * @param string $stockId
+     * @param integer $stockId
      * @return Stock
      */
     public function setStockId($stockId)
@@ -61,7 +66,7 @@ class Stock
     /**
      * Get stockId
      *
-     * @return string 
+     * @return integer 
      */
     public function getStockId()
     {
@@ -71,7 +76,7 @@ class Stock
     /**
      * Set totalAmount
      *
-     * @param string $totalAmount
+     * @param integer $totalAmount
      * @return Stock
      */
     public function setTotalAmount($totalAmount)
@@ -84,7 +89,7 @@ class Stock
     /**
      * Get totalAmount
      *
-     * @return string 
+     * @return integer 
      */
     public function getTotalAmount()
     {
@@ -94,7 +99,7 @@ class Stock
     /**
      * Set frozenAmount
      *
-     * @param string $frozenAmount
+     * @param integer $frozenAmount
      * @return Stock
      */
     public function setFrozenAmount($frozenAmount)
@@ -107,11 +112,34 @@ class Stock
     /**
      * Get frozenAmount
      *
-     * @return string 
+     * @return integer 
      */
     public function getFrozenAmount()
     {
         return $this->frozenAmount;
+    }
+
+    /**
+     * Set holdCost
+     *
+     * @param float $holdCost
+     * @return Stock
+     */
+    public function setHoldCost($holdCost)
+    {
+        $this->holdCost = $holdCost;
+
+        return $this;
+    }
+
+    /**
+     * Get holdCost
+     *
+     * @return float 
+     */
+    public function getHoldCost()
+    {
+        return $this->holdCost;
     }
 
     /**

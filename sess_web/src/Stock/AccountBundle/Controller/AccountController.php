@@ -8,7 +8,6 @@ use Stock\AccountBundle\Entity\NaturalCustomer;
 use Stock\AccountBundle\Entity\CompanyCheck;
 use Stock\AccountBundle\Entity\CompanyCustomer;
 use Stock\AccountBundle\Entity\Personnel;
-use Stock\AccountBundle\Entity\HoldCost;
 
 use Stock\AccountBundle\Entity;
 
@@ -605,7 +604,7 @@ class AccountController extends Controller
                  ->getRepository('StockAccountBundle:Personnel')
                  ->find($id_number);
         //find
-        if ($natural_customer)
+        if (isset($natural_customer))
             return true;
         //not find
         else
@@ -632,16 +631,10 @@ class AccountController extends Controller
         $natural_customer->setBank($customer['bank']);
         $natural_customer->setAssetsNumber('');
         $natural_customer->setFrozen(true);
-        
-        $hold_cost = new HoldCost();
-        $hold_cost->setCustomerId($customer['id']);
-        $hold_cost->setTotalAmount(0);
-        $hold_cost->setHoldCost(0);
 		
 		//instantiate database query
         $em = $this->getDoctrine()->getEntityManager();
         $em->persist($natural_customer);
-        $em->persist($hold_cost);
         $em->flush();
 
         return false;
@@ -694,7 +687,7 @@ class AccountController extends Controller
                  ->find($customer_id);
 		
 		//response if not found
-        if(!$natural_customer)
+        if(!isset($natural_customer))
             throw $this->createNotFoundException('No natural customer found for customer_id' . $customer_id);
         // return get_object_vars($natural_customer);
         $customer = array();
@@ -724,7 +717,7 @@ class AccountController extends Controller
                     ->getRepository('StockAccountBundle:NaturalCustomer')
                     ->find($customer_id);
 		//response if not found
-        if(!$natural_customer){
+        if(!isset($natural_customer)){
                 throw $this->createNotFoundException('No natural customer found for customer_id ' .$customer_id);
             }
 		//freeze or thaw
@@ -741,7 +734,7 @@ class AccountController extends Controller
                     ->getRepository('StockAccountBundle:NaturalCustomer')
                     ->find($customer_id);
 		//response if not found
-        if(!$natural_customer){
+        if(!isset($natural_customer)){
                 throw $this->createNotFoundException('No natural customer found for customer_id ' .$customer_id);
             }
 		//freeze or thaw
@@ -761,7 +754,7 @@ class AccountController extends Controller
                     ->getRepository('StockAccountBundle:CompanyCustomer')
                     ->find($customer_id);
 		//response if not found
-        if(!$company_customer){
+        if(!isset($company_customer)){
                 throw $this->createNotFoundException('No company customer found for customer_id ' .$customer_id);
             }
 		//freeze or thaw
@@ -781,16 +774,12 @@ class AccountController extends Controller
                     ->getRepository('StockAccountBundle:NaturalCustomer')
                     ->find($customer_id);
 		//response if not found
-        if(!$natural_customer){
+        if(!isset($natural_customer)){
                 throw $this->createNotFoundException('No natural customer found for customer_id ' .$customer_id);
             }
-        $hold_cost = $this->getDoctrine()
-                    ->getRepository('StockTradeBundle:HoldCost')
-                    ->find($customer_id);
 		//remove
         $em = $this->getDoctrine()->getEntityManager();
         $em->remove($natural_customer);
-        $em->remove($hold_cost);
         $em->flush();
     }
 
@@ -813,15 +802,9 @@ class AccountController extends Controller
         $company_customer->setBank($customer['bank']);
         $company_customer->setAssetsNumber('');
         $company_customer->setFrozen(true);
-        
-        $hold_cost = new HoldCost();
-        $hold_cost->setCustomerId($customer['id']);
-        $hold_cost->setHoldCost(0);
-        $hold_cost->setTotalAmount(0);
     
         $em = $this->getDoctrine()->getEntityManager();
         $em->persist($company_customer);
-        $em->persist($hold_cost);
         $em->flush();
     }
 
@@ -846,7 +829,7 @@ class AccountController extends Controller
                  ->find($customer_id);
 		
 		//response if not found
-        if(!$company_customer)
+        if(!isset($company_customer))
             throw $this->createNotFoundException('No company customer found for customer_id' . $customer_id);
         // return get_object_vars($company_customer);
         $customer = array();
@@ -875,7 +858,7 @@ class AccountController extends Controller
                     ->getRepository('StockAccountBundle:CompanyCustomer')
                     ->find($customer_id);
         //can not find
-        if(!$company_customer){
+        if(!isset($company_customer)){
                 throw $this->createNotFoundException('No company customer found for customer_id ' .$customer_id);
             }
         //set forzen
@@ -893,16 +876,12 @@ class AccountController extends Controller
                     ->getRepository('StockAccountBundle:CompanyCustomer')
                     ->find($customer_id);
         //can not find
-        if(!$company_customer){
+        if(!isset($company_customer)){
                 throw $this->createNotFoundException('No company customer found for customer_id ' .$customer_id);
             }
-        $hold_cost = $this->getDoctrine()
-                    ->getRepository('StockTradeBundle:HoldCost')
-                    ->find($customer_id);
     
         $em = $this->getDoctrine()->getEntityManager();
         $em->remove($company_customer);
-        $em->remove($hold_cost);
         $em->flush();
     }
 }

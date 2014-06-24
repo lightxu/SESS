@@ -9,13 +9,17 @@ Stock\TradeBundle\Entity\Stock:
                 strategy: AUTO
     fields:
         stockId:
-            type: string
-            length: 255
+            type: integer
             column: stock_id
         totalAmount:
             type: integer
+            column: total_amount
         frozenAmount:
             type: integer
+            column: frozen_amount
+        holdCost:
+            type: float
+            column: hold_cost
         accountId:
             type: string
             length: 255

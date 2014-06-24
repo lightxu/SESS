@@ -6,6 +6,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Stock\TradeBundle\Entity\Stock;
 use Stock\TradeBundle\Entity\TradeRecord;
+use Stock\AccountBundle\Entity\NaturalCustomer;
+use Stock\AccountBundle\Entity\CompanyCustomer;
 
 class TradeController extends Controller
 {
@@ -92,7 +94,7 @@ class TradeController extends Controller
         else
             return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
         
-        if (($this->argMiss('buyer_id', $params) && $this->argMiss('seller_id', $params)) ||
+        if ($this->argMiss('buyer_id', $params) || $this->argMiss('seller_id', $params) ||
             $this->argMiss('stock_id', $params) || $this->argMiss('amount', $params) ||
             $this->argMiss('amount', $params) || $this->argMiss('price', $params) ||
             $this->argMiss('app_key', $params))
@@ -108,23 +110,13 @@ class TradeController extends Controller
         if (strcmp($app_key, self::APP_KEY) != 0)
             return $this->makeResponse(self::STATUS_UNAUTHORIZED_ERROR);
         
-        if ($buyer_id != null)
-        {
-            $status = updateStockTotalAmountCheck($buyer_id, $stock_id, $amount);
-            if (strcmp($status, self::STATUS_SUCCESS) != 0)
-                return $this->makeResponse($status);
-        }
-        else
-            $buyer_id = "";
+        $status = updateStockTotalAmountCheck($buyer_id, $stock_id, $amount);
+        if (strcmp($status, self::STATUS_SUCCESS) != 0)
+            return $this->makeResponse($status);
         
-        if ($seller_id != null)
-        {
-            $status = updateStockTotalAmountCheck($seller_id, $stock_id, -$amount);
-            if (strcmp($status, self::STATUS_SUCCESS) != 0)
+        $status = updateStockTotalAmountCheck($seller_id, $stock_id, -$amount);
+        if (strcmp($status, self::STATUS_SUCCESS) != 0)
                 return $this->makeResponse($status);
-        }
-        else
-            $seller_id = "";
             
         $operation_code = createTradeRecord($buyer_id, $seller_id, $stock_id, $amount, $price);
         return $this->makeResponse(self::STATUS_SUCCESS, array("operation_code" => $operation_code));
@@ -158,16 +150,9 @@ class TradeController extends Controller
         $stock_id = $trade_record["stock_id"];
         $amount = $trade_record["amount"];
         $price = $trade_record["price"];
-        if (strcmp($buyer_id, "") != 0)
-        {
-            updateStockTotalAmount($buyer_id, $stock_id, $amount);
-            updateHoldCost($buyer_id, $stock_id, $amount, $price);
-        }
-        if (strcmp($seller_id, "") != 0)
-        {
-            updateStockTotalAmount($seller_id, $stock_id, -$amount, $price);
-            updateHoldCost($seller_id, $stock_id, -$amount, -$price);
-        }
+        
+        updateStockTotalAmount($buyer_id, $stock_id, $amount, $price);
+        updateStockTotalAmount($seller_id, $stock_id, -$amount, -$price);
         return $this->makeResponse(self::STATUS_SUCCESS);
     }
     
@@ -256,6 +241,7 @@ class TradeController extends Controller
         $stock->setStockId($stock["stock_id"]);
         $stock->setTotalAmount(intval($stock["amount"]));
         $stock->setFrozenAmount(0);
+        $stock->setHoldCost(1);
         
         $em = $this->getDoctrine()->getEntityManager();
         $em->persist($stock);
@@ -267,18 +253,15 @@ class TradeController extends Controller
         $stocks = $this->getDoctrine()
              ->getRepository('StockTradeBundle:Stock')
              ->findAllByAccountId($account_id);
-        $hold_cost = $this->getDoctrine()
-             ->getRepository('StockTradeBundle:HoldCost')
-             ->find($account_id);
         $stock_array = array();
         $stock_array["status"] = self::STATUS_SUCCESS;
-        $stock_array["hold_cost"] = $hold_cost->getHoldCost();
         $stock_array["stock_info"] = array();
         foreach ($stocks as $stock)
         {
             array_push($stock_array["stock_info"], array(
                 "stock_id" => $stock->getStockId(),
-                "total_amount" => $stock->getTotalAmount()
+                "total_amount" => $stock->getTotalAmount(),
+                "hold_cost" => $stock->getHoldCost()
             ));
         }
         return $stock_array;
@@ -307,7 +290,7 @@ class TradeController extends Controller
     
     public function updateStockTotalAmountCheck($account_id, $stock_id, $update_amount)
     {
-        $status = checkStockAccount($account_id);
+        $status = checkStockAccountFrozen($account_id);
         if (strcmp($status, self::STATUS_SUCCESS) != 0)
             return $status;
             
@@ -326,7 +309,7 @@ class TradeController extends Controller
         return self::STATUS_SUCCESS;
     }
 
-    public function updateStockTotalAmount($account_id, $stock_id, $update_amount)
+    public function updateStockTotalAmount($account_id, $stock_id, $update_amount, $price)
     {
         $em = $this->getDoctrine()->getEntityManager();
         $stock = $em->getRepository('StockTradeBundle:Stock')
@@ -353,9 +336,13 @@ class TradeController extends Controller
                 $frozen_amount += $update_amount;
                 $stock->setFrozenAmount($frozen_amount);
             }
-            $total_amount = $stock->getTotalAmount();
+            $cost = $stock->getHoldCost();
+            $old_amount = $stock->getTotalAmount();
+            $total_amount = $old_amount + $update_amount;
+            $cost = ($cost * $old_amount + $price * $total_amount) / $total_amount;
             $total_amount += $update_amount;
             $stock->setTotalAmount($total_amount);
+            $stock->setHoldCost($cost);
             if ($total_amount == 0)
                 $em->remove($stock);
         }
@@ -410,30 +397,23 @@ class TradeController extends Controller
     
     public function checkStockAccount($account_id)
     {
-        $hold_cost = $this->getDoctrine()
-            ->getRepository('StockTradeBundle:HoldCost')
-            ->find($account_id);
-        if (!isset($hold_cost))
+        $customer = null;
+        if ($account_id[0] == 'C')
+            $customer = $this->getDoctrine()
+                ->getRepository('StockAccountBundle:CompanyCustomer')
+                ->find($account_id);
+        else if ($account_id[0] == 'P')
+            $customer = $this->getDoctrine()
+                ->getRepository('StockAccountBundle:NaturalCustomer')
+                ->find($account_id);
+        else
             return self::STATUS_ACCOUNT_ERROR;
+        if (!isset($customer))
+            return self::STATUS_ACCOUNT_ERROR;
+        $frozen = $customer->getFrozen();
+        if ($frozen)
+            return self::STATUS_FROZEN_ERROR;
         else
             return self::STATUS_SUCCESS;
-        
-    }
-    
-    public function updateHoldCost($account_id, $stock_id, $update_amount, $price)
-    {
-        $em = $this->getDoctrine();
-        $hold_cost = $em->getRepository('StockTradeBundle:HoldCost')
-            ->find($account_id);
-        if ($customer == null)
-            return self::STATUS_ACCOUNT_ERROR;
-        $cost = $hold_cost->getHoldCost();
-        $old_amount = $hold_cost->getTotalAmount();
-        $total_amount = $old_amount + $update_amount;
-        $cost = ($cost * $old_amount + $price * $total_amount) / $total_amount;
-        $hold_cost->setHoldCost($cost);
-        $hold_cost->setTotalAmount($total_amount);
-        $em->flush();
-        return status::STATUS_SUCCESS;
     }
 }
