@@ -234,13 +234,11 @@ class TradeController extends Controller
         $stock_array["status"] = self::STATUS_SUCCESS;
         $stock_array["stock_info"] = array();
         foreach ($stocks as $stock)
-        {
             array_push($stock_array["stock_info"], array(
                 "stock_id" => $stock->getStockId(),
                 "total_amount" => $stock->getTotalAmount(),
                 "hold_cost" => $stock->getHoldCost()
             ));
-        }
         return $stock_array;
     }
     
@@ -319,7 +317,6 @@ class TradeController extends Controller
             $old_amount = $stock->getTotalAmount();
             $total_amount = $old_amount + $update_amount;
             $cost = ($cost * $old_amount + $price * $total_amount) / $total_amount;
-            $total_amount += $update_amount;
             $stock->setTotalAmount($total_amount);
             $stock->setHoldCost($cost);
             if ($total_amount == 0)
