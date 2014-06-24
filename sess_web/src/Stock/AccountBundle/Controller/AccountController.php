@@ -13,6 +13,45 @@ use Stock\AccountBundle\Entity;
 
 class AccountController extends Controller
 {
+    /********** Send request **********/
+    /**
+    * Send post data to a url.
+    * @param string $url address
+    * @param array $data the data to post
+    * @return string content
+    * @author DAI, Longao
+    */
+    function send_post($url, $data){
+        // Build Post Data
+        // Secret Key for Posting Verify
+        $data['app_key'] = "354DD0DE1AB36DC4531B8723C34B9EFE";
+        // Encode the data to json formatting
+        $data = json_encode($data);
+
+        // Set options
+        $options = array(
+            'http' => array(
+                'method' => 'POST',
+                'header' =>
+                    "Content-Type: application/json\r\n" .
+                    "Accept: application/json",
+                'content' => $data,
+                'timeout' => 15 * 60,
+            ),
+        );
+        // Call functions to post data
+        $context = stream_context_create($options);
+        $result = file_get_contents($url, false, $context);
+
+        // Check the data
+        if(!$this->validate_data($result)){
+            $this->common->set_global_warning("接口错误：无法通过数据完整性校验！", "system_msg");
+            return FALSE;
+        }
+
+        return $result;
+    }
+
     /********** Page Actions **********/
     //show the web page of opening an account of a person
     public function openPersonalAction(Request $request)
@@ -564,6 +603,18 @@ class AccountController extends Controller
         if (($find = $this->findNaturalCustomerAction($id)) != null)
         {
             $customer_id = $find->getCustomerId();
+            $data = send_post("g2.jiong3.cn/finance/getbind", array("stockUsername" => $customer_id));
+            $asset_name = null;
+            if (strcmp($data["status"], "find") == 0)
+            {
+                $asset_name = $data["username"];
+                send_post("g2.jiong3.cn/finance/unbind", array("stockUsername" => $customer_id));
+                $this->get('session')->getFlashBag()->add(
+                    'notice',
+                    "已与资金账户解除绑定，id为" . $asset_name
+                );
+            }
+            
             //remove the account
             $this->removeNaturalCustomerAction($customer_id);
             $this->get('session')->getFlashBag()->add(
@@ -575,6 +626,18 @@ class AccountController extends Controller
         //for company customer
         else if ($this->checkCompanyCustomerAction($id))
         {
+            $id = $find->getCustomerId();
+            $data = send_post("g2.jiong3.cn/finance/getbind", array("stockUsername" => $id));
+            $asset_name = null;
+            if (strcmp($data["status"], "find") == 0)
+            {
+                $asset_name = $data["username"];
+                send_post("g2.jiong3.cn/finance/unbind", array("stockUsername" => $id));
+                $this->get('session')->getFlashBag()->add(
+                    'notice',
+                    "已与资金账户解除绑定，id为" . $asset_name
+                );
+            }
             //remove the account
             $this->removeCompanyCustomerAction($id);
             $this->get('session')->getFlashBag()->add(
@@ -629,7 +692,6 @@ class AccountController extends Controller
         $natural_customer->setTel($customer['tel']);
         $natural_customer->setAgentId($customer['agent_id']);
         $natural_customer->setBank($customer['bank']);
-        $natural_customer->setAssetsNumber('');
         $natural_customer->setFrozen(true);
 		
 		//instantiate database query
@@ -704,7 +766,6 @@ class AccountController extends Controller
         // TODO: get agent information
         $customer['agent_id'] = $natural_customer->getAgentId();
         $customer['bank'] = $natural_customer->getBank();
-        $customer['assets_number'] = $natural_customer->getAssetsNumber();
         $customer['frozen'] = $natural_customer->getFrozen();
         return $customer;
     }
@@ -800,7 +861,6 @@ class AccountController extends Controller
         $company_customer->setAuthAddress($customer['auth_address']);
         $company_customer->setAuthPhone($customer['auth_phone']);
         $company_customer->setBank($customer['bank']);
-        $company_customer->setAssetsNumber('');
         $company_customer->setFrozen(true);
     
         $em = $this->getDoctrine()->getManager();
@@ -845,7 +905,6 @@ class AccountController extends Controller
         $customer['auth_address'] = $company_customer->getAuthAddress();
         $customer['auth_phone'] = $company_customer->getAuthPhone();
         $customer['bank'] = $company_customer->getBank();
-        $customer['assets_number'] = $company_customer->getAssetsNumber();
         $customer['frozen'] = $company_customer->getFrozen();
         return $customer;
     }

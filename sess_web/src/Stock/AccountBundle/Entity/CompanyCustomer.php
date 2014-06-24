@@ -18,7 +18,6 @@ class CompanyCustomer
     protected $auth_phone;
     
     protected $bank;
-    protected $assets_number;
     protected $frozen;
 
     /**

@@ -38,8 +38,5 @@ Stock\AccountBundle\Entity\CompanyCustomer:
         bank:
             type: string
             length: 100
-        assets_number:
-            type: string
-            length: 100
         frozen:
             type: boolean

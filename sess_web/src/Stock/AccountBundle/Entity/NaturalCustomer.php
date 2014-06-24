@@ -18,7 +18,6 @@ class NaturalCustomer
     protected $tel;
     protected $agent_id;
     protected $bank;
-    protected $assets_number;
     protected $frozen;
 
     /**

@@ -152,7 +152,7 @@ class TradeController extends Controller
         $price = $trade_record["price"];
         
         $this->updateStockTotalAmount($buyer_id, $stock_id, $amount, $price);
-        $this->updateStockTotalAmount($seller_id, $stock_id, -$amount, -$price);
+        $this->updateStockTotalAmount($seller_id, $stock_id, -$amount, $price);
         return $this->makeResponse(self::STATUS_SUCCESS);
     }
     
@@ -307,18 +307,24 @@ class TradeController extends Controller
             // update frozen amount, if it is selling.
             // as the selling requires deactivate first.
             // here we will not check the amount.
+            $total_amount = 0;
             if ($update_amount < 0)
             {
                 $frozen_amount = $stock->getFrozenAmount();
                 $frozen_amount += $update_amount;
                 $stock->setFrozenAmount($frozen_amount);
+                $old_amount = $stock->getTotalAmount();
+                $total_amount = $old_amount + $update_amount;
             }
-            $cost = $stock->getHoldCost();
-            $old_amount = $stock->getTotalAmount();
-            $total_amount = $old_amount + $update_amount;
-            $cost = ($cost * $old_amount + $price * $total_amount) / $total_amount;
+            else
+            {
+                $cost = $stock->getHoldCost();
+                $old_amount = $stock->getTotalAmount();
+                $total_amount = $old_amount + $update_amount;
+                $cost = ($cost * $old_amount + $price * $update_amount) / $total_amount;
+                $stock->setHoldCost($cost);
+            }
             $stock->setTotalAmount($total_amount);
-            $stock->setHoldCost($cost);
             if ($total_amount == 0)
                 $em->remove($stock);
         }
