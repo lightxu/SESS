@@ -360,7 +360,7 @@ class TradeController extends Controller
     {
         $trade_record = $this->getDoctrine()
             ->getRepository('StockTradeBundle:TradeRecord')
-            ->find($id);
+            ->findOneById($id);
         if (!isset($trade_record))
             return array("status" => self::STATUS_TRADE_ERROR);
         $record = array();
