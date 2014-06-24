@@ -48,8 +48,8 @@ class TradeController extends Controller
             return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
             
         $account_id = $params['account_id'];
-        $stock_id   = $params['stock_id'];
-        $amount     = $params['amount'];
+        $stock_id   = intval($params['stock_id']);
+        $amount     = intval($params['amount']);
         $app_key    = $params['app_key'];
         
         if (strcmp($app_key, self::APP_KEY) != 0)
@@ -74,9 +74,9 @@ class TradeController extends Controller
             return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
             
         $account_id = $params['account_id'];
-        $stock_id   = $params['stock_id'];
-        $amount     = $params['amount'];
-        $app_key      = $params['app_key'];
+        $stock_id   = intval($params['stock_id']);
+        $amount     = intval($params['amount']);
+        $app_key    = $params['app_key'];
         
         if (strcmp($app_key, self::APP_KEY) != 0)
             return $this->makeResponse(self::STATUS_UNAUTHORIZED_ERROR);
@@ -103,9 +103,9 @@ class TradeController extends Controller
             
         $buyer_id = $params['buyer_id'];
         $seller_id = $params['seller_id'];
-        $stock_id = $params['stock_id'];
-        $amount = $params['amount'];
-        $price = $params['price'];
+        $stock_id = intval($params['stock_id']);
+        $amount = intval($params['amount']);
+        $price = floatval($params['price']);
         $app_key  = $params['app_key'];
             
         if (strcmp($app_key, self::APP_KEY) != 0)
@@ -135,7 +135,7 @@ class TradeController extends Controller
         if ($this->argMiss('operation_code', $params) || $this->argMiss('app_key', $params))
             return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
             
-        $operation_code = $params['operation_code'];
+        $operation_code = intval($params['operation_code']);
         $app_key      = $params['app_key'];
         
         if (strcmp($app_key, self::APP_KEY) != 0)
@@ -169,7 +169,7 @@ class TradeController extends Controller
         if ($this->argMiss('operation_code', $params) || $this->argMiss('app_key', $params))
             return $this->makeResponse(self::STATUS_ARGUMENT_ERROR);
             
-        $operation_code = $params['operation_code'];
+        $operation_code = intval($params['operation_code']);
         $app_key      = $params['app_key'];
         
         if (strcmp($app_key, self::APP_KEY) != 0)
@@ -239,8 +239,8 @@ class TradeController extends Controller
     {
         $stock = new Stock();
         $stock->setAccountId($stock["account_id"]);
-        $stock->setStockId(intval($stock["stock_id"]));
-        $stock->setTotalAmount(intval($stock["amount"]));
+        $stock->setStockId($stock["stock_id"]);
+        $stock->setTotalAmount($stock["amount"]);
         $stock->setFrozenAmount(0);
         $stock->setHoldCost(1);
         
@@ -274,7 +274,7 @@ class TradeController extends Controller
         $stock = $em->getRepository('StockTradeBundle:Stock')
             ->findOneBy(array(
                 "accountId" => $account_id,
-                "stockId" => intval($stock_id)
+                "stockId" => $stock_id
             ));
         if (!isset($stock))
             return self::STATUS_ACCOUNT_ERROR;
@@ -299,7 +299,7 @@ class TradeController extends Controller
             ->getRepository('StockTradeBundle:Stock')
             ->findOneBy(array(
                 "accountId" => $account_id,
-                "stockId" => intval($stock_id)
+                "stockId" => $stock_id
             ));
             
         // update frozen amount, if it is selling.
@@ -316,7 +316,7 @@ class TradeController extends Controller
         $stock = $em->getRepository('StockTradeBundle:Stock')
             ->findOneBy(array(
                 "accountId" => $account_id,
-                "stockId" => intval($stock_id)
+                "stockId" => $stock_id
             ));
         if (!isset($stock))
         {
@@ -356,8 +356,8 @@ class TradeController extends Controller
         $trade_record = new TradeRecord();
         $trade_record.setBuyerId($buyer_id);
         $trade_record.setSellerId($seller_id);
-        $trade_record.setStockId(intval($stock_id));
-        $trade_record.setAmount(intval($amount));
+        $trade_record.setStockId($stock_id);
+        $trade_record.setAmount($amount);
         $trade_record.setPrice(floatval($price));
         
         $em = $this->getDoctrine()->getEntityManager();

@@ -1,5 +1,3 @@
-insert into natural_customer values('P1403178658', 'ChenweiXie', '339005199307240035', 2014-06-19, '男','浙江大学','学生','本科','浙江大学', '18868819014','1','Laohe Branch', '', 0);
-insert into natural_customer values('P1403178659', 'ChenshiXue', '339005199307240036', 2014-06-19, '男','浙江大学','学生','本科','浙江大学', '18868819015','1','Laohe Branch', '', 0);
-insert into natural_customer values('P1403178660', 'Mingwei', '339005199307240037', 2014-06-19, '男','浙江大学','学生','本科','浙江大学', '18868819016','1','Laohe Branch', '', 1);
-insert into natural_customer values('P1403178661', 'LingZhan', '339005199307240038', 2014-06-19, '男','浙江大学','学生','本科','浙江大学', '18868819017','1','Laohe Branch', '', 0);
-insert into natural_customer values('P1403178662', 'LonghuJin', '339005199307240039', 2014-06-19, '男','浙江大学','学生','本科','浙江大学', '18868819018','1','Laohe Branch', '', 0);
+insert into natural_customer values('P1', '搞学长死号', '330106100000000000', 2014-06-19, '男', '老和山大学', '土豪', '高富帅', '老和山大学', '18888888888', '1', 'Laohe Branche', '', 0);
+insert into natural_customer values('P2', '搞学长伍号', '330106100000000001', 2014-06-19, '男', '老和山大学', '土豪', '高富帅', '老和山大学', '18888888888', '1', 'Laohe Branche', '', 0);
+insert into natural_customer values('P3', '搞学长陆号', '330106100000000002', 2014-06-19, '男', '老和山大学', '土豪', '高富帅', '老和山大学', '18888888888', '1', 'Laohe Branche', '', 1);
