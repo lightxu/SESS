@@ -25,7 +25,7 @@ class TradeRecord
     private $sellerId;
 
     /**
-     * @var string
+     * @var integer
      */
     private $stockId;
 

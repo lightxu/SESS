@@ -17,9 +17,7 @@ Stock\TradeBundle\Entity\TradeRecord:
             length: 255
             column: seller_id
         stockId:
-            type: string
-            length: 255
-            column: stock_id
+            type: integer
         amount:
             type: integer
         price:
