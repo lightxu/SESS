@@ -234,7 +234,7 @@ class TradeController extends Controller
         $stock->setFrozenAmount(0);
         $stock->setHoldCost(1);
         
-        $em = $this->getDoctrine()->getEntityManager();
+        $em = $this->getDoctrine()->getManager();
         $em->persist($stock);
         $em->flush();
     }
@@ -302,7 +302,7 @@ class TradeController extends Controller
 
     public function updateStockTotalAmount($account_id, $stock_id, $update_amount, $price)
     {
-        $em = $this->getDoctrine()->getEntityManager();
+        $em = $this->getDoctrine()->getManager();
         $stock = $em->getRepository('StockTradeBundle:Stock')
             ->findOneBy(array(
                 "accountId" => $account_id,
@@ -350,7 +350,7 @@ class TradeController extends Controller
         $trade_record->setAmount($amount);
         $trade_record->setPrice(floatval($price));
         
-        $em = $this->getDoctrine()->getEntityManager();
+        $em = $this->getDoctrine()->getManager();
         $em->persist($trade_record);
         $em->flush();
         return $trade_record->getId();
@@ -380,7 +380,7 @@ class TradeController extends Controller
             ->find($id);
         if (!isset($trade_record))
             return status::STATUS_TRADE_ERROR;
-        $em = $this->getDoctrine()->getEntityManager();
+        $em = $this->getDoctrine()->getManager();
         $em->remove($trade_record);
         $em->flush();
         return status::STATUS_SUCCESS;

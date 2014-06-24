@@ -633,7 +633,7 @@ class AccountController extends Controller
         $natural_customer->setFrozen(true);
 		
 		//instantiate database query
-        $em = $this->getDoctrine()->getEntityManager();
+        $em = $this->getDoctrine()->getManager();
         $em->persist($natural_customer);
         $em->flush();
 
@@ -723,7 +723,7 @@ class AccountController extends Controller
 		//freeze or thaw
         $natural_customer->setFrozen($frozen);
 
-        $em = $this->getDoctrine()->getEntityManager();
+        $em = $this->getDoctrine()->getManager();
         $em->flush();
     }
     
@@ -743,7 +743,7 @@ class AccountController extends Controller
         $natural_customer->setCompanyOrOrganization($updateinfo['company']);
         $natural_customer->setOccupation($updateinfo['occupation']);
         $natural_customer->setTel($updateinfo['tel']);
-        $em = $this->getDoctrine()->getEntityManager();
+        $em = $this->getDoctrine()->getManager();
         $em->flush();
     }
     
@@ -762,7 +762,7 @@ class AccountController extends Controller
         $company_customer->setAddress($updateinfo['address']);
         $company_customer->setAuthPhone($updateinfo['auth_phone']);
         $company_customer->setAuthAddress($updateinfo['auth_address']);
-        $em = $this->getDoctrine()->getEntityManager();
+        $em = $this->getDoctrine()->getManager();
         $em->flush();
     }
     
@@ -778,7 +778,7 @@ class AccountController extends Controller
                 throw $this->createNotFoundException('No natural customer found for customer_id ' .$customer_id);
             }
 		//remove
-        $em = $this->getDoctrine()->getEntityManager();
+        $em = $this->getDoctrine()->getManager();
         $em->remove($natural_customer);
         $em->flush();
     }
@@ -803,7 +803,7 @@ class AccountController extends Controller
         $company_customer->setAssetsNumber('');
         $company_customer->setFrozen(true);
     
-        $em = $this->getDoctrine()->getEntityManager();
+        $em = $this->getDoctrine()->getManager();
         $em->persist($company_customer);
         $em->flush();
     }
@@ -864,7 +864,7 @@ class AccountController extends Controller
         //set forzen
         $company_customer->setFrozen($frozen);
 
-        $em = $this->getDoctrine()->getEntityManager();
+        $em = $this->getDoctrine()->getManager();
         $em->flush();
     }
 
@@ -880,7 +880,7 @@ class AccountController extends Controller
                 throw $this->createNotFoundException('No company customer found for customer_id ' .$customer_id);
             }
     
-        $em = $this->getDoctrine()->getEntityManager();
+        $em = $this->getDoctrine()->getManager();
         $em->remove($company_customer);
         $em->flush();
     }
