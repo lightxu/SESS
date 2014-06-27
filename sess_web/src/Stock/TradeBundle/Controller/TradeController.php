@@ -202,6 +202,7 @@ class TradeController extends Controller
         else
             return $this->makeResponse($stock_array["status"], $stock_array);
     }
+    
     public function checkAccountAction(Request $request)
     {
         $params = array();
@@ -224,7 +225,58 @@ class TradeController extends Controller
         return $this->makeResponse($status);
     }
     
+    // function to show and add stock
+    public function addStockPageAction(Request $request)
+    {
+        $account_id = $request->query->get('account_id');
+        $admin = $this->getUser();
+        $stocks = $this->showStock($account_id);
+        $stocks["account_id"] = $account_id;
+        $stocks["username"] = $admin->getUsername();
+        $stocks["bankname"] = $admin->getBankname();
+        return $this->render('StockTradeBundle:Trade:AddStock.html.twig', $stocks);
+    }
+    
+    public function addStockApiAction(Request $request)
+    {
+        $account_id = $request->request->get("account_id");
+        $stock_id = $request->request->get("stock_id");
+        $total_amount = $request->request->get("total_amount");
+        $hold_cost = $request->request->get("price");
+        if (!isset($account_id) || !isset($stock_id) ||
+            !isset($total_amount) || !isset($hold_cost))
+        {
+            $this->get('session')->getFlashBag()->add(
+                'alert',
+                '表单未填写完全'
+            );
+            return $this->redirect($this->generateUrl('addStock_page')."?account_id=".$account_id);
+        }
+        else
+        {
+            $this->createStock($account_id, $stock_id, $total_amount, $hold_cost);
+            $this->get('session')->getFlashBag()->add(
+                'notice',
+                '证券添加成功！'
+            );
+            return $this->redirect($this->generateUrl('addStock_page')."?account_id=".$account_id);
+        }
+    }
+    
     // Database Functions
+    public function createStock($account_id, $stock_id, $total_amount, $hold_cost)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $stock = new Stock();
+        $stock->setAccountId($account_id);
+        $stock->setStockId($stock_id);
+        $stock->setTotalAmount($total_amount);
+        $stock->setFrozenAmount(0);
+        $stock->setHoldCost($hold_cost);
+        $em->persist($stock);
+        $em->flush();
+    }
+    
     public function showStock($account_id)
     {
         $stocks = $this->getDoctrine()
@@ -297,15 +349,7 @@ class TradeController extends Controller
                 "stockId" => $stock_id
             ));
         if (!isset($stock))
-        {
-            $stock = new Stock();
-            $stock->setAccountId($account_id);
-            $stock->setStockId($stock_id);
-            $stock->setTotalAmount($update_amount);
-            $stock->setFrozenAmount(0);
-            $stock->setHoldCost($price);
-            $em->persist($stock);
-        }
+            createStock($account_id, $stock_id, $update_amount, $price);
         else
         {
             // update frozen amount, if it is selling.

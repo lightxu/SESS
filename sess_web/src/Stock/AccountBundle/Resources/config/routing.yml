@@ -98,7 +98,6 @@ changePersonal_api:
     defaults: {_controller: StockAccountBundle:Account:changePersonalApi}
     methods: [POST]
 
-    
 changeCompany_api:
     path: /accounts/updatecompany
     defaults: {_controller: StockAccountBundle:Account:changeCompanyApi}
