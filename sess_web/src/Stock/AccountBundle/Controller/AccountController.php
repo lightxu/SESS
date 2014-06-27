@@ -597,11 +597,12 @@ class AccountController extends Controller
         if (($find = $this->findNaturalCustomerAction($id)) != null)
         {
             $customer_id = $find->getCustomerId();
-            $data = send_post("http://g2.jiong3.cn/finance/getbind", array("stockUsername" => $customer_id));
+	    //return new Response($customer_id);
+            $data = $this->send_post("http://se.jiong3.cn:8000/finance/getbind", array("stockUsername" => $customer_id));
             if (strcmp($data["status"], "find") == 0)
             {
                 $asset_name = $data["username"];
-                send_post("http://g2.jiong3.cn/finance/unbind", array("stockUsername" => $customer_id));
+                $this->send_post("http://se.jiong3.cn:8000/finance/unbind", array("stockUsername" => $customer_id));
                 $this->get('session')->getFlashBag()->add(
                     'notice',
                     "已与资金账户解除绑定，id为" . $asset_name
