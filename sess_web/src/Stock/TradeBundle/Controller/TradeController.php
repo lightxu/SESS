@@ -237,6 +237,7 @@ class TradeController extends Controller
             array_push($stock_array["stock_info"], array(
                 "stock_id" => $stock->getStockId(),
                 "total_amount" => $stock->getTotalAmount(),
+                "frozen_amount" => $stock->getFrozenAmount(),
                 "hold_cost" => $stock->getHoldCost()
             ));
         return $stock_array;

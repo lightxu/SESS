@@ -8,6 +8,7 @@ use Stock\AccountBundle\Entity\NaturalCustomer;
 use Stock\AccountBundle\Entity\CompanyCheck;
 use Stock\AccountBundle\Entity\CompanyCustomer;
 use Stock\AccountBundle\Entity\Personnel;
+use Stock\TradeBundle\Entity\Stock;
 
 use Stock\AccountBundle\Entity;
 
@@ -597,12 +598,12 @@ class AccountController extends Controller
         if (($find = $this->findNaturalCustomerAction($id)) != null)
         {
             $customer_id = $find->getCustomerId();
-	    //return new Response($customer_id);
             $data = $this->send_post("http://se.jiong3.cn:8000/finance/getbind", array("stockUsername" => $customer_id));
             if (strcmp($data["status"], "find") == 0)
             {
                 $asset_name = $data["username"];
                 $this->send_post("http://se.jiong3.cn:8000/finance/unbind", array("stockUsername" => $customer_id));
+                $this->removeStock($customer_id);
                 $this->get('session')->getFlashBag()->add(
                     'notice',
                     "已与资金账户解除绑定，id为" . $asset_name
@@ -621,11 +622,12 @@ class AccountController extends Controller
         else if ($this->checkCompanyCustomerAction($id))
         {
             $id = $find->getCustomerId();
-            $data = send_post("http://g2.jiong3.cn/finance/getbind", array("stockUsername" => $id));
+            $data = $this->send_post("http://g2.jiong3.cn/finance/getbind", array("stockUsername" => $id));
             if (strcmp($data["status"], "find") == 0)
             {
                 $asset_name = $data["username"];
-                send_post("http://g2.jiong3.cn/finance/unbind", array("stockUsername" => $id));
+                $this->send_post("http://g2.jiong3.cn/finance/unbind", array("stockUsername" => $id));
+                $this->removeStock($id);
                 $this->get('session')->getFlashBag()->add(
                     'notice',
                     "已与资金账户解除绑定，id为" . $asset_name
@@ -913,7 +915,7 @@ class AccountController extends Controller
         if(!isset($company_customer)){
                 throw $this->createNotFoundException('No company customer found for customer_id ' .$customer_id);
             }
-        //set forzen
+        //set frozen
         $company_customer->setFrozen($frozen);
 
         $em = $this->getDoctrine()->getManager();
@@ -935,5 +937,20 @@ class AccountController extends Controller
         $em = $this->getDoctrine()->getManager();
         $em->remove($company_customer);
         $em->flush();
+    }
+    
+    
+    // Database Functions
+    private function removeStock($account_id)
+    {
+        $stocks = $this->getDoctrine()
+             ->getRepository('StockTradeBundle:Stock')
+             ->findByAccountId($account_id);
+        if ($stocks)
+        {
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($stocks);
+            $em->flush();
+        }
     }
 }
