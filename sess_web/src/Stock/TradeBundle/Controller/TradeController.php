@@ -245,6 +245,9 @@ class TradeController extends Controller
     
     public function updateStockFrozenAmount($account_id, $stock_id, $frozen_amount)
     {
+        $status = $this->checkStockAccount($account_id);
+        if (strcmp($status, self::STATUS_SUCCESS) != 0)
+            return $status;
         $em = $this->getDoctrine()->getManager();
         $stock = $em->getRepository('StockTradeBundle:Stock')
             ->findOneBy(array(
