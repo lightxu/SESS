@@ -1,0 +1,14 @@
+<VirtualHost 127.0.0.1:8080>
+	ServerAdmin webmaster@localhost
+        ServerName g1.jiong3.cn
+
+	DocumentRoot /home/se/group1/SESS/sess_web/web
+	<Directory /home/se/group1/SESS/sess_web/web>
+		AllowOverride All
+		Order allow,deny
+		Allow from All
+	</Directory>
+
+	ErrorLog /var/log/apache2/g1_error.log
+	CustomLog /var/log/apache2/g1_access.log combined
+</VirtualHost>
