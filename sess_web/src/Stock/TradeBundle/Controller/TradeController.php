@@ -349,7 +349,7 @@ class TradeController extends Controller
                 "stockId" => $stock_id
             ));
         if (!isset($stock))
-            createStock($account_id, $stock_id, $update_amount, $price);
+            $this->createStock($account_id, $stock_id, $update_amount, $price);
         else
         {
             // update frozen amount, if it is selling.
